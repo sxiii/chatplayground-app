@@ -1,6 +1,6 @@
 # Functions & CI/CD Documentation: ChatPlayground Android Wrapper
 
-This document describes the core build and CI/CD functions for `chatplayground-app` prior to implementation.
+This document describes the core build, CI/CD, and application runtime functions for `chatplayground-app`.
 
 ## 1. Build Functions (GitHub Actions CI/CD)
 
@@ -14,8 +14,19 @@ This document describes the core build and CI/CD functions for `chatplayground-a
   4. **Set up Gradle Cache:** Caches and restores Gradle dependencies and wrapper using `gradle/actions/setup-gradle@v3`.
   5. **Grant Gradle Wrapper Execution Permission:** Ensures `gradlew` is executable (`chmod +x gradlew`).
   6. **Build Debug APK:** Compiles and assembles the debug build via `./gradlew assembleDebug`.
-  7. **Build Release APK (Unsigned/Signed):** Assembles the release build via `./gradlew assembleRelease` (or `assembleDebug` / `bundleRelease` as needed).
+  7. **Build Release APK (Unsigned/Signed):** Assembles the release build via `./gradlew assembleRelease`.
   8. **Upload Artifacts:** Uploads the compiled APK outputs (`app/build/outputs/apk/`) as build artifacts using `actions/upload-artifact@v4`.
 
 ## 2. Local Gradle Wrapper Utility
 - **`./gradlew`**: Bootstraps Gradle using version 8.5 specified in `gradle/wrapper/gradle-wrapper.properties`.
+
+## 3. Application Runtime Functions (Documented prior to implementation)
+
+### Offline Support & Caching (`OfflineCacheManager`)
+- **`saveCachedResponse(url: String, data: String)`**: Caches response data for offline access in app cache storage.
+- **`getCachedResponse(url: String): String?`**: Retrieves cached content when network connection is unavailable.
+- **`clearCache()`**: Clears stored offline cache entries.
+
+### Push Notifications (`NotificationService`)
+- **`handleTokenRefresh(token: String)`**: Registers and updates Firebase Cloud Messaging (FCM) device tokens.
+- **`displayNotification(title: String, body: String)`**: Displays push notifications in the notification tray when received.

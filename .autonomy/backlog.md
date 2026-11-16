@@ -5,8 +5,8 @@
 - [x] Setup initial project structure.
 
 ## Medium Priority
-- [ ] Implement basic WebView wrapper functionality.
-- [ ] Implement secure credential storage (Android Keystore).
+- [x] Implement basic WebView wrapper functionality.
+- [x] Implement secure credential storage (Android Keystore).
 
 ## Low Priority
 - [ ] Implement push notifications.
