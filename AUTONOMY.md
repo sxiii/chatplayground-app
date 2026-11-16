@@ -4,6 +4,9 @@
 Maintain and improve this project toward the objectives in
 .autonomy/vision.md, within its constraints and goals.
 
+## Description
+This android project needs to be made in a way so github workers compile it. No local harness should be used for java/gradle, everything should be done on github. Status can be checked with github.
+
 ## Each development cycle
 1. Inspect Git status, the current task, backlog, and recent progress.
 2. Recover or document unfinished work before starting unrelated work.
