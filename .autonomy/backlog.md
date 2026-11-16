@@ -9,5 +9,5 @@
 - [x] Implement secure credential storage (Android Keystore).
 
 ## Low Priority
-- [ ] Implement push notifications.
-- [ ] Add offline support/caching.
+- [x] Implement push notifications.
+- [x] Add offline support/caching.
