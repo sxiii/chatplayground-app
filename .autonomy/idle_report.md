@@ -1,3 +1,3 @@
-### Idle Report (2026-11-16 15:40 CET)
+### Idle Report (2026-11-16 17:47 CET)
 
-All backlog items are completed and the repository is up‑to‑date. No new tasks are identified that align with the project vision. The project is therefore idle.
+The project backlog is empty. Attempted to add a unit test for NotificationService, but the Android Gradle build fails due to missing Android SDK configuration (ANDROID_HOME/local.properties). Without a valid SDK, the test suite cannot be executed in this environment. No further actionable tasks are available.
