@@ -29,6 +29,8 @@ jobs:
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
+          # Use sdkmanager from the setup-android action's path, or find it
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools/bin
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "platform-tools"
           sdkmanager "platforms;android-34" "build-tools;34.0.0"
