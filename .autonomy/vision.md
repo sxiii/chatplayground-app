@@ -19,3 +19,5 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Add a settings screen for toggling features.
 - [ ] Implement Biometric Authentication for enhanced security.
 - [ ] Add Network Monitoring & Auto-reconnect handling.
+- [ ] Implement Screen Reader accessibility improvements for the WebView content.
+- [ ] Add basic performance profiling for initial app load.
