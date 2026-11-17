@@ -13,5 +13,8 @@ The objective of this project is to create a robust, secure, and user-friendly A
 
 ## Improvement Tasks
 - [ ] Implement user feedback mechanism for UI/UX improvements.
-- [ ] Integrate Android Lint to the CI pipeline to improve code quality.
 - [ ] Add dependency verification step to the CI pipeline to ensure security.
+- [ ] Implement Dark Mode support.
+- [ ] Add a settings screen for toggling features.
+- [ ] Implement Biometric Authentication for enhanced security.
+- [ ] Add Network Monitoring & Auto-reconnect handling.

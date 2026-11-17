@@ -30,3 +30,7 @@ This document describes the core build, CI/CD, and application runtime functions
 ### Push Notifications (`NotificationService`)
 - **`handleTokenRefresh(token: String)`**: Registers and updates Firebase Cloud Messaging (FCM) device tokens.
 - **`displayNotification(title: String, body: String)`**: Displays push notifications in the notification tray when received.
+
+### Network Monitoring (`NetworkMonitor`)
+- **`isOnline(): Boolean`**: Checks the active network capabilities for an available Internet transport (cellular, Wi-Fi, Ethernet).
+- **`observeNetworkState(callback: (Boolean) -> Unit)`**: Registers a `ConnectivityManager.NetworkCallback` to stream online/offline network transitions in real-time.
