@@ -3,6 +3,7 @@
 ## High Priority
 - [x] Define technical stack (WebView vs Native Components) and architecture.
 - [x] Setup initial project structure.
+- [ ] Add several new development ideas into vision.md
 
 ## Medium Priority
 - [x] Implement basic WebView wrapper functionality.
