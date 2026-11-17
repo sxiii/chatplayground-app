@@ -31,18 +31,55 @@ jobs:
             platforms;android-34
             build-tools;34.0.0
 
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      # NOTE: keep the Gradle log at its default (lifecycle) verbosity.
+      # --debug produced ~17k-line logs that were unreadable without admin
+      # log access. --stacktrace still surfaces task-level causes.
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --info --debug
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --stacktrace --console=plain 2>&1 | tee gradle_build_debug.log
+
+      - name: Build Debug APK Diagnostics
+        if: failure()
+        run: |
+          echo "## Gradle Build Diagnostics" >> "$GITHUB_STEP_SUMMARY"
+          echo "Error markers captured from Gradle output (publicly visible in the job):" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -nE "FAILURE:|error:|^e: |AAPT:|What went wrong|Caused by|Could not (find|resolve)|unresolved reference|cannot find symbol|> Task .* FAILED" gradle_build_debug.log | tail -n 40 >> "$GITHUB_STEP_SUMMARY" \
+            || echo "(no error markers matched; see last lines below)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Last 40 lines of the Gradle output:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          tail -n 40 gradle_build_debug.log >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          # Surface the first failure marker as a file annotation (publicly readable).
+          FIRST_ERR=$(grep -m1 -E "FAILURE:|error:|^e: |What went wrong|Could not (find|resolve)" gradle_build_debug.log || true)
+          echo "::error file=gradle_build_debug.log::Build Debug APK failed. First error marker: ${FIRST_ERR:-see job summary for details}"
 
       - name: Run Unit Tests
-        run: ./gradlew test --no-daemon --stacktrace --info --debug
+        run: |
+          set -o pipefail
+          ./gradlew test --no-daemon --stacktrace --console=plain 2>&1 | tee gradle_test.log
+
+      - name: Unit Test Diagnostics
+        if: failure()
+        run: |
+          echo "## Unit Test Diagnostics" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -nE "FAILED|Tests? .* failed|> Task .* FAILED" gradle_test.log | tail -n 40 >> "$GITHUB_STEP_SUMMARY" \
+            || echo "(no failure markers matched)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "Last 40 lines:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          tail -n 40 gradle_test.log >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build Release APK
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew assembleRelease --stacktrace --console=plain
 
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4

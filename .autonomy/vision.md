@@ -12,7 +12,8 @@ The objective of this project is to create a robust, secure, and user-friendly A
 7. Integrate analytics for performance monitoring.
 
 ## Improvement Tasks
-- [x] Fix GitHub Actions build failure by optimizing Android SDK setup.
+- [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup; verbose logs now enabled via `--info --debug` to pinpoint the root cause).
+- [ ] Add Gradle build cache (e.g., `actions/cache`) to the CI pipeline to speed up builds.
 - [ ] Implement user feedback mechanism for UI/UX improvements.
 - [ ] Add dependency verification step to the CI pipeline to ensure security.
 - [ ] Implement Dark Mode support.
@@ -21,3 +22,10 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Add Network Monitoring & Auto-reconnect handling.
 - [ ] Implement Screen Reader accessibility improvements for the WebView content.
 - [ ] Add basic performance profiling for initial app load.
+- [ ] Add automated UI integration tests using Espresso.
+- [ ] Migrate `actions/setup-java` from v4 to v5 (v4 is deprecated and will stop receiving updates).
+- [ ] Pin and bump the AGP / Gradle / Kotlin versions together in a single verified step (currently AGP 8.2.0 + Gradle 8.5 + Kotlin 1.9.0).
+- [ ] Add an explicit CI step that asserts the generated APK artifacts exist before upload (fail fast with a clear message).
+- [ ] Configure a release signing config so `assembleRelease` produces a signed APK instead of an unsigned one.
+- [ ] Run `./gradlew lint` in CI and gate on lint results.
+- [ ] Pin the runner to `ubuntu-24.04` to prepare for the `ubuntu-latest` → Ubuntu 26 migration (planned 2026-10-19).
