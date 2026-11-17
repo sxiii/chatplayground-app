@@ -19,7 +19,7 @@ android {
 
     testOptions {
         unitTests.all {
-            useJUnitPlatform()
+            // useJUnitPlatform() // Removed to support JUnit 4
         }
     }
 }

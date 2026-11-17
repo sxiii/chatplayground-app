@@ -8,6 +8,7 @@
 ## Medium Priority
 - [x] Implement basic WebView wrapper functionality.
 - [x] Implement secure credential storage (Android Keystore).
+- [ ] Fix GitHub Actions build failure by optimizing Android SDK setup.
 
 ## Low Priority
 - [x] Implement push notifications.

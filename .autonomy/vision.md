@@ -12,6 +12,7 @@ The objective of this project is to create a robust, secure, and user-friendly A
 7. Integrate analytics for performance monitoring.
 
 ## Improvement Tasks
+- [ ] Fix GitHub Actions build failure by optimizing Android SDK setup.
 - [ ] Implement user feedback mechanism for UI/UX improvements.
 - [ ] Add dependency verification step to the CI pipeline to ensure security.
 - [ ] Implement Dark Mode support.
