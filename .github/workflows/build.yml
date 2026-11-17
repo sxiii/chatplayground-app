@@ -81,6 +81,18 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace --console=plain
 
+      - name: Assert APK Artifacts Exist
+        run: |
+          set -e
+          for f in app/build/outputs/apk/debug/app-debug.apk \
+                   app/build/outputs/apk/release/app-release-unsigned.apk; do
+            if [ ! -f "$f" ]; then
+              echo "::error file=$f::Expected build artifact is missing: $f"
+              exit 1
+            fi
+            echo "Artifact present: $f ($(du -h "$f" | cut -f1))"
+          done
+
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -88,4 +100,11 @@ jobs:
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/release/app-release-unsigned.apk
+        if: always()
+
+      - name: Upload Gradle Debug Log
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-build-debug-log
+          path: gradle_build_debug.log
         if: always()

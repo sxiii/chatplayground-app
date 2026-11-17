@@ -11,7 +11,7 @@ The objective of this project is to create a robust, secure, and user-friendly A
 6. Enhance UI/UX based on user feedback.
 7. Integrate analytics for performance monitoring.
 
-## Improvement Tasks
+- [ ] Add CI step to verify APK artifacts exist before upload (implemented in workflow).
 - [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup; verbose logs now enabled via `--info --debug` to pinpoint the root cause).
 - [ ] Add Gradle build cache (e.g., `actions/cache`) to the CI pipeline to speed up builds.
 - [ ] Implement user feedback mechanism for UI/UX improvements.
