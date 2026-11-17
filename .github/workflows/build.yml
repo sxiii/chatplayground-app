@@ -21,8 +21,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -36,15 +34,10 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew test --no-daemon --stacktrace
 
-      - name: Build Release APK
-        run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: chatplayground-apk-outputs
-          path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            app/build/outputs/apk/release/app-release-unsigned.apk
-            app/build/outputs/apk/release/app-release.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
         if: always()
