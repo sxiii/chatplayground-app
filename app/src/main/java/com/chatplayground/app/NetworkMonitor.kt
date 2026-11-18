@@ -15,6 +15,8 @@ class NetworkMonitor(context: Context) {
     // 简单的连接状态存储
     @Volatile var isConnected: Boolean = checkConnectivity()
 
+    private var callbackObj: ConnectivityManager.NetworkCallback? = null
+
     fun checkConnectivity(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val nw = cm.activeNetwork ?: return false
@@ -42,6 +44,22 @@ class NetworkMonitor(context: Context) {
                 callback(false)
             }
         }
+        this.callbackObj = callbackObj
         cm.registerDefaultNetworkCallback(callbackObj)
+    }
+
+    /**
+     * 注销之前注册的回调，释放 ConnectivityManager 资源。
+     * 即使没有注册过的回调也不会抛出异常。
+     */
+    fun stopObserving() {
+        val cb = callbackObj ?: return
+        callbackObj = null
+        try {
+            cm.unregisterNetworkCallback(cb)
+        } catch (e: Exception) {
+            // Best-effort cleanup: some platform versions throw if the
+            // callback was already unregistered.
+        }
     }
 }
