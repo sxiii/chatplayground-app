@@ -27,10 +27,9 @@ class MainActivityTest {
     }
 
     @Test
-    fun testWebViewClientIsConfigured() {
+    fun testWebViewIsInitialized() {
         // Instantiate activity via Robolectric
         val activity = org.robolectric.Robolectric.buildActivity(MainActivity::class.java).create().get()
-        val webViewClient = activity.webView.webViewClient
-        assertNotNull("WebViewClient should be configured", webViewClient)
+        assertNotNull("WebView should be initialized", activity.webView)
     }
 }

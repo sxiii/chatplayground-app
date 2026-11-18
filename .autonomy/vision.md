@@ -49,4 +49,5 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Implement robust error handling and retry mechanism for WebView load failures.
 - [ ] Pin CI to JDK 17: Kotlin 1.9.0's JVM target does not support Java 21 (`Unknown Kotlin JVM target: 21`). Upgrade Kotlin (and AGP) together before moving CI to JDK 21.
 - [x] Add CI step that uploads JUnit XML test results as an artifact, so per-test failures are inspectable from the run without needing admin log access.
-- [ ] Add unit test covering WebView load-failure fallback (offline / timeout) once `NetworkMonitor.observeNetworkState` is wired into `MainActivity` error handling.
+- [ ] Add unit test for NetworkMonitor connectivity handling and reconnection logic.
+- [ ] Add documentation page describing CI pipeline steps and how to debug failures.
