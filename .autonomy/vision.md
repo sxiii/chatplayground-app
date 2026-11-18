@@ -77,12 +77,10 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] **Add CI step to upload test coverage report** via JaCoCo and make it searchable as an artifact.
 Ranked by user impact and verifiability. Each is small enough for one cycle.
 
-- [x] Add the missing `INTERNET` permission.
-   `app/src/main/AndroidManifest.xml` declares only `ACCESS_NETWORK_STATE`, yet
-   `MainActivity` loads `https://chatplayground.com` in a `WebView`. Without
-   `android.permission.INTERNET` the released APK cannot fetch the page.
-   *Acceptance:* manifest declares `INTERNET`; a unit test asserts both
-   `INTERNET` and `ACCESS_NETWORK_STATE` are present; CI green.
+- [ ] Add lint warnings gate: Fail CI if `lint-results.html` contains any warning.
+- [ ] Verify APK artifact existence: Ensure debug and release APK files are produced.
+- [ ] Upload JaCoCo coverage report: Add CI step to generate and publish coverage as artifact.
+
 
 2. **Proper manifest permission audit test.**
    Prevents future edits from silently removing networking permissions.
