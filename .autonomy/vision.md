@@ -35,3 +35,6 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [x] Fix Gradle build configuration error: removed misplaced `pluginRepositories` block from root `build.gradle` (which belongs in `settings.gradle`).
 - [ ] Add CI check for lint warnings and deprecations.
 - [ ] Implement automated release tagging workflow on main branch merges.
+- [ ] Add Gradle build cache (`actions/cache`) configuration for Android dependencies in GitHub Actions workflow.
+- [ ] Add test coverage report generation task (`jacoco`) in Gradle build.
+- [ ] Implement robust error handling and retry mechanism for WebView load failures.
