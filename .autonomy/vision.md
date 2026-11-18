@@ -72,9 +72,12 @@ The objective of this project is to create a robust, secure, and user-friendly A
 
 ## Ranked improvement suggestions (2026-11-18)
 
-- [x] Add lint warnings gate: Fail CI if `lint-results.html` contains any warning.
-- [x] Verify APK artifact existence: Ensure debug and release APK files are produced.
+- [ ] Add lint warnings gate: Fail CI if `lint-results.html` contains any warning.
+- [ ] Verify APK artifact existence: Ensure debug and release APK files are produced.
 - [ ] Upload JaCoCo coverage report: Add CI step to generate and publish coverage as artifact.
+- [ ] Pin and document the `android-actions/setup-android` action version (currently `@v3`); add a cache step for `platforms;android-34` and `build-tools;34.0.0` to reduce cold-start CI time.
+- [ ] Add `actions/cache` for `~/.gradle` dependency cache in addition to the built-in `actions/setup-java` Gradle cache (some AGP caches are not covered by the setup-java path).
+- [ ] Add an `actions/cache` entry for `android-sdk` packages to speed up builds.
 
 
 2. **Proper manifest permission audit test.**
