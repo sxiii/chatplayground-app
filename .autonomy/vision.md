@@ -11,16 +11,23 @@ The objective of this project is to create a robust, secure, and user-friendly A
 6. Enhance UI/UX based on user feedback.
 7. Integrate analytics for performance monitoring.
 
-- [x] Add CI step to verify APK artifacts exist before upload (implemented in workflow).
+## Ranked next tasks
+1. [ ] Add a bounded WebView load-failure retry policy (main-frame only, exponential backoff, unit tested) and wire it into `MainActivity`.
+2. [ ] Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
+3. [ ] Show an offline/error state in the app instead of a blank WebView, with a manual retry action.
+4. [ ] Add an Android manifest audit test covering required permissions (`INTERNET`, `ACCESS_NETWORK_STATE`) so future edits cannot silently break networking.
+5. [ ] Add a CI documentation page describing the build/test/lint steps and how to read failure diagnostics.
+
+## Task checklist
 - [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup; verbose logs now enabled via `--info --debug` to pinpoint the root cause).
-- [ ] Ensure CI generates local.properties with SDK path for unit tests.
-- [ ] Add lint step to CI and enforce zero warnings.
-- [ ] Add Gradle build cache to CI.
-- [x] Add unit test for SecureStorage error handling (configured Robolectric test runner & correct package, added robust exception handling for Keystore in unit tests).
+- [ ] Add unit test for NetworkMonitor connectivity handling and reconnection logic.
+- [ ] Add documentation page describing CI pipeline steps and how to debug failures.
+- [ ] Add CI check for lint warnings and deprecations.
+- [ ] Implement automated release tagging workflow on main branch merges.
+- [ ] Add Gradle build cache (`actions/cache`) configuration for Android dependencies in GitHub Actions workflow.
+- [ ] Add test coverage report generation task (`jacoco`) in Gradle build.
+- [ ] Implement robust error handling and retry mechanism for WebView load failures.
 - [ ] Add unit test for SecureStorage encryption edge cases and fallback mechanisms.
-- [ ] Add CI step to enforce test coverage threshold (e.g., 80%).
-- [ ] Implement automated dependency vulnerability scanning in CI.
-- [ ] Add UI performance benchmarks for WebView load times.
 - [ ] Add Espresso UI tests for WebView.
 - [ ] Add code formatting enforcement (ktlint).
 - [ ] Implement user feedback mechanism for UI/UX improvements.
