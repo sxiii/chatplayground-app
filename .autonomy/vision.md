@@ -14,6 +14,12 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [x] Add CI step to verify APK artifacts exist before upload (implemented in workflow).
 - [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup; verbose logs now enabled via `--info --debug` to pinpoint the root cause).
 - [ ] Add Gradle build cache (e.g., `actions/cache`) to the CI pipeline to speed up builds.
+- [ ] Add lint step in CI and gate on lint warnings.
+- [ ] Add a task to investigate and fix unit test failures.
+- [ ] Add integration tests for WebView behavior using Espresso.
+- [ ] Ensure SecureStorage unit tests cover error cases.
+- [ ] Update CI to run with Java 17 reliably.
+- [ ] Add CI step to enforce code formatting (ktlint).
 - [ ] Implement user feedback mechanism for UI/UX improvements.
 - [ ] Add dependency verification step to the CI pipeline to ensure security.
 - [ ] Implement Dark Mode support.
@@ -38,3 +44,4 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Add Gradle build cache (`actions/cache`) configuration for Android dependencies in GitHub Actions workflow.
 - [ ] Add test coverage report generation task (`jacoco`) in Gradle build.
 - [ ] Implement robust error handling and retry mechanism for WebView load failures.
+- [ ] Pin CI to JDK 17: Kotlin 1.9.0's JVM target does not support Java 21 (`Unknown Kotlin JVM target: 21`). Upgrade Kotlin (and AGP) together before moving CI to JDK 21.
