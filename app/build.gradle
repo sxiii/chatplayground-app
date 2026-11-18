@@ -20,7 +20,15 @@ android {
 
     testOptions {
         unitTests.all {
-            // useJUnitPlatform() // Removed to support JUnit 4
+            // JUnit 4 (no useJUnitPlatform()).
+            // The jacoco extension only exists on the unit-test task because the
+            // `jacoco` plugin above is applied to this module; AGP then writes
+            // build/jacoco/<taskName>.exec which jacocoTestReport consumes.
+            jacoco {
+                includeNoLocationClasses = true
+                // Robolectric/AGP stub classes are generated, not authored code.
+                excludes = ['jdk.internal.*']
+            }
         }
         unitTests.includeAndroidResources = true
     }
@@ -33,6 +41,35 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+}
+
+jacoco {
+    toolVersion = '0.8.11'
+}
+
+// The plain jacoco plugin's default jacocoTestReport only wires `test`-type
+// tasks and looks in build/jacoco/test.exec. In an Android module the unit
+// tests run as testDebugUnitTest and the coverage data lands in
+// build/jacoco/testDebugUnitTest.exec, so the report has to be pointed at
+// those explicitly or the task fails / produces nothing.
+jacocoTestReport {
+    dependsOn 'testDebugUnitTest'
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+    executionData.setFrom(fileTree(dir: "$buildDir/jacoco", include: ['*.exec']))
+    classDirectories.setFrom(files(
+            fileTree(dir: "$buildDir/tmp/kotlin-classes/debug", exclude: [
+                    '**/R.class',
+                    '**/R$*.class',
+                    '**/BuildConfig.*',
+                    '**/Manifest*.*',
+                    '**/*Test*.*'
+            ])
+    ))
+    sourceDirectories.setFrom(files('src/main/java', 'src/main/kotlin'))
 }
 
 dependencies {
