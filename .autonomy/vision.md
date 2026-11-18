@@ -11,7 +11,7 @@ The objective of this project is to create a robust, secure, and user-friendly A
 6. Enhance UI/UX based on user feedback.
 7. Integrate analytics for performance monitoring.
 
-- [ ] Add CI step to verify APK artifacts exist before upload (implemented in workflow).
+- [x] Add CI step to verify APK artifacts exist before upload (implemented in workflow).
 - [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup; verbose logs now enabled via `--info --debug` to pinpoint the root cause).
 - [ ] Add Gradle build cache (e.g., `actions/cache`) to the CI pipeline to speed up builds.
 - [ ] Implement user feedback mechanism for UI/UX improvements.
@@ -32,5 +32,6 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [x] Upgrade `androidx.webkit:webkit` to latest version.
 - [ ] Investigate alternative CI failure causes if upgrade fails.
 - [x] Investigate CI failure: Upgrade JDK to 21 (AGP 8.x requirements).
-- [ ] Add Gradle build cache (e.g., actions/cache) to the CI pipeline.
-- [ ] Implement user feedback mechanism.
+- [x] Fix Gradle build configuration error: removed misplaced `pluginRepositories` block from root `build.gradle` (which belongs in `settings.gradle`).
+- [ ] Add CI check for lint warnings and deprecations.
+- [ ] Implement automated release tagging workflow on main branch merges.
