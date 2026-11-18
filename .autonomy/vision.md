@@ -26,6 +26,6 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Migrate `actions/setup-java` from v4 to v5 (v4 is deprecated and will stop receiving updates).
 - [ ] Pin and bump the AGP / Gradle / Kotlin versions together in a single verified step (currently AGP 8.2.0 + Gradle 8.5 + Kotlin 1.9.0).
 - [ ] Add an explicit CI step that asserts the generated APK artifacts exist before upload (fail fast with a clear message).
-- [ ] Configure a release signing config so `assembleRelease` produces a signed APK instead of an unsigned one.
+- [ ] Add `actions/cache` for `android-sdk` to further speed up builds.
 - [ ] Run `./gradlew lint` in CI and gate on lint results.
-- [ ] Pin the runner to `ubuntu-24.04` to prepare for the `ubuntu-latest` → Ubuntu 26 migration (planned 2026-10-19).
+- [ ] Add unit tests for SecureStorage implementation (covers encryption, retrieval, and error handling).
