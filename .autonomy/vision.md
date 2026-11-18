@@ -11,13 +11,10 @@ The objective of this project is to create a robust, secure, and user-friendly A
 6. Enhance UI/UX based on user feedback.
 7. Integrate analytics for performance monitoring.
 
-## Ranked next tasks
-- [ ] Add CI documentation page describing build/test/lint steps and debugging guidelines.
-- [ ] Configure Gradle build cache (`actions/cache`) for Android dependencies in CI.
-- [ ] Add unit test for `NetworkMonitor` connectivity handling and reconnection logic.
-- [ ] Add documentation page describing CI pipeline steps and how to debug failures.
-- [ ] Update `actions/checkout`, `actions/upload-artifact`, and `android-actions/setup-android` to versions supporting Node.js 24.
-- [ ] Fix CI build failure: Audit `NetworkMonitor` implementation for potential Android API level issues causing the build/test failure.
+- [ ] Add comprehensive unit tests for NetworkMonitor reconnection and lifecycle handling.
+- [ ] Add Android manifest permission audit test (INTERNET, ACCESS_NETWORK_STATE).
+- [ ] Document CI debugging steps in a new markdown page and link from vision.
+- [ ] Enable Gradle build cache for Android SDK via actions/cache in CI workflow.
 1. [ ] Add a bounded WebView load-failure retry policy (main-frame only, exponential backoff, unit tested) and wire it into `MainActivity`.
 2. [ ] Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
 3. [ ] Show an offline/error state in the app instead of a blank WebView, with a manual retry action.
