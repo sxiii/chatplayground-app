@@ -31,3 +31,6 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Add unit tests for SecureStorage implementation (covers encryption, retrieval, and error handling).
 - [x] Upgrade `androidx.webkit:webkit` to latest version.
 - [ ] Investigate alternative CI failure causes if upgrade fails.
+- [x] Investigate CI failure: Upgrade JDK to 21 (AGP 8.x requirements).
+- [ ] Add Gradle build cache (e.g., actions/cache) to the CI pipeline.
+- [ ] Implement user feedback mechanism.
