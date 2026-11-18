@@ -57,6 +57,10 @@ jobs:
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           tail -n 40 gradle_build_debug.log >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "Full Gradle log:" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat gradle_build_debug.log >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
           # Surface the first failure marker as a file annotation (publicly readable).
           FIRST_ERR=$(grep -m1 -E "FAILURE:|error:|^e: |What went wrong|Could not (find|resolve)" gradle_build_debug.log || true)
           echo "::error file=gradle_build_debug.log::Build Debug APK failed. First error marker: ${FIRST_ERR:-see job summary for details}"
