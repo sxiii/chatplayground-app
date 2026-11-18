@@ -76,7 +76,7 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
-          ./gradlew test --no-daemon --stacktrace --console=plain 2>&1 | tee gradle_test.log
+          ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain 2>&1 | tee gradle_test.log
 
       - name: Generate JaCoCo coverage report
         if: always()
