@@ -1,4 +1,4 @@
-package com.chatplayground.app
+package com.chatplayground.app.security
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences

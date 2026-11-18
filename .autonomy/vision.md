@@ -13,13 +13,14 @@ The objective of this project is to create a robust, secure, and user-friendly A
 
 - [x] Add CI step to verify APK artifacts exist before upload (implemented in workflow).
 - [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup; verbose logs now enabled via `--info --debug` to pinpoint the root cause).
-- [ ] Add Gradle build cache (e.g., `actions/cache`) to the CI pipeline to speed up builds.
-- [ ] Add lint step in CI and gate on lint warnings.
-- [ ] Add a task to investigate and fix unit test failures.
-- [ ] Add integration tests for WebView behavior using Espresso.
-- [ ] Ensure SecureStorage unit tests cover error cases.
-- [ ] Update CI to run with Java 17 reliably.
-- [ ] Add CI step to enforce code formatting (ktlint).
+- [ ] Ensure CI generates local.properties with SDK path for unit tests.
+- [ ] Add lint step to CI and enforce zero warnings.
+- [ ] Add Gradle build cache to CI.
+- [x] Add unit test for SecureStorage error handling (configured Robolectric test runner & correct package).
+- [ ] Add unit test for SecureStorage encryption edge cases.
+- [ ] Add CI step to enforce test coverage threshold (e.g., 80%).
+- [ ] Add Espresso UI tests for WebView.
+- [ ] Add code formatting enforcement (ktlint).
 - [ ] Implement user feedback mechanism for UI/UX improvements.
 - [ ] Add dependency verification step to the CI pipeline to ensure security.
 - [ ] Implement Dark Mode support.
