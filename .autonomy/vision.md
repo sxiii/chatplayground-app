@@ -72,6 +72,9 @@ The objective of this project is to create a robust, secure, and user-friendly A
 
 ## Ranked improvement suggestions (2026-11-18)
 
+- [ ] **Add lint warnings gate**: Fail the CI if `lint-results.html` contains any warning.
+- [ ] **Verify APK artifact existence**: Add a CI step that asserts the debug and release APK files were produced.
+- [ ] **Add CI step to upload test coverage report** via JaCoCo and make it searchable as an artifact.
 Ranked by user impact and verifiability. Each is small enough for one cycle.
 
 - [x] Add the missing `INTERNET` permission.

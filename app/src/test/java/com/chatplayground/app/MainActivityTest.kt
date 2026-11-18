@@ -18,11 +18,7 @@ class MainActivityTest {
 
     @Test
     fun urlProviderReturnsChatPlaygroundUrl() {
-        assertEquals(
-            "UrlProvider should return the ChatPlayground URL",
-            "https://chatplayground.com",
-            UrlProvider.getChatPlaygroundUrl()
-        )
+        assertEquals("https://chatplayground.com", UrlProvider.getChatPlaygroundUrl())
     }
 
     @Test
