@@ -51,3 +51,5 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [x] Add CI step that uploads JUnit XML test results as an artifact, so per-test failures are inspectable from the run without needing admin log access.
 - [ ] Add unit test for NetworkMonitor connectivity handling and reconnection logic.
 - [ ] Add documentation page describing CI pipeline steps and how to debug failures.
+- [ ] Add unit test for URL validation and deep linking support.
+- [ ] Add performance logging instrumentation for WebView page load events.

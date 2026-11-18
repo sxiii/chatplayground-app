@@ -14,12 +14,9 @@ import org.robolectric.annotation.Config
 class MainActivityTest {
 
     @Test
-    fun testWebViewIsInitialized() {
-        // Test that MainActivity creates and configures a WebView
-        // This test will fail until we implement MainActivity with WebView
+    fun testUrlProviderUrl() {
+        // Test that UrlProvider returns expected URL
         val expectedUrl = "https://chatplayground.com"
-        
-        // Verify UrlProvider returns the expected URL
         val urlProvider = com.chatplayground.app.utils.UrlProvider
         val actualUrl = urlProvider.getChatPlaygroundUrl()
         
