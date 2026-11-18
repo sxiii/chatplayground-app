@@ -25,6 +25,7 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup; verbose logs now enabled via `--info --debug` to pinpoint the root cause).
 - [ ] Add unit test for NetworkMonitor connectivity handling and reconnection logic.
 - [ ] Add documentation page describing CI pipeline steps and how to debug failures.
+- [ ] Investigate why local Gradle build fails (missing JDK) and document requirements for local development.
 - [ ] Add CI check for lint warnings and deprecations.
 - [ ] Implement automated release tagging workflow on main branch merges.
 - [ ] Add Gradle build cache (`actions/cache`) configuration for Android dependencies in GitHub Actions workflow.
@@ -63,3 +64,4 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [x] Add performance logging instrumentation for WebView page load events.
 - [ ] Add unit test for NetworkMonitor connectivity handling and reconnection logic.
 - [ ] Add documentation page describing CI pipeline steps and how to debug failures.
+- [ ] Investigate why local Gradle build fails (missing JDK) and document requirements for local development.
