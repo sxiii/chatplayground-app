@@ -20,7 +20,8 @@ class NetworkMonitor(context: Context) {
     fun checkConnectivity(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val nw = cm.activeNetwork ?: return false
-            val actNw = cm.getNetworkCapabilities(nw) ?: return false
+            val actNw = cm.getNetworkCapabilities(nw)
+            if (actNw == null) return false
             actNw.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
                     actNw.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
         } else {
