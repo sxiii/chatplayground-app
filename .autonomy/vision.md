@@ -16,9 +16,11 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Ensure CI generates local.properties with SDK path for unit tests.
 - [ ] Add lint step to CI and enforce zero warnings.
 - [ ] Add Gradle build cache to CI.
-- [x] Add unit test for SecureStorage error handling (configured Robolectric test runner & correct package).
-- [ ] Add unit test for SecureStorage encryption edge cases.
+- [x] Add unit test for SecureStorage error handling (configured Robolectric test runner & correct package, added robust exception handling for Keystore in unit tests).
+- [ ] Add unit test for SecureStorage encryption edge cases and fallback mechanisms.
 - [ ] Add CI step to enforce test coverage threshold (e.g., 80%).
+- [ ] Implement automated dependency vulnerability scanning in CI.
+- [ ] Add UI performance benchmarks for WebView load times.
 - [ ] Add Espresso UI tests for WebView.
 - [ ] Add code formatting enforcement (ktlint).
 - [ ] Implement user feedback mechanism for UI/UX improvements.
