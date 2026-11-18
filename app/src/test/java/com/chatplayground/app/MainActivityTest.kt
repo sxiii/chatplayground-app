@@ -28,13 +28,9 @@ class MainActivityTest {
 
     @Test
     fun testWebViewClientIsConfigured() {
-        // Test that WebView has a WebViewClient configured
-        // This ensures links open within the app, not in external browser
-        val webView = WebView(null) // Simplified test - actual test needs Robolectric setup
-        val webViewClient = webView.webViewClient
-        
-        // Initially null since we haven't configured it yet
-        // Test will pass once MainActivity configures WebViewClient
+        // Instantiate activity via Robolectric
+        val activity = org.robolectric.Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val webViewClient = activity.webView.webViewClient
         assertNotNull("WebViewClient should be configured", webViewClient)
     }
 }

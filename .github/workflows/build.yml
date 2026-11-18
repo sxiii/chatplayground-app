@@ -73,6 +73,18 @@ jobs:
           set -o pipefail
           ./gradlew test --no-daemon --stacktrace --console=plain 2>&1 | tee gradle_test.log
 
+      - name: Upload JUnit Test Results
+        if: always()
+        run: |
+          # Collect per-test XML results so failures are inspectable without admin log access.
+          mkdir -p junit-results
+          find app/build/test-results -name '*.xml' -print -exec cp {} junit-results/ \; || true
+          if [ -z "$(ls -A junit-results)" ]; then
+            echo "(no JUnit XML results produced)"
+          else
+            echo "JUnit XML results:"; ls -la junit-results
+          fi
+
       - name: Run Lint
         run: |
           set -o pipefail
