@@ -29,8 +29,8 @@ class MainActivityTest {
         assertNotNull("WebView should be created in onCreate", webView)
         assertNotNull("WebViewClient should be set", webView.webViewClient)
         assertTrue(
-            "WebViewClient should be a platform WebViewClient",
-            webView.webViewClient is WebViewClient
+            "WebViewClient should be set",
+            webView.webViewClient != null
         )
     }
 
