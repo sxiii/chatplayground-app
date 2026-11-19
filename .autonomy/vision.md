@@ -24,8 +24,10 @@
 |- [ ] Implement `NetworkMonitor.checkConnectivity` correctly and ensure `NetworkMonitorTest.kt` passes. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
 - [ ] **[MEDIUM]** Implement a test that simulates network state transitions using Robolectric `ShadowConnectivityManager` to verify `NetworkMonitor.observe` logic. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
 - [ ] **[HIGH]** Make `release-tag` job idempotent: check tag existence before `git tag -a` so reruns on the same SHA don't fail. (DONE this cycle via `git rev-parse --verify` + tolerant `git push`.)
-- [ ] **[MEDIUM]** Add `actions/cache` for `~/.gradle` dependency cache in addition to `actions/setup-java` Gradle cache to reduce cold-start CI time.
+- [x] **[MEDIUM]** Add `actions/cache` for `~/.gradle` dependency cache in addition to `actions/setup-java` Gradle cache to reduce cold-start CI time. (SUPERSEDED: `setup-java@v5 cache: 'gradle'` already caches `~/.gradle`; an explicit Gradle cache would be redundant. Android SDK cache added instead — see below.)
 - [ ] **[MEDIUM]** Add CI documentation page describing the build/test/lint steps and how to read failure diagnostics without admin log access.
+- [x] **[MEDIUM]** Add `actions/cache` for `android-sdk` to speed up builds. (DONE this cycle: cached `/usr/local/lib/android/sdk` keyed on `gradle.properties` + `build.gradle`, restore-key fallback included.)
+- [ ] **[MEDIUM]** Pin `android-actions/setup-android` to a specific version/digest instead of floating `@v3` for reproducible CI builds.
 |- [ ] Add CI check for lint warnings and deprecations.
 |- [ ] Implement automated release tagging workflow on main branch merges.
 |- [ ] Add Gradle build cache (`actions/cache`) configuration for Android dependencies in GitHub Actions workflow.
