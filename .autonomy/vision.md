@@ -41,7 +41,7 @@
 - [ ] Implement Screen Reader accessibility improvements for the WebView content.
 - [ ] Add basic performance profiling for initial app load.
 - [ ] Add an explicit CI step that asserts the generated APK artifacts exist before upload (fail fast with a clear message).
-- [ ] Upload JaCoCo coverage report: Add CI step to generate and publish coverage as artifact.
+- [ ] **[MEDIUM]** Investigate why `org.jmailen.gradle.kotlinter` caused configuration failures and fix if possible. — RESOLVED (not fixed): tried 3 approaches (plugin added run #99, config-block removed run #100, plugin removed run #101); all failed at "Build Debug APK" configuration phase. Per failure policy, not retried. kotlinter plugin removed from root + app `build.gradle`; orphaned `ktlintCheck` CI step removed from `.github/workflows/build.yml`. ktlint enforcement is not in CI until a compatible setup is found.
 
 ## Future Improvements
 - [ ] **Add Gradle build cache configuration for Android dependencies** — use `actions/cache` pointing to `~/.gradle` and `app/build/outputs/`.
