@@ -77,3 +77,8 @@
 |- [x] Added minimal layout and strings resources to fix Android build failure.
 |- [x] Consolidate duplicate tasks in checklist.
 |- [x] Document local-toolchain prerequisites (CI-only).
+## Future Improvements
+- [ ] **Add Gradle build cache configuration for Android dependencies** — use `actions/cache` pointing to `~/.gradle` and `app/build/outputs/`.  
+- [ ] **Add automated dependency scanning** via Snyk or Dependabot for the Android `build.gradle` files.  
+- [ ] **Implement a performance benchmark for WebView page load** in instrumentation tests and export results to a CSV artefact.  
+- [ ] **Create a quick start guide** for developers who clone the repo locally (Gradle wrapper, Android SDK environment variables).
