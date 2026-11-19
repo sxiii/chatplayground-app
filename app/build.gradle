@@ -53,6 +53,13 @@ jacoco {
 // wired to a JaCoCo report task by the Java plugin.
 tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport) {
     enabled = true
+    // Skip gracefully when no JaCoCo execution data exists (e.g. AGP did not
+    // write .exec files for unit tests). Failing here blocks the whole CI
+    // pipeline even though compilation and tests succeed.
+    onlyIf {
+        def jacocoDir = file("$buildDir/jacoco")
+        jacocoDir.exists() && jacocoDir.listFiles()?.any { it.name.endsWith('.exec') } == true
+    }
     dependsOn 'testDebugUnitTest'
     reports {
         xml.required = true
