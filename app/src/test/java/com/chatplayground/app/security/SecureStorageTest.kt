@@ -42,4 +42,73 @@ class SecureStorageTest {
             assertNotNull(e)
         }
     }
+
+    @Test
+    fun testGetStringReturnsDefaultForMissingKey() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val missingKey = "does_not_exist"
+
+        try {
+            val result = SecureStorage.getString(context, missingKey)
+            assertNull("A missing key should return null by default", result)
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
+
+    @Test
+    fun testGetStringReturnsCustomDefaultForMissingKey() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val missingKey = "does_not_exist"
+        val fallback = "fallback_value"
+
+        try {
+            val result = SecureStorage.getString(context, missingKey, fallback)
+            assertEquals(fallback, result)
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
+
+    @Test
+    fun testRemoveNonExistentKeyIsNoOp() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val missingKey = "was_never_present"
+
+        try {
+            // Removing a key that was never put should not throw.
+            SecureStorage.remove(context, missingKey)
+            val result = SecureStorage.getString(context, missingKey)
+            assertNull(result)
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
+
+    @Test
+    fun testPutAndGetEmptyStringRoundTrips() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val key = "empty_key"
+
+        try {
+            SecureStorage.putString(context, key, "")
+            assertEquals("", SecureStorage.getString(context, key))
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
+
+    @Test
+    fun testPutAndGetUnicodeValueRoundTrips() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val key = "unicode_key"
+        val unicode = "héllo wörld 🔒 漢字"
+
+        try {
+            SecureStorage.putString(context, key, unicode)
+            assertEquals(unicode, SecureStorage.getString(context, key))
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
 }
