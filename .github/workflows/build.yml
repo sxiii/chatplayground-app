@@ -96,6 +96,16 @@ jobs:
           ls -R app/build | head -n 20
           echo "------------------------"
 
+      - name: Upload JaCoCo Execution Data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-exec-data
+          path: |
+            app/build/jacoco/*.exec
+            app/build/intermediates/unit_test_coverage/**/*.exec
+            app/build/outputs/unit_test_coverage/**/*.exec
+
       - name: Upload JUnit Test Results
         if: always()
         run: |

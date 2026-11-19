@@ -21,10 +21,12 @@ android {
     testOptions {
         unitTests.all {
             // JUnit 4 (no useJUnitPlatform()).
-            // The jacoco extension only exists on the unit-test task because the
-            // `jacoco` plugin above is applied to this module; AGP then writes
+            // Explicitly enable JaCoCo on each unit-test task so AGP writes
             // build/jacoco/<taskName>.exec which jacocoTestReport consumes.
+            // Without isEnabled = true, no .exec files are produced and
+            // jacocoTestReport fails with "No execution data found".
             jacoco {
+                isEnabled = true
                 includeNoLocationClasses = true
                 // Robolectric/AGP stub classes are generated, not authored code.
                 excludes = ['jdk.internal.*']
