@@ -20,7 +20,7 @@
 |- [x] **[HIGH]** Implement automated release tagging workflow on main branch merges (idempotent: checks tag existence before `git tag -a`).
 |- [x] **[MEDIUM]** Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
 |- [x] **[HIGH]** Fix `NetworkMonitor.observe()` callback leak: calling `observe()` repeatedly now unregisters the previous `NetworkCallback` before registering the next one (covered by `observeCalledTwiceUnregistersPreviousCallback` test).
-|- [ ] Standardize AGP/Gradle/Kotlin versions to ensure CI stability (currently AGP 8.2.0 + Gradle 8.5 + Kotlin 1.9.0).
+|- [x] Standardize AGP/Gradle/Kotlin versions to ensure CI stability (AGP 8.2.0 + Gradle 8.5 + Kotlin 1.9.0 + JDK 17). Toolchain versions centralized in gradle.properties and pinned in build.gradle + Gradle wrapper.
 |- [ ] Implement `NetworkMonitor.checkConnectivity` correctly and ensure `NetworkMonitorTest.kt` passes. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
 |- [ ] **[MEDIUM]** Implement a test that simulates network state transitions using Robolectric `ShadowConnectivityManager` to verify `NetworkMonitor.observe` logic. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
 |- [x] **[MEDIUM]** Add CI documentation page describing the build/test/lint steps and how to read failure diagnostics. — DONE: see `.autonomy/ci_debugging.md`.
@@ -63,6 +63,7 @@
 |- [x] Added minimal layout and strings resources to fix Android build failure.
 |- [x] Consolidate duplicate tasks in checklist.
 |- [x] Document local-toolchain prerequisites (CI-only).
+- [x] Standardize AGP/Gradle/Kotlin toolchain versions (AGP 8.2.0, Gradle 8.5, Kotlin 1.9.0, JDK 17) and centralize them in gradle.properties.
 
 |## Future Improvements
 |- [ ] **Add Gradle build cache configuration for Android dependencies** — use `actions/cache` pointing to `~/.gradle` and `app/build/outputs/`.
