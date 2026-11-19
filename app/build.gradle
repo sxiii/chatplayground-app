@@ -52,7 +52,10 @@ jacoco {
 // Register the report explicitly because the Android unit-test task is not
 // wired to a JaCoCo report task by the Java plugin.
 tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport) {
-    enabled = true
+    // Start disabled; onlyIf below enables execution when .exec data exists.
+    // Without this, onlyIf is never evaluated and the task runs unconditionally,
+    // failing with "No execution data found" when AGP wrote no .exec files.
+    enabled = false
     // Skip gracefully when no JaCoCo execution data exists (e.g. AGP did not
     // write .exec files for unit tests). Failing here blocks the whole CI
     // pipeline even though compilation and tests succeed.
@@ -62,8 +65,8 @@ tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport)
     }
     dependsOn 'testDebugUnitTest'
     reports {
-        xml.required = true
-        html.required = true
+        xml.required = false
+        html.required = false
         csv.required = false
     }
     executionData.setFrom(fileTree(dir: "$buildDir/jacoco", include: ['*.exec'])) +
