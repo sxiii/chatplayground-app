@@ -50,7 +50,7 @@ jacoco {
 // Register the report explicitly because the Android unit-test task is not
 // wired to a JaCoCo report task by the Java plugin.
 tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport) {
-    enabled = false // temporarily disable until CI stable
+    enabled = true
     dependsOn 'testDebugUnitTest'
     reports {
         xml.required = true

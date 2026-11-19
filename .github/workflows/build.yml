@@ -78,18 +78,18 @@ jobs:
           set -o pipefail
           ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain 2>&1 | tee gradle_test.log
 
-#      - name: Generate JaCoCo coverage report
-#        if: always()
-#        run: |
-#          set -o pipefail
-#          ./gradlew jacocoTestReport --stacktrace --console=plain 2>&1 | tee jacoco_report.log
-#
-#      - name: Upload JaCoCo Report
-#        if: always()
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: jacoco-report
-#          path: app/build/reports/jacoco/jacocoTestReport/html/**
+      - name: Generate JaCoCo coverage report
+        if: always()
+        run: |
+          set -o pipefail
+          ./gradlew jacocoTestReport --stacktrace --console=plain 2>&1 | tee jacoco_report.log
+
+      - name: Upload JaCoCo Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: app/build/reports/jacoco/jacocoTestReport/html/**
 
       - name: Upload JUnit Test Results
         if: always()
