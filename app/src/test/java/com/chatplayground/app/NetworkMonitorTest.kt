@@ -46,4 +46,16 @@ class NetworkMonitorTest {
         monitor.stopObserving()
         monitor.stopObserving()
     }
+
+    @Test
+    fun observeCalledTwiceUnregistersPreviousCallback() {
+        val monitor = NetworkMonitor(context())
+
+        monitor.observe { }
+        // Calling observe again should clean up the first callback before
+        // registering the next one, so repeated activity creation does not
+        // leak ConnectivityManager.NetworkCallback registrations.
+        monitor.observe { }
+        monitor.stopObserving()
+    }
 }

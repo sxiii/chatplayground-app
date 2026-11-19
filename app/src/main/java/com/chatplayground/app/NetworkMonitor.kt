@@ -34,6 +34,10 @@ class NetworkMonitor(context: Context) {
      * 注册一个回调以监听在线/离线转换。
      */
     fun observe(callback: (Boolean) -> Unit) {
+        // Unregister any previously registered callback first so repeated
+        // calls (e.g. activity recreation) do not leak ConnectivityManager
+        // NetworkCallback registrations that can no longer be unregistered.
+        stopObserving()
         val callbackObj = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 isConnected = true
