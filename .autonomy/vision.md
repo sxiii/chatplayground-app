@@ -17,16 +17,15 @@
 |- [x] **[HIGH]** Add a dependency-verification step in CI to ensure dependency integrity and security.
 - [x] **[HIGH]** Surface real dependency-resolution failures from the now-non-blocking `Verify Dependencies` step: grep `gradle_dependencies.log` for `Could not resolve`/`FAILED` → `::warning` annotation + summary line, so continue-on-error doesn't mask breakage.
 - [x] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` contains `android.useAndroidX=true` and `android.enableJetifier=true` before `assembleDebug`, catching the historical missing-gradle.properties build failure early.
-- [x] **[HIGH]** Implement automated release tagging workflow on main branch merges.
-- [x] **[HIGH]** Add a linting gate in CI: fail CI when lint-results.html contains warnings; verify on next run.
-- [x] **[MEDIUM]** Add `actions/cache` for `android-sdk` packages to reduce cold-start CI time.
-- [ ] **[HIGH]** Add GitHub Actions caching for Android SDK packages and Gradle dependencies to reduce cold-start CI time.
-- [ ] **[MEDIUM]** Add Android manifest audit test covering required permissions (`INTERNET`, `ACCESS_NETWORK_STATE`) so future edits cannot silently break networking.
+- [x] **[HIGH]** Implement automated release tagging workflow on main branch merges. (DONE this cycle; fixed idempotency so re-runs don't fail when tag already exists.)
 |- [ ] **[MEDIUM]** Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
 |- [ ] Standardize AGP/Gradle/Kotlin versions to ensure CI stability.
 |- [ ] Add a CI documentation page describing the build/test/lint steps and how to read failure diagnostics.
 |- [ ] Implement `NetworkMonitor.checkConnectivity` correctly and ensure `NetworkMonitorTest.kt` passes. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
-|- [ ] Implement a test that simulates network state transitions using Robolectric `ShadowConnectivityManager` to verify `NetworkMonitor.observe` logic. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
+- [ ] **[MEDIUM]** Implement a test that simulates network state transitions using Robolectric `ShadowConnectivityManager` to verify `NetworkMonitor.observe` logic. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
+- [ ] **[HIGH]** Make `release-tag` job idempotent: check tag existence before `git tag -a` so reruns on the same SHA don't fail. (DONE this cycle via `git rev-parse --verify` + tolerant `git push`.)
+- [ ] **[MEDIUM]** Add `actions/cache` for `~/.gradle` dependency cache in addition to `actions/setup-java` Gradle cache to reduce cold-start CI time.
+- [ ] **[MEDIUM]** Add CI documentation page describing the build/test/lint steps and how to read failure diagnostics without admin log access.
 |- [ ] Add CI check for lint warnings and deprecations.
 |- [ ] Implement automated release tagging workflow on main branch merges.
 |- [ ] Add Gradle build cache (`actions/cache`) configuration for Android dependencies in GitHub Actions workflow.

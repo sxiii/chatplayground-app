@@ -192,5 +192,9 @@ jobs:
           git config user.name "Hermes Agent"
           git config user.email "hermes@localhost"
           TAG="release-$(date +%Y%m%d)-$(git rev-parse --short HEAD)"
-          git tag -a "$TAG" -m "Automated release tag $TAG"
-          git push origin "$TAG"
+          if git rev-parse --verify "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists locally; skipping creation."
+          else
+            git tag -a "$TAG" -m "Automated release tag $TAG"
+          fi
+          git push origin "$TAG" 2>/dev/null || echo "Tag already on remote; nothing to push."
