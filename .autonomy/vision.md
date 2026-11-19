@@ -21,7 +21,7 @@
 |- [x] **[MEDIUM]** Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
 |- [x] **[HIGH]** Fix `NetworkMonitor.observe()` callback leak: calling `observe()` repeatedly now unregisters the previous `NetworkCallback` before registering the next one (covered by `observeCalledTwiceUnregistersPreviousCallback` test).
 |- [x] Standardize AGP/Gradle/Kotlin versions to ensure CI stability (AGP 8.2.0 + Gradle 8.5 + Kotlin 1.9.0 + JDK 17). Toolchain versions centralized in gradle.properties and pinned in build.gradle + Gradle wrapper.
-|- [ ] Implement `NetworkMonitor.checkConnectivity` correctly and ensure `NetworkMonitorTest.kt` passes. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
+||- [x] **[HIGH]** Implement `NetworkMonitor.checkConnectivity` correctly and ensure `NetworkMonitorTest.kt` passes. — DONE: `isOnline()` wraps `checkConnectivity()`; verified via CI run #93 (green). Validation was CI-only (no local JDK/Gradle).|
 |- [ ] **[MEDIUM]** Implement a test that simulates network state transitions using Robolectric `ShadowConnectivityManager` to verify `NetworkMonitor.observe` logic. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
 |- [x] **[MEDIUM]** Add CI documentation page describing the build/test/lint steps and how to read failure diagnostics. — DONE: see `.autonomy/ci_debugging.md`.
 |- [x] **[MEDIUM]** Add lint warnings gate: Fail CI if `lint-results.html` contains any warning. — DONE: build.yml "Run Lint" step greps `lint-results.html` for `warning` and exits 1 on match; CI run #84 green.
@@ -69,6 +69,6 @@
 |- [ ] **Add Gradle build cache configuration for Android dependencies** — use `actions/cache` pointing to `~/.gradle` and `app/build/outputs/`.
 |- [ ] **Add automated dependency scanning** via Snyk or Dependabot for the Android `build.gradle` files.
 |- [ ] **Implement a performance benchmark for WebView page load** in instrumentation tests and export results to a CSV artefact.
-||- [ ] **Create a quick start guide** for developers who clone the repo locally (Gradle wrapper, Android SDK environment variables).||
-||- [ ] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` defines `agpVersion`, `kotlinVersion`, and `gradleVersion` before `assembleDebug`, failing fast with a clear message when a plugin-version property referenced by `build.gradle` is missing. Prevents the class of breakage where parameterized plugin versions resolve to undefined.||
-||- [ ] **[MEDIUM]** Add Dependabot configuration (`.github/dependabot.yml`) for Gradle/Android dependencies to keep the AGP, Kotlin, and library toolchain current and receive automated security version bumps.||
+|- [ ] **Create a quick start guide** for developers who clone the repo locally (Gradle wrapper, Android SDK environment variables).
+|- [ ] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` defines `agpVersion`, `kotlinVersion`, and `gradleVersion` before `assembleDebug`, failing fast with a clear message when a plugin-version property referenced by `build.gradle` is missing. Prevents the class of breakage where parameterized plugin versions resolve to undefined.
+|- [ ] **[MEDIUM]** Add Dependabot configuration (`.github/dependabot.yml`) for Gradle/Android dependencies to keep the AGP, Kotlin, and library toolchain current and receive automated security version bumps.
