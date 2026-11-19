@@ -15,8 +15,16 @@ class NetworkMonitor(context: Context) {
     // 简单的连接状态存储
     @Volatile var isConnected: Boolean = checkConnectivity()
 
+    /**
+     * Checks if the device is currently online.
+     */
+    fun isOnline(): Boolean = checkConnectivity()
+
     private var callbackObj: ConnectivityManager.NetworkCallback? = null
 
+    /**
+     * Checks if the device is currently online.
+     */
     fun checkConnectivity(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val nw = cm.activeNetwork ?: return false
