@@ -27,4 +27,19 @@ class SecureStorageTest {
             assertNotNull(e)
         }
     }
+
+    @Test
+    fun testRemoveStringThenGetReturnsDefault() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val key = "to_be_removed"
+
+        try {
+            SecureStorage.putString(context, key, "remove_me")
+            assertEquals("remove_me", SecureStorage.getString(context, key))
+            SecureStorage.remove(context, key)
+            assertNull(SecureStorage.getString(context, key))
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
 }

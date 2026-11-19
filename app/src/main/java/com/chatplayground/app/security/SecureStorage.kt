@@ -21,4 +21,9 @@ object SecureStorage {
     fun getString(context: Context, key: String, default: String? = null): String? {
         return getPrefs(context).getString(key, default)
     }
+
+    /** Removes [key] from secure storage. Best-effort; no-op if absent. */
+    fun remove(context: Context, key: String) {
+        getPrefs(context).edit().remove(key).apply()
+    }
 }
