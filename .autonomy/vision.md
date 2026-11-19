@@ -40,7 +40,7 @@
 - [ ] Add Network Monitoring & Auto-reconnect handling.
 - [ ] Implement Screen Reader accessibility improvements for the WebView content.
 - [ ] Add basic performance profiling for initial app load.
-- [ ] Add an explicit CI step that asserts the generated APK artifacts exist before upload (fail fast with a clear message).
+- [x] Add an explicit CI step that asserts the generated APK artifacts exist before upload (fail fast with a clear message). — already implemented in `.github/workflows/build.yml` "Assert APK Artifacts Exist" step.
 - [ ] **[MEDIUM]** Investigate why `org.jmailen.gradle.kotlinter` caused configuration failures and fix if possible. — RESOLVED (not fixed): tried 3 approaches (plugin added run #99, config-block removed run #100, plugin removed run #101); all failed at "Build Debug APK" configuration phase. Per failure policy, not retried. kotlinter plugin removed from root + app `build.gradle`; orphaned `ktlintCheck` CI step removed from `.github/workflows/build.yml`. ktlint enforcement is not in CI until a compatible setup is found.
 
 ## Future Improvements
@@ -50,6 +50,8 @@
 - [ ] **Create a quick start guide** for developers who clone the repo locally (Gradle wrapper, Android SDK environment variables).
 - [ ] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` defines `agpVersion`, `kotlinVersion`, and `gradleVersion` before `assembleDebug`, failing fast with a clear message.
 - [ ] **[MEDIUM]** Add Dependabot configuration (`.github/dependabot.yml`) for Gradle/Android dependencies to keep the AGP, Kotlin, and library toolchain current and receive automated security version bumps.
-- [ ] **[HIGH]** Add `SecureStorage.remove(context, key)` method and unit test for key removal — currently there is no way to delete a stored value.
+- [ ] **[HIGH]** Add `SecureStorage.remove(context, key)` method and unit test for key removal — DONE (commit `d6de9ab`).
 - [x] **[MEDIUM]** Add ktlint code formatting enforcement to CI build. — DONE
-- [ ] **[MEDIUM]** Add CI step that asserts generated APK artifacts exist before upload (fail fast with clear message).
+- [ ] **[MEDIUM]** Add CI step that asserts generated APK artifacts exist before upload (fail fast with clear message). — already implemented in `.github/workflows/build.yml` "Assert APK Artifacts Exist" step.
+- [ ] **Add Espresso UI integration test for WebView load-failure retry** — simulate an `onReceivedError` main-frame failure and verify `WebViewLoadRetryPolicy` schedules a reload with exponential backoff, bounded by `maxRetries`.
+- [ ] **Implement Network Monitoring & Auto-reconnect handling** — surface connectivity state changes to the WebView layer (e.g. show offline banner / auto-reload on reconnect) and add unit tests for the reconnect path.
