@@ -1,24 +1,24 @@
 # Development Cycle Summary
 
-## Cycle: 2026-11-19 03:30 CET (previous: 02:33 CET)
+## Cycle: 2026-11-19 04:11 CET (previous: 03:30 CET)
 
 ### Context from prior run
-- CI run #62 (sha `87af34b`, "Enable JaCoCo coverage report generation in Gradle and CI") **FAILED**.
-- Failure cause: `jacocoTestReport` could not find coverage data at `app/build/reports/jacoco/jacocoTestReport/html/**`, so no artifacts were uploaded. Root cause: `testDebugUnitTest` likely failed or produced `.exec` files in an AGP-version-specific path not covered by `$buildDir/jacoco/*.exec`.
+- CI run #65 (sha `66678b0`, "chore: add JaCoCo debug step to CI to locate .exec files") **FAILED** at `Generate JaCoCo coverage report` step.
+- CI run #64 (sha `bb63892`, "Fix JaCoCo coverage data paths and update autonomy backlog") **FAILED** at same step.
+- CI run #61 (sha `05bbc3d`) was the last **successful** run.
 - GitHub status: Operational (no incidents Nov 19). Actions green.
 - Local repo synced to `main`.
 
 ### Changes made this cycle
-1. `app/build.gradle` — Made `jacocoTestReport.executionData` resilient by searching multiple AGV/AGP candidate directories: `$buildDir/jacoco`, `$buildDir/intermediates/unit_test_coverage/{debug,release}`, `$buildDir/outputs/unit_test_coverage/{debug,release}`.
-2. `.autonomy/vision.md` — Replaced the now-moot JaCoCo item with a ranked fix task; removed duplicate backlog entries; added improvement tasks (AGP/Gradle/Kotlin version pinning, cache steps, lint gate, APK artifact assertions).
-3. `.autonomy/cycle_summary.md` — Updated with this run's record.
+1. `.autonomy/vision.md` — Prioritized JaCoCo CI failure investigation task as #1 backlog item; added explicit `.exec` artifact upload task; added linting gate task; removed duplicate backlog entries.
+2. Committed as `723069b` ("chore: prioritize JaCoCo CI failure investigation and add CI lint gate task") and pushed to `main` → triggered CI run #66.
 
 ### Verification
-- `git status` clean before edits; changes applied to `app/build.gradle` and `.autonomy/vision.md`.
-- `app/build.gradle` JaCoCo block verified syntactically by inspection (Gradle DSL, no local toolchain available to compile — CI-only validation per project policy).
+- GitHub API confirmed run #65 failure is isolated to `Generate JaCoCo coverage report` step (Build Debug APK: success, Unit Tests: success, JaCoCo report: failure).
+- Cannot download CI job logs: GitHub API returns `403 Must have admin rights to Repository` for `/actions/jobs/{id}/logs`.
+- Cannot diagnose exact JaCoCo error locally (project policy: CI-only compilation).
 
 ### Next steps
-1. Commit both files and push to `main` to trigger CI run #63.
-2. Monitor CI run #63 to conclusion — must be `success`, not merely `completed`.
-3. If green, mark JaCoCo coverage task done in `.autonomy/vision.md` and proceed to the next ranked backlog item (WebView load-failure retry policy or NetworkMonitor lifecycle cleanup).
-4. If JaCoCo still fails, investigate `testDebugUnitTest` output directly (check `gradle_test.log` from CI artifacts).
+1. Monitor CI run #66 (sha `723069b`, current push) to conclusion — must be `success`, not merely `completed`.
+2. If green, mark JaCoCo coverage investigation done in `.autonomy/vision.md` and proceed to next ranked backlog item.
+3. If still failing, investigate `testDebugUnitTest` output via `gradle_test.log` artifact; consider adding `.exec` artifact upload step for better diagnostics.
