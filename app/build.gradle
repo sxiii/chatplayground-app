@@ -47,12 +47,10 @@ jacoco {
     toolVersion = '0.8.11'
 }
 
-// The plain jacoco plugin's default jacocoTestReport only wires `test`-type
-// tasks and looks in build/jacoco/test.exec. In an Android module the unit
-// tests run as testDebugUnitTest and the coverage data lands in
-// build/jacoco/testDebugUnitTest.exec, so the report has to be pointed at
-// those explicitly or the task fails / produces nothing.
-jacocoTestReport { enabled = false // temporarily disable until CI stable
+// Register the report explicitly because the Android unit-test task is not
+// wired to a JaCoCo report task by the Java plugin.
+tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport) {
+    enabled = false // temporarily disable until CI stable
     dependsOn 'testDebugUnitTest'
     reports {
         xml.required = true
