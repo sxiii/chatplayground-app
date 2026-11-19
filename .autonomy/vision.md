@@ -12,7 +12,8 @@ The objective of this project is to create a robust, secure, and user-friendly A
 7. Integrate analytics for performance monitoring.
 
 ## Todo Tasks (Backlog)
-- [ ] Enable Gradle build cache for Android SDK via actions/cache in CI workflow.
+- [ ] Fix JaCoCo CI failure: ensure unit tests produce coverage data before report task runs and verify paths in `.github/workflows/build.yml` and `build.gradle`.
+- [ ] Standardize AGP/Gradle/Kotlin versions to ensure CI stability.
 - [ ] Add a bounded WebView load-failure retry policy (main-frame only, exponential backoff, unit tested) and wire it into `MainActivity`.
 - [ ] Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
 - [ ] Add an Android manifest audit test covering required permissions (`INTERNET`, `ACCESS_NETWORK_STATE`) so future edits cannot silently break networking.
@@ -28,7 +29,7 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Add Espresso UI tests for WebView.
 - [ ] Add code formatting enforcement (ktlint).
 - [ ] Implement user feedback mechanism for UI/UX improvements.
-- [ ] Add dependency verification step to the CI pipeline to ensure security.
+- [ ] Add dependency verification step in the CI pipeline to ensure security.
 - [ ] Implement Dark Mode support.
 - [ ] Add a settings screen for toggling features.
 - [ ] Implement Biometric Authentication for enhanced security.
@@ -40,6 +41,12 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Add an explicit CI step that asserts the generated APK artifacts exist before upload (fail fast with a clear message).
 - [ ] Add `actions/cache` for `android-sdk` to further speed up builds.
 - [ ] Run `./gradlew lint` in CI and gate on lint results.
+- [ ] Add lint warnings gate: Fail CI if `lint-results.html` contains any warning.
+- [ ] Verify APK artifact existence: Ensure debug and release APK files are produced.
+- [ ] Upload JaCoCo coverage report: Add CI step to generate and publish coverage as artifact.
+- [ ] Pin and document the `android-actions/setup-android` action version (currently `@v3`); add a cache step for `platforms;android-34` and `build-tools;34.0.0` to reduce cold-start CI time.
+- [ ] Add `actions/cache` for `~/.gradle` dependency cache in addition to the built-in `actions/setup-java` Gradle cache.
+- [ ] Add an `actions/cache` entry for `android-sdk` packages to speed up builds.
 - [ ] Add unit tests for SecureStorage implementation (covers encryption, retrieval, and error handling).
 - [ ] Investigate alternative CI failure causes if upgrade fails.
 - [ ] Adjust CI to run `testDebugUnitTest` before generating JaCoCo coverage report (ensure coverage data is produced).
@@ -47,8 +54,6 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Verify APK artifact existence: Ensure debug and release APK files are produced.
 - [ ] Upload JaCoCo coverage report: Add CI step to generate and publish coverage as artifact.
 - [ ] Pin and document the `android-actions/setup-android` action version (currently `@v3`); add a cache step for `platforms;android-34` and `build-tools;34.0.0` to reduce cold-start CI time.
-- [ ] Add `actions/cache` for `~/.gradle` dependency cache in addition to the built-in `actions/setup-java` Gradle cache.
-- [ ] Add an `actions/cache` entry for `android-sdk` packages to speed up builds.
 
 ## Done
 - [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup).
