@@ -84,12 +84,17 @@ jobs:
           set -o pipefail
           ./gradlew jacocoTestReport --stacktrace --console=plain 2>&1 | tee jacoco_report.log
 
-      - name: Upload JaCoCo Report
+      - name: Debug JaCoCo Files
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: app/build/reports/jacoco/jacocoTestReport/html/**
+        run: |
+          echo "--- JaCoCo Debugging ---"
+          echo "Checking for .exec files in all build directories:"
+          find app/build -name "*.exec" || echo "No .exec files found"
+          echo "Checking for Jacoco HTML reports:"
+          find app/build -path "*/jacoco/jacocoTestReport/html/*" || echo "No Jacoco HTML reports found"
+          echo "Checking build directory structure:"
+          ls -R app/build | head -n 20
+          echo "------------------------"
 
       - name: Upload JUnit Test Results
         if: always()
