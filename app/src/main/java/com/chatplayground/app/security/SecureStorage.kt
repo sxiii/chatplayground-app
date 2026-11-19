@@ -26,4 +26,9 @@ object SecureStorage {
     fun remove(context: Context, key: String) {
         getPrefs(context).edit().remove(key).apply()
     }
+
+    /** Returns true when [key] is present in secure storage; false otherwise. */
+    fun contains(context: Context, key: String): Boolean {
+        return getPrefs(context).contains(key)
+    }
 }

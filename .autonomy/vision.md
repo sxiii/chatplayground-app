@@ -30,8 +30,9 @@
 - [x] **[MEDIUM]** Add lint warnings gate: Fail CI if `lint-results.html` contains any warning. — DONE
 - [x] **[MEDIUM]** Add `actions/cache` for `android-sdk` to speed up builds. — DONE
 - [x] **[MEDIUM]** Pin `android-actions/setup-android` to a specific version/digest instead of floating `@v3` for reproducible CI builds. — DONE
-- [ ] Add unit test for SecureStorage encryption edge cases and fallback mechanisms.
-- [ ] Add Espresso UI tests for WebView.
+- [x] Add unit test for SecureStorage encryption edge cases and fallback mechanisms. — DONE (commit `071b87f`; CI run #103 green).
+- [ ] **[HIGH]** Implement `SecureStorage.contains(context, key)` to check key presence without decrypting — add `testContainsReturnsTrueAfterPut` and `testContainsReturnsFalseForMissingKey` unit tests.
+- [ ] **Add Espresso UI tests for WebView.**
 - [x] Add code formatting enforcement (ktlint).
 - [ ] Add automated UI integration tests using Espresso.
 - [ ] Add a settings screen for toggling features.

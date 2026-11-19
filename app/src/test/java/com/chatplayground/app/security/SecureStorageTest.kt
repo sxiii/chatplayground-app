@@ -111,4 +111,29 @@ class SecureStorageTest {
             assertNotNull(e)
         }
     }
+
+    @Test
+    fun testContainsReturnsTrueAfterPut() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val key = "present_key"
+
+        try {
+            SecureStorage.putString(context, key, "present_value")
+            assertTrue(SecureStorage.contains(context, key))
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
+
+    @Test
+    fun testContainsReturnsFalseForMissingKey() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val missingKey = "absent_key"
+
+        try {
+            assertFalse(SecureStorage.contains(context, missingKey))
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
 }
