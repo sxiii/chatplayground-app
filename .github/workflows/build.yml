@@ -149,6 +149,11 @@ jobs:
             exit 1
           fi
 
+      - name: Run ktlint Check
+        run: |
+          set -o pipefail
+          ./gradlew ktlintCheck --stacktrace --console=plain
+
       - name: Unit Test Diagnostics
         if: failure()
         run: |

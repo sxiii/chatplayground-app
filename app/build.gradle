@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'jacoco'
+    id 'org.jmailen.gradle.kotlinter'
 }
 
 android {
@@ -84,6 +85,14 @@ tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport)
             ])
     ))
     sourceDirectories.setFrom(files('src/main/java', 'src/main/kotlin'))
+}
+
+// ktlint code formatting enforcement.
+// `./gradlew ktlintCheck` verifies source formatting; `./gradlew ktlintFormat` auto-fixes.
+// Enabled for the app module's main + test source sets via the plugin's defaults.
+kotlinter {
+    ignoreTestSourceSet = false
+    enableExperimentalRules = false
 }
 
 dependencies {

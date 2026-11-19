@@ -40,3 +40,10 @@ This document describes the core build, CI/CD, and application runtime functions
 ### Network Monitoring (`NetworkMonitor`)
 - **`isOnline(): Boolean`**: Checks the active network capabilities for an available Internet transport (cellular, Wi-Fi, Ethernet).
 - **`observeNetworkState(callback: (Boolean) -> Unit)`**: Registers a `ConnectivityManager.NetworkCallback` to stream online/offline network transitions in real-time.
+
+## 4. Code Formatting Enforcement (CI)
+
+### ktlint (`org.jmailen.gradle.kotlinter`)
+- **Plugin**: `org.jmailen.gradle.kotlinter` version `4.3.0`, applied to the `app` module.
+- **`./gradlew ktlintCheck`**: Verifies Kotlin source formatting for `src/main` and `src/test` source sets (`ignoreTestSourceSet = false`, no experimental rules). Runs as a dedicated CI step after `Run Lint`; failure blocks the pipeline.
+- **`./gradlew ktlintFormat`**: Auto-fixes formatting violations locally before pushing.

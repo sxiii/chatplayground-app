@@ -32,7 +32,7 @@
 - [x] **[MEDIUM]** Pin `android-actions/setup-android` to a specific version/digest instead of floating `@v3` for reproducible CI builds. — DONE
 - [ ] Add unit test for SecureStorage encryption edge cases and fallback mechanisms.
 - [ ] Add Espresso UI tests for WebView.
-- [ ] Add code formatting enforcement (ktlint).
+- [x] Add code formatting enforcement (ktlint).
 - [ ] Add automated UI integration tests using Espresso.
 - [ ] Add a settings screen for toggling features.
 - [ ] Implement Biometric Authentication for enhanced security.
@@ -51,5 +51,5 @@
 - [ ] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` defines `agpVersion`, `kotlinVersion`, and `gradleVersion` before `assembleDebug`, failing fast with a clear message.
 - [ ] **[MEDIUM]** Add Dependabot configuration (`.github/dependabot.yml`) for Gradle/Android dependencies to keep the AGP, Kotlin, and library toolchain current and receive automated security version bumps.
 - [ ] **[HIGH]** Add `SecureStorage.remove(context, key)` method and unit test for key removal — currently there is no way to delete a stored value.
-- [ ] **[MEDIUM]** Add ktlint code formatting enforcement to CI build.
+- [x] **[MEDIUM]** Add ktlint code formatting enforcement to CI build. — DONE
 - [ ] **[MEDIUM]** Add CI step that asserts generated APK artifacts exist before upload (fail fast with clear message).
