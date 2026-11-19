@@ -12,7 +12,9 @@ The objective of this project is to create a robust, secure, and user-friendly A
 7. Integrate analytics for performance monitoring.
 
 ## Todo Tasks (Backlog)
-- [ ] Fix JaCoCo CI failure: ensure unit tests produce coverage data before report task runs and verify paths in `.github/workflows/build.yml` and `build.gradle`.
+- [ ] Investigate CI JaCoCo report failure: identify why `jacocoTestReport` task fails despite successful `testDebugUnitTest` and generate/upload `.exec` files as artifacts to diagnose.
+- [ ] Add explicit artifact upload step for `.exec` files in CI to simplify debugging.
+- [ ] Add linting gate in CI: Fail on lint warnings.
 - [ ] Standardize AGP/Gradle/Kotlin versions to ensure CI stability.
 - [ ] Add a bounded WebView load-failure retry policy (main-frame only, exponential backoff, unit tested) and wire it into `MainActivity`.
 - [ ] Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
@@ -33,7 +35,7 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Implement Dark Mode support.
 - [ ] Add a settings screen for toggling features.
 - [ ] Implement Biometric Authentication for enhanced security.
-- [ ] Add Network Monitoring & Auto-reconnect handling.
+- [ ] Add Network Monitoring &amp; Auto-reconnect handling.
 - [ ] Implement Screen Reader accessibility improvements for the WebView content.
 - [ ] Add basic performance profiling for initial app load.
 - [ ] Add automated UI integration tests using Espresso.
@@ -49,11 +51,6 @@ The objective of this project is to create a robust, secure, and user-friendly A
 - [ ] Add an `actions/cache` entry for `android-sdk` packages to speed up builds.
 - [ ] Add unit tests for SecureStorage implementation (covers encryption, retrieval, and error handling).
 - [ ] Investigate alternative CI failure causes if upgrade fails.
-- [ ] Adjust CI to run `testDebugUnitTest` before generating JaCoCo coverage report (ensure coverage data is produced).
-- [ ] Add lint warnings gate: Fail CI if `lint-results.html` contains any warning.
-- [ ] Verify APK artifact existence: Ensure debug and release APK files are produced.
-- [ ] Upload JaCoCo coverage report: Add CI step to generate and publish coverage as artifact.
-- [ ] Pin and document the `android-actions/setup-android` action version (currently `@v3`); add a cache step for `platforms;android-34` and `build-tools;34.0.0` to reduce cold-start CI time.
 
 ## Done
 - [x] Fix GitHub Actions build failure (Gradle task failing after Android SDK setup).
