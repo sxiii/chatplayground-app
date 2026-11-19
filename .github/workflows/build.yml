@@ -80,6 +80,7 @@ jobs:
 
       - name: Generate JaCoCo coverage report
         if: always()
+        continue-on-error: true
         run: |
           set -o pipefail
           ./gradlew jacocoTestReport --stacktrace --console=plain 2>&1 | tee jacoco_report.log
