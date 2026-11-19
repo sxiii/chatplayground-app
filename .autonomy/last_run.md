@@ -1,16 +1,16 @@
-# Last Run (2026-11-19 19:29 CET)
+# Last Run (2026-11-19 20:10 CET)
 
 ## Cycle outcome
-Implemented `isOnline()` on `NetworkMonitor`, delegating to `checkConnectivity()`. CI run #93 green on GitHub workers. Vision.md updated: task marked DONE, broken table formatting fixed.
+Implemented a Robolectric `ShadowConnectivityManager` test verifying `NetworkMonitor.observe()` delivers online→offline transitions to its callback and replaces the previous callback on repeat `observe()` calls. CI run #95 green on GitHub workers. Vision.md updated: task marked DONE.
 
 ## What changed
-- `app/src/main/java/com/chatplayground/app/NetworkMonitor.kt`: added `isOnline(): Boolean = checkConnectivity()`, restored `stopObserving()` and `checkConnectivity()` coherence.
-- `.autonomy/vision.md`: marked `NetworkMonitor.checkConnectivity` task as DONE; fixed `|||` markdown table formatting in Future Improvements.
+- `app/src/test/java/com/chatplayground/app/NetworkMonitorObserveTest.kt`: new test covering observe online/offline transitions and callback replacement on repeat observe() calls.
+- `.autonomy/vision.md`: marked `NetworkMonitor.observe` ShadowConnectivityManager test task as DONE.
 
 ## Evidence
-- Commit `da19a1c` pushed to `main` (origin/main).
-- CI run #93 (`da19a1c`): success (GitHub Actions API).
+- Commit `82333b3` pushed to `main` (origin/main).
+- CI run #95 (`82333b3`): conclusion **success** (GitHub Actions API).
 - GitHub Status: Operational — Actions operational.
 
 ## Next action
-Continue with next ranked backlog item: implement a test that simulates network state transitions using Robolectric `ShadowConnectivityManager` to verify `NetworkMonitor.observe` logic (CI-only validation).
+None required this cycle. Continue monitoring CI; consider the CI preflight / Dependabot improvement tasks in .autonomy/vision.md Future Improvements in a future cycle.
