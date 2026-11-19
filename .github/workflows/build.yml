@@ -88,10 +88,16 @@ jobs:
           ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain 2>&1 | tee gradle_test.log
 
       - name: Verify Dependencies
-        continue-on-error: true
         run: |
           set -o pipefail
           ./gradlew androidDependencies --stacktrace --console=plain 2>&1 | tee gradle_dependencies.log
+          if grep -qE "Could not|FAILED" gradle_dependencies.log; then
+            echo "## Dependency Resolution Errors" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            grep -E "Could not|FAILED" gradle_dependencies.log | tail -n 10 >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
 
       - name: Generate JaCoCo coverage report
         if: always()
