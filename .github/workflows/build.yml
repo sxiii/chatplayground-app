@@ -177,3 +177,20 @@ jobs:
           name: gradle-build-debug-log
           path: gradle_build_debug.log
         if: always()
+
+  release-tag:
+    needs: build
+    if: github.ref == 'refs/heads/main' && needs.build.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release Tag
+        run: |
+          git config user.name "Hermes Agent"
+          git config user.email "hermes@localhost"
+          TAG="release-$(date +%Y%m%d)-$(git rev-parse --short HEAD)"
+          git tag -a "$TAG" -m "Automated release tag $TAG"
+          git push origin "$TAG"

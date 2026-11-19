@@ -15,14 +15,15 @@
 |- [x] **[HIGH]** Implement a bounded WebView load-failure retry policy (main-frame only, exponential backoff, unit tested) and wire it into `MainActivity`. (DONE this cycle)
 |- [x] **[HIGH]** Fix JaCoCo graceful skip: ensure `jacocoTestReport` actually skips when no `.exec` files are present in any build directory (current implementation fails to skip correctly).
 |- [x] **[HIGH]** Add a dependency-verification step in CI to ensure dependency integrity and security.
-- [ ] **[HIGH]** Surface real dependency-resolution failures from the continue-on-error `Verify Dependencies` step: grep `gradle_dependencies.log` for `Could not resolve`/`FAILED` and raise a `::warning` annotation + summary line, so continue-on-error doesn't mask breakage.
-- [ ] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` contains `android.useAndroidX=true` and `android.enableJetifier=true` before `assembleDebug`, catching the historical missing-gradle.properties build failure early.
-|- [ ] **[HIGH]** Implement automated release tagging workflow on main branch merges.
-|- [ ] **[HIGH]** Add a linting gate in CI: fail CI when lint-results.html contains warnings; verify on next run.
-|- [ ] **[MEDIUM]** Add `actions/cache` for `android-sdk` packages to reduce cold-start CI time.
+- [x] **[HIGH]** Surface real dependency-resolution failures from the now-non-blocking `Verify Dependencies` step: grep `gradle_dependencies.log` for `Could not resolve`/`FAILED` → `::warning` annotation + summary line, so continue-on-error doesn't mask breakage.
+- [x] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` contains `android.useAndroidX=true` and `android.enableJetifier=true` before `assembleDebug`, catching the historical missing-gradle.properties build failure early.
+- [x] **[HIGH]** Implement automated release tagging workflow on main branch merges.
+- [x] **[HIGH]** Add a linting gate in CI: fail CI when lint-results.html contains warnings; verify on next run.
+- [x] **[MEDIUM]** Add `actions/cache` for `android-sdk` packages to reduce cold-start CI time.
+- [ ] **[HIGH]** Add GitHub Actions caching for Android SDK packages and Gradle dependencies to reduce cold-start CI time.
+- [ ] **[MEDIUM]** Add Android manifest audit test covering required permissions (`INTERNET`, `ACCESS_NETWORK_STATE`) so future edits cannot silently break networking.
 |- [ ] **[MEDIUM]** Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
 |- [ ] Standardize AGP/Gradle/Kotlin versions to ensure CI stability.
-|- [ ] Add an Android manifest audit test covering required permissions (`INTERNET`, `ACCESS_NETWORK_STATE`) so future edits cannot silently break networking.
 |- [ ] Add a CI documentation page describing the build/test/lint steps and how to read failure diagnostics.
 |- [ ] Implement `NetworkMonitor.checkConnectivity` correctly and ensure `NetworkMonitorTest.kt` passes. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
 |- [ ] Implement a test that simulates network state transitions using Robolectric `ShadowConnectivityManager` to verify `NetworkMonitor.observe` logic. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
