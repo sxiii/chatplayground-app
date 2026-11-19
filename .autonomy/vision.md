@@ -18,18 +18,18 @@
 - [x] **[HIGH]** Surface real dependency-resolution failures from the now-non-blocking `Verify Dependencies` step: grep `gradle_dependencies.log` for `Could not resolve`/`FAILED` → `::warning` annotation + summary line, so continue-on-error doesn't mask breakage.
 - [x] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` contains `android.useAndroidX=true` and `android.enableJetifier=true` before `assembleDebug`, catching the historical missing-gradle.properties build failure early.
 - [x] **[HIGH]** Implement automated release tagging workflow on main branch merges. (DONE this cycle; fixed idempotency so re-runs don't fail when tag already exists.)
-|- [ ] **[MEDIUM]** Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
+||- [x] **[MEDIUM]** Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks. — DONE: `stopObserving()` implemented in NetworkMonitor.kt with `NetworkMonitorLifecycleTest.testStopObservingDoesNotThrow`.
 |- [ ] Standardize AGP/Gradle/Kotlin versions to ensure CI stability.
-|- [ ] Add a CI documentation page describing the build/test/lint steps and how to read failure diagnostics.
+|- [x] Add a CI documentation page describing the build/test/lint steps and how to read failure diagnostics. — DONE: see `.autonomy/ci_debugging.md`.
 |- [ ] Implement `NetworkMonitor.checkConnectivity` correctly and ensure `NetworkMonitorTest.kt` passes. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
 - [ ] **[MEDIUM]** Implement a test that simulates network state transitions using Robolectric `ShadowConnectivityManager` to verify `NetworkMonitor.observe` logic. (BLOCKED: Local toolchain missing JDK/Gradle. Validation must be CI-only.)
 - [ ] **[HIGH]** Make `release-tag` job idempotent: check tag existence before `git tag -a` so reruns on the same SHA don't fail. (DONE this cycle via `git rev-parse --verify` + tolerant `git push`.)
 - [x] **[MEDIUM]** Add `actions/cache` for `~/.gradle` dependency cache in addition to `actions/setup-java` Gradle cache to reduce cold-start CI time. (SUPERSEDED: `setup-java@v5 cache: 'gradle'` already caches `~/.gradle`; an explicit Gradle cache would be redundant. Android SDK cache added instead — see below.)
-- [ ] **[MEDIUM]** Add CI documentation page describing the build/test/lint steps and how to read failure diagnostics without admin log access.
+- [x] **[MEDIUM]** Add CI documentation page describing the build/test/lint steps and how to read failure diagnostics without admin log access. — DONE: see `.autonomy/ci_debugging.md`.
 - [x] **[MEDIUM]** Add `actions/cache` for `android-sdk` to speed up builds. (DONE this cycle: cached `/usr/local/lib/android/sdk` keyed on `gradle.properties` + `build.gradle`, restore-key fallback included.)
 - [x] **[MEDIUM]** Pin `android-actions/setup-android` to a specific version/digest instead of floating `@v3` for reproducible CI builds. (DONE this cycle: pinned to commit `9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407`; CI run #83 green.)
-- [ ] **[HIGH]** Add a CI documentation page describing the build/test/lint steps and how to read failure diagnostics without admin log access.
-- [ ] **[MEDIUM]** Add lint warnings gate: Fail CI if `lint-results.html` contains any warning (lint step currently greps but the build.yml lint step needs the gate hardened).
+- [x] **[HIGH]** Add a CI documentation page describing the build/test/lint steps and how to read failure diagnostics without admin log access. — DONE: see `.autonomy/ci_debugging.md`.
+||- [x] **[MEDIUM]** Add lint warnings gate: Fail CI if `lint-results.html` contains any warning (lint step currently greps but the build.yml lint step needs the gate hardened). — DONE: build.yml "Run Lint" step greps `lint-results.html` for `warning` and exits 1 on match; CI run #84 green.
 |- [ ] Add CI check for lint warnings and deprecations.
 |- [ ] Implement automated release tagging workflow on main branch merges.
 |- [ ] Add Gradle build cache (`actions/cache`) configuration for Android dependencies in GitHub Actions workflow.
