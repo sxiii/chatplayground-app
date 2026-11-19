@@ -23,6 +23,15 @@ jobs:
           cache: 'gradle'
           java-package: jdk
 
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/lib/android/sdk
+          key: ${{ runner.os }}-android-sdk-${{ hashFiles('**/gradle.properties', '**/build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-android-sdk-
+
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
