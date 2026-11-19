@@ -27,7 +27,9 @@
 - [x] **[MEDIUM]** Add `actions/cache` for `~/.gradle` dependency cache in addition to `actions/setup-java` Gradle cache to reduce cold-start CI time. (SUPERSEDED: `setup-java@v5 cache: 'gradle'` already caches `~/.gradle`; an explicit Gradle cache would be redundant. Android SDK cache added instead — see below.)
 - [ ] **[MEDIUM]** Add CI documentation page describing the build/test/lint steps and how to read failure diagnostics without admin log access.
 - [x] **[MEDIUM]** Add `actions/cache` for `android-sdk` to speed up builds. (DONE this cycle: cached `/usr/local/lib/android/sdk` keyed on `gradle.properties` + `build.gradle`, restore-key fallback included.)
-- [ ] **[MEDIUM]** Pin `android-actions/setup-android` to a specific version/digest instead of floating `@v3` for reproducible CI builds.
+- [x] **[MEDIUM]** Pin `android-actions/setup-android` to a specific version/digest instead of floating `@v3` for reproducible CI builds. (DONE this cycle: pinned to commit `9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407`; CI run #83 green.)
+- [ ] **[HIGH]** Add a CI documentation page describing the build/test/lint steps and how to read failure diagnostics without admin log access.
+- [ ] **[MEDIUM]** Add lint warnings gate: Fail CI if `lint-results.html` contains any warning (lint step currently greps but the build.yml lint step needs the gate hardened).
 |- [ ] Add CI check for lint warnings and deprecations.
 |- [ ] Implement automated release tagging workflow on main branch merges.
 |- [ ] Add Gradle build cache (`actions/cache`) configuration for Android dependencies in GitHub Actions workflow.
