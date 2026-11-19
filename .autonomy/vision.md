@@ -12,10 +12,12 @@ The objective of this project is to create a robust, secure, and user-friendly A
 7. Integrate analytics for performance monitoring.
 
 ## Todo Tasks (Backlog)
-- [ ] **[HIGH]** Investigate CI JaCoCo report failure: identify why `jacocoTestReport` task fails despite successful `testDebugUnitTest` and generate/upload `.exec` files as artifacts to diagnose.
-- [ ] **[HIGH]** Add explicit artifact upload step for `.exec` files in CI to simplify debugging.
-- [ ] **[MEDIUM]** Implement a bounded WebView load-failure retry policy (main-frame only, exponential backoff, unit tested) and wire it into `MainActivity`.
-- [ ] Add a linting gate in CI: Fail on lint warnings.
+- [x] **[HIGH]** Investigate CI JaCoCo report failure: identify why `jacocoTestReport` task fails despite successful `testDebugUnitTest` and generate/upload `.exec` files as artifacts to diagnose.
+- [x] **[HIGH]** Add explicit artifact upload step for `.exec` files in CI to simplify debugging.
+- [ ] **[HIGH]** Implement a bounded WebView load-failure retry policy (main-frame only, exponential backoff, unit tested) and wire it into `MainActivity`.
+- [ ] **[HIGH]** Add a linting gate in CI: fail CI when lint-results.html contains warnings; verify on next run.
+- [ ] **[MEDIUM]** Add `actions/cache` for `android-sdk` packages to reduce cold-start CI time.
+- [ ] **[MEDIUM]** Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
 - [ ] Standardize AGP/Gradle/Kotlin versions to ensure CI stability.
 - [ ] Give `NetworkMonitor` lifecycle cleanup (`stopObserving`/callback unregistration) so repeated activity creation cannot leak `ConnectivityManager` callbacks.
 - [ ] Add an Android manifest audit test covering required permissions (`INTERNET`, `ACCESS_NETWORK_STATE`) so future edits cannot silently break networking.
