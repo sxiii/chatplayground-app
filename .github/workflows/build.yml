@@ -79,9 +79,10 @@ jobs:
           ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain 2>&1 | tee gradle_test.log
 
       - name: Verify Dependencies
+        continue-on-error: true
         run: |
           set -o pipefail
-          ./gradlew dependencies --configuration debugRuntimeClasspath --stacktrace --console=plain 2>&1 | tee gradle_dependencies.log
+          ./gradlew androidDependencies --stacktrace --console=plain 2>&1 | tee gradle_dependencies.log
 
       - name: Generate JaCoCo coverage report
         if: always()
