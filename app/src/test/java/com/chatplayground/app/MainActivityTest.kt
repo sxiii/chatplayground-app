@@ -44,4 +44,25 @@ class MainActivityTest {
             shadowOf(activity.getWebView()).lastLoadedUrl
         )
     }
+
+    @Test
+    fun activityLoadsOfflinePageOnNetworkError() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val webView = activity.getWebView()
+        val webViewClient = webView.webViewClient
+
+        // Simulate a network error (e.g., host lookup failed)
+        webViewClient?.onReceivedError(
+            webView,
+            android.webkit.WebViewClient.ERROR_HOST_LOOKUP,
+            "Failed to resolve host",
+            "https://chatplayground.ai"
+        )
+
+        assertEquals(
+            "MainActivity should load the offline fallback page on network error",
+            "file:///android_asset/offline.html",
+            shadowOf(webView).lastLoadedUrl
+        )
+    }
 }

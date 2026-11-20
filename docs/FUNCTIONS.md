@@ -44,9 +44,10 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`observeNetworkState(callback: (Boolean) -> Unit)`**: Registers a `ConnectivityManager.NetworkCallback` to stream online/offline network transitions in real-time.
 
 ### WebView UI & Loading (`MainActivity`)
-- **Loading Indicator**: A `ProgressBar` overlay that is visible during page loads.
-- **`WebViewClient.onPageStarted`**: Sets the loading indicator to `VISIBLE`.
-- **`WebViewClient.onPageFinished`**: Sets the loading indicator to `GONE`.
+- Loading Indicator: A `ProgressBar` overlay that is visible during page loads.
+- `WebViewClient.onPageStarted`: Sets the loading indicator to `VISIBLE`.
+- `WebViewClient.onPageFinished`: Sets the loading indicator to `GONE`.
+- **Offline Fallback**: Overrides `onReceivedError` to load a local `offline.html` asset when a network error occurs, avoiding the default browser error page.
 
 ### Secure Storage (`SecureStorage`)
 - **`putString(context, key, value)`**: Encrypts and persists a string value under [key] using EncryptedSharedPreferences (AES-256-GCM master key).

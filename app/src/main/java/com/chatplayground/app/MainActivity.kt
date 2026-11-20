@@ -38,13 +38,20 @@ class MainActivity : AppCompatActivity() {
                 failingUrl: String?
             ) {
                 super.onReceivedError(view, errorCode, description, failingUrl)
-                if (loadRetryPolicy.shouldRetry(true)) {
-                    loadRetryPolicy.recordRetry()
-                    loadRetryPolicy.scheduleRetryWithBackoff {
-                        view?.reload()
+                when (errorCode) {
+                    ERROR_HOST_LOOKUP, ERROR_CONNECT, ERROR_TIMEOUT, ERROR_FAILED_SSL_HANDSHAKE -> {
+                        view?.loadUrl("file:///android_asset/offline.html")
                     }
-                } else {
-                    loadRetryPolicy.reset()
+                    else -> {
+                        if (loadRetryPolicy.shouldRetry(true)) {
+                            loadRetryPolicy.recordRetry()
+                            loadRetryPolicy.scheduleRetryWithBackoff {
+                                view?.reload()
+                            }
+                        } else {
+                            loadRetryPolicy.reset()
+                        }
+                    }
                 }
             }
         }

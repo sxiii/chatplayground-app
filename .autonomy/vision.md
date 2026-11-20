@@ -53,10 +53,12 @@
 - [ ] **Implement Network Monitoring & Auto-reconnect handling**.
 
 ## New Improvement Suggestions (2026-11-20)
-- [ ] **[MEDIUM]** **Add WebView Loading Indicator:** Implement a `ProgressBar` or similar UI element to show while the WebView is loading a page, improving perceived performance.
+- [x] **[MEDIUM]** **Add WebView Loading Indicator:** Implement a `ProgressBar` or similar UI element to show while the WebView is loading a page, improving perceived performance. — DONE (commit `3a59476`; CI success).
 - [ ] **[MEDIUM]** **Offline Fallback Page:** Show a friendly offline message or cached version when the network is unavailable instead of the standard browser error.
-+ - [ ] **[LOW]** **Performance Profiling Hook:** Expose optional logging of page load metrics (first-paint / DOMContentLoaded times) through `WebChromeClient` so future optimization work has data points.
-+ - [ ] **[LOW]** **Accessibility Contrast Check:** Verify that WebView content and native overlay elements meet minimum contrast ratios for screen-reader and low-vision users.
+- [ ] **[LOW]** **Performance Profiling Hook:** Expose optional logging of page load metrics (first-paint / DOMContentLoaded times) through `WebChromeClient` so future optimization work has data points.
+- [ ] **[LOW]** **Accessibility Contrast Check:** Verify that WebView content and native overlay elements meet minimum contrast ratios for screen-reader and low-vision users.
+- [ ] **[MEDIUM]** **Add "Share" Button:** Implement a share action in the app's menu or a floating button to share the current WebView URL with other applications.
+- [ ] **[LOW]** **Implement "Clear Cache" Option:** Add a user-accessible option to clear the WebView's cache and secure storage, useful for troubleshooting or freeing up storage.
 - [x] **[HIGH]** **Synchronize `docs/FUNCTIONS.md` with actual CI/Build config:**
     - `actions/setup-java` is currently `@v5` in `build.yml` but `@v4` in docs.
     - `android-actions/setup-android` is pinned to a specific SHA in `build.yml` but `@v3` in docs.
