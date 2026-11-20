@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="surface">@color/surface</color>
-    <color name="background">@color/background</color>
+    <color name="surface">#121212</color>
+    <color name="background">#000000</color>
 </resources>

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#BB86FC</color>
-    <color name="primary_dark">#3700B3</color>
-    <color name="accent">#BBDEFB</color>
-    <color name="surface">#121212</color>
-    <color name="background">#000000</color>
+    <!-- Night theme - this file overrides day theme colors -->
+    <style name="Theme.ChatPlayground" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorBackground">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
 </resources>
