@@ -59,3 +59,72 @@ class WebViewLoadRetryPolicyTest {
         assertEquals(Looper.getMainLooper(), policy.handlerLooper)
     }
 }
+
+import com.chatplayground.app.WebViewLoadRetryPolicy
+import org.junit.Test
+import org.junit.Assert.*
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [30])
+class WebViewLoadRetryPolicyTest {
+
+    @Test
+    fun testInitialState() {
+        val policy = WebViewLoadRetryPolicy()
+        assertEquals(0, policy.retryCount())
+        assertTrue(policy.shouldRetry(true)) // Should retry initially
+    }
+
+    @Test
+    fun testRetryLimit() {
+        val maxRetries = 3
+        val policy = WebViewLoadRetryPolicy(maxRetries = maxRetries)
+
+        // Simulate 3 failures
+        for (i in 1..maxRetries) {
+            policy.recordRetry()
+            assertEquals(i, policy.retryCount())
+        }
+
+        // After maxRetries, it should not retry
+        assertFalse(policy.shouldRetry(true))
+        assertEquals(maxRetries, policy.retryCount())
+    }
+
+    @Test
+    fun testNonMainFrameIsNeverRetried() {
+        val policy = WebViewLoadRetryPolicy()
+        // Non-main frame failures should never trigger retry count increment
+        policy.recordRetry()
+        assertFalse(policy.shouldRetry(false))
+        assertEquals(1, policy.retryCount()) // Note: The initial recordRetry() still happens, but shouldRetry(false) is false.
+
+        // If we manually reset count for isolated test logic
+        policy.reset()
+        policy.recordRetry() // Should still increment
+        assertEquals(1, policy.retryCount())
+
+        // Force a clean state check:
+        val policyClean = WebViewLoadRetryPolicy()
+        policyClean.recordRetry() // Count becomes 1
+        // If we test non-main frame:
+        policyClean.recordRetry() // Count should still increment if logic is sequential
+        // Since the logic checks isMainFrame FIRST, the retryCount should only advance when shouldRetry(true) is called.
+        // Let's refine the logic check: shouldRetry(false) must be false regardless of count.
+        policyClean.reset()
+        assertFalse(policyClean.shouldRetry(false))
+    }
+
+    @Test
+    fun testResetResetsCounter() {
+        val policy = WebViewLoadRetryPolicy()
+        policy.recordRetry()
+        assertEquals(1, policy.retryCount())
+        policy.reset()
+        assertEquals(0, policy.retryCount())
+        assertTrue(policy.shouldRetry(true))
+    }
+}
