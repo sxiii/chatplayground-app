@@ -112,7 +112,7 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew lint --stacktrace --console=plain
-          if grep -q "warning" app/build/reports/lint-results.html; then
+          if grep -q "warning" app/build/reports/lint-results-debug.html app/build/reports/lint-results-release.html 2>/dev/null; then
             echo "::error Lint warnings found"
             exit 1
           fi
