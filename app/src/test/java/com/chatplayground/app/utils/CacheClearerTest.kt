@@ -28,7 +28,7 @@ class CacheClearerTest {
         CacheClearer.clearAll(context, webView)
 
         assertFalse("Offline cache should be cleared", cacheManager.getCachedResponse(url) != null)
-        assertTrue("WebView cache should have been requested for clearing", shadowOf(webView).wasClearCacheCalled)
+        assertTrue("WebView clearCache should have been called", shadowOf(webView).wasClearCacheCalled())
     }
 
     @Test

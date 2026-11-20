@@ -88,6 +88,6 @@
 - [ ] **[MEDIUM]** **WebView page-load performance profiling:** Log first-paint / `onPageFinished` timings so slow loads can be identified without user reports.
 - [ ] **[LOW]** **Settings screen for app options:** Allow toggling WebView debugging and a \"Clear secure storage\" action that calls `SecureStorage.clear(context)`.
 - [ ] **[LOW] Haptic feedback on menu selections:** Add slight vibration when clicking menu items to improve tactile feel.
-- [ ] **[MEDIUM] WebView Cache Management:** Implement a \"Clear Cache\" action in the app menu to allow users to reset the browser state.
+- [x] **[MEDIUM] WebView Cache Management:** Implement a "Clear Cache" action in the app menu to allow users to reset the browser state. — DONE (commit `ddc68fc`; CI pending).
 - [ ] **[LOW] App-wide search shortcut:** Implement a global search overlay or shortcut to quickly find content within the app's cached pages.
 - [ ] **[MEDIUM] Adaptive layout for tablets:** Ensure the WebView layout optimizes for larger screens (e.g., multi-pane view or wider margins).
