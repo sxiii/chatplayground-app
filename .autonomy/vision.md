@@ -55,7 +55,7 @@
 ## New Improvement Suggestions (2026-11-20)
 - [ ] **[MEDIUM]** **Add WebView Loading Indicator:** Implement a `ProgressBar` or similar UI element to show while the WebView is loading a page, improving perceived performance.
 - [ ] **[MEDIUM]** **Offline Fallback Page:** Show a friendly offline message or cached version when the network is unavailable instead of the standard browser error.
-- [ ] **[HIGH]** **Synchronize `docs/FUNCTIONS.md` with actual CI/Build config:**
+- [x] **[HIGH]** **Synchronize `docs/FUNCTIONS.md` with actual CI/Build config:**
     - `actions/setup-java` is currently `@v5` in `build.yml` but `@v4` in docs.
     - `android-actions/setup-android` is pinned to a specific SHA in `build.yml` but `@v3` in docs.
     - `gradle` wrapper is pinned to `8.5` in `gradle-wrapper.properties` (matching `gradleVersion=8.5` in `gradle.properties`), but docs may still reference older or mismatched versions.
