@@ -120,4 +120,28 @@ class MainActivityTest {
             handled ?: false
         )
     }
+
+    @Test
+    fun webViewSavesAndRestoresScrollPosition() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
+        val activity = controller.get()
+        val webView = activity.getWebView()
+        val shadowWebView = shadowOf(webView)
+
+        // Set an arbitrary scroll position
+        val scrollX = 100
+        val scrollY = 200
+        shadowWebView.scrollTo(scrollX, scrollY)
+
+        // Simulate activity recreation with saved state
+        val bundle = Android.os.Bundle()
+        controller.saveInstanceState(bundle).pause().stop().destroy()
+        
+        val newController = Robolectric.buildActivity(MainActivity::class.java).create(bundle).start().restoreInstanceState(bundle).resume()
+        val newActivity = newController.get()
+        val newWebView = newActivity.getWebView()
+
+        assertEquals("WebView should restore scrollX position", scrollX, newWebView.scrollX)
+        assertEquals("WebView should restore scrollY position", scrollY, newWebView.scrollY)
+    }
 }
