@@ -1,8 +1,11 @@
 package com.chatplayground.app
 
 import android.os.Bundle
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.webkit.WebChromeClient
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -13,7 +16,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        webView = WebView(this)
+        setContentView(R.layout.activity_main)
+
+        webView = findViewById(R.id.webview)
+        val progressBar = findViewById<ProgressBar>(R.id.loading_progress)
+
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+                progressBar.visibility = if (newProgress < 100) View.VISIBLE else View.GONE
+            }
+        }
+
         // Configure WebViewClient to keep navigation inside the app and
         // retry main-frame load failures with exponential backoff.
         webView.webViewClient = object : WebViewClient() {
@@ -37,6 +51,5 @@ class MainActivity : AppCompatActivity() {
         // Load URL from UrlProvider
         val url = com.chatplayground.app.utils.UrlProvider.getChatPlaygroundUrl()
         webView.loadUrl(url)
-        setContentView(webView)
     }
 }
