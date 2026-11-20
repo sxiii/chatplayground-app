@@ -22,8 +22,6 @@ class SecureStorageTest {
             val retrievedValue = SecureStorage.getString(context, key)
             assertEquals(value, retrievedValue)
         } catch (e: Exception) {
-            // In CI environments without full Android Keystore provider implementation in Robolectric,
-            // we verify that the method is callable and handles/throws expected KeyStore initialization exceptions gracefully.
             assertNotNull(e)
         }
     }
@@ -76,7 +74,6 @@ class SecureStorageTest {
         val missingKey = "was_never_present"
 
         try {
-            // Removing a key that was never put should not throw.
             SecureStorage.remove(context, missingKey)
             val result = SecureStorage.getString(context, missingKey)
             assertNull(result)
@@ -136,7 +133,6 @@ class SecureStorageTest {
             assertNotNull(e)
         }
     }
-}
 
     @Test
     fun testClearRemovesAllKeys() {
@@ -166,10 +162,9 @@ class SecureStorageTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
         try {
-            // Clearing empty storage should not throw
             SecureStorage.clear(context)
-            // No assertions needed - just verifying no exception
         } catch (e: Exception) {
             assertNotNull(e)
         }
     }
+}
