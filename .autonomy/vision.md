@@ -68,9 +68,9 @@
 - [ ] **[MEDIUM]** **WebView Zoom Control:** Implement basic zoom support for users with visual impairments.
 - [ ] **[MEDIUM]** **Custom Theme Engine:** Allow users to inject a custom CSS file into the WebView to theme the site.
 - [ ] **[MEDIUM]** **URL History Navigation:** Add \"Back\" and \"Forward\" buttons/gestures to the native UI for better WebView navigation.
-- [ ] **[LOW]** **Page Title Sync:** Update the Android Activity title to match the current page title of the WebView.
+- [x] **[LOW] Page Title Sync:** Update the Android Activity title to match the current page title of the WebView. — DONE (commit `e7ff095`).
 - [ ] **[MEDIUM]** **WebView scroll position restoration after rotation/process death:** save and restore `WebView` state with `saveState`/`restoreState` so the user does not lose their place.
-- [ ] **[HIGH]** **Safe link interception for non-HTTP schemes:** in `WebViewClient.shouldOverrideUrlLoading`, block or confirm non-http/https/intent schemes to prevent accidental navigation or app launches.
+- [x] **[HIGH]** **Safe link interception for non-HTTP schemes:** in `WebViewClient.shouldOverrideUrlLoading`, block or confirm non-http/https/intent schemes to prevent accidental navigation or app launches. — DONE (implemented in this cycle).
 - [ ] **[MEDIUM]** **Custom Error Pages:** Provide specific, styled local HTML pages for common errors (404, 500) to improve the offline/error experience.
 - [ ] **[LOW]** **App Version Info:** Add a small \"About\" section or menu item showing the current app version and build number.
 - [x] **[HIGH]** **Synchronize `docs/FUNCTIONS.md` with actual CI/Build config:**
@@ -84,3 +84,7 @@
     - Provide a way to wipe all secure preferences, useful for a \"Log out / Reset app\" feature.
 - [ ] **[MEDIUM]** **WebView page-load performance profiling:** Log first-paint / `onPageFinished` timings so slow loads can be identified without user reports.
 - [ ] **[LOW]** **Settings screen for app options:** Allow toggling WebView debugging and a \"Clear secure storage\" action that calls `SecureStorage.clear(context)`.
+- [ ] **[LOW] Haptic feedback on menu selections:** Add slight vibration when clicking menu items to improve tactile feel.
+- [ ] **[MEDIUM] WebView Cache Management:** Implement a "Clear Cache" action in the app menu to allow users to reset the browser state.
+- [ ] **[LOW] App-wide search shortcut:** Implement a global search overlay or shortcut to quickly find content within the app's cached pages.
+- [ ] **[MEDIUM] Adaptive layout for tablets:** Ensure the WebView layout optimizes for larger screens (e.g., multi-pane view or wider margins).

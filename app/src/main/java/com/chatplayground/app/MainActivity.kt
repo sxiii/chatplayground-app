@@ -40,6 +40,21 @@ class MainActivity : AppCompatActivity() {
         // Configure WebViewClient to keep navigation inside the app and
         // retry main-frame load failures with exponential backoff.
         webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: android.webkit.WebResourceRequest): Boolean {
+                val url = request.url.toString()
+                if (url.startsWith("http://") || url.startsWith("https://")) {
+                    return false
+                }
+
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    // Fail silently if no app can handle the scheme
+                }
+                return true
+            }
+
             override fun onReceivedError(
                 view: WebView?,
                 errorCode: Int,

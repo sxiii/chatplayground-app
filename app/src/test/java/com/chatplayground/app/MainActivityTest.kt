@@ -1,8 +1,10 @@
 package com.chatplayground.app
 
 import android.webkit.WebViewClient
+import android.webkit.WebResourceRequest
 import com.chatplayground.app.utils.UrlProvider
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -11,6 +13,7 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowWebResourceRequest
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [26])
@@ -64,19 +67,57 @@ class MainActivityTest {
             "file:///android_asset/offline.html",
             shadowOf(webView).lastLoadedUrl
         )
+    }
+
     @Test
     fun activityUpdatesTitleWhenWebViewTitleChanges() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
         val chromeClient = webView.webChromeClient
 
-        val newTitle = \"ChatPlayground - Home\"
+        val newTitle = "ChatPlayground - Home"
         chromeClient?.onReceivedTitle(webView, newTitle)
 
         assertEquals(
-            \"MainActivity title should be updated to match the WebView page title\",
+            "MainActivity title should be updated to match the WebView page title",
             newTitle,
             activity.title
+        )
+    }
+
+    @Test
+    fun webViewInterceptsNonHttpSchemes() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val webView = activity.getWebView()
+        val webViewClient = webView.webViewClient
+
+        // Simulate a mailto: link click
+        val mailtoUri = android.net.Uri.parse("mailto:support@chatplayground.ai")
+        val request = ShadowWebResourceRequest(mailtoUri)
+
+        val handled = webViewClient?.shouldOverrideUrlLoading(webView, request)
+
+        assertTrue(
+            "WebViewClient should intercept non-HTTP schemes like mailto:",
+            handled ?: false
+        )
+    }
+
+    @Test
+    fun webViewAllowsHttpHttpsSchemes() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val webView = activity.getWebView()
+        val webViewClient = webView.webViewClient
+
+        // Simulate an https link click
+        val httpsUri = android.net.Uri.parse("https://chatplayground.ai/about")
+        val request = ShadowWebResourceRequest(httpsUri)
+
+        val handled = webViewClient?.shouldOverrideUrlLoading(webView, request)
+
+        assertFalse(
+            "WebViewClient should NOT intercept HTTP/HTTPS schemes (let WebView handle them)",
+            handled ?: false
         )
     }
 }
