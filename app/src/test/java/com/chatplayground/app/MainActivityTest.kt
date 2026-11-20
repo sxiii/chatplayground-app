@@ -134,7 +134,7 @@ class MainActivityTest {
         shadowWebView.scrollTo(scrollX, scrollY)
 
         // Simulate activity recreation with saved state
-        val bundle = Android.os.Bundle()
+        val bundle = android.os.Bundle()
         controller.saveInstanceState(bundle).pause().stop().destroy()
         
         val newController = Robolectric.buildActivity(MainActivity::class.java).create(bundle).start().restoreInstanceState(bundle).resume()

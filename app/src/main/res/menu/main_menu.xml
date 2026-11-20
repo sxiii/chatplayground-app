@@ -9,4 +9,8 @@
         android:id="@+id/action_clear_cache"
         android:title="Clear Cache"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_toggle_theme"
+        android:title="Toggle Theme"
+        app:showAsAction="never" />
 </menu>

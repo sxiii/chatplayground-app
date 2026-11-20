@@ -11,7 +11,9 @@ import android.widget.ProgressBar
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.UrlProvider
 
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     fun getWebView(): WebView = webView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        applySavedTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -89,7 +92,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        // Add theme toggle button to the action bar
+        addThemeToggle(menu)
         return true
+    }
+
+    private fun addThemeToggle(menu: Menu) {
+        val toggleItem = menu.findItem(R.id.action_toggle_theme)
+        if (toggleItem != null) {
+            val isDark = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+            toggleItem.setIcon(if (isDark) R.drawable.ic_sun else R.drawable.ic_moon)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -103,8 +116,38 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Cache cleared", Toast.LENGTH_SHORT).show()
                 true
             }
+            R.id.action_toggle_theme -> {
+                toggleTheme()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun applySavedTheme() {
+        val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        val isDarkMode = prefs.getBoolean("dark_mode", false)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES 
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
+
+    private fun toggleTheme() {
+        val current = AppCompatDelegate.getDefaultNightMode()
+        val newMode = if (current == AppCompatDelegate.MODE_NIGHT_YES) {
+            AppCompatDelegate.MODE_NIGHT_NO
+        } else {
+            AppCompatDelegate.MODE_NIGHT_YES
+        }
+        AppCompatDelegate.setDefaultNightMode(newMode)
+        
+        // Save preference
+        val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("dark_mode", newMode == AppCompatDelegate.MODE_NIGHT_YES).apply()
+        
+        // Recreate activity to apply theme
+        recreate()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -123,3 +166,4 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+}
