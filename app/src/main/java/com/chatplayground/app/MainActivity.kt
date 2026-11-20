@@ -20,6 +20,7 @@ import com.chatplayground.app.utils.UrlProvider
 class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView
     internal val loadRetryPolicy = WebViewLoadRetryPolicy(maxRetries = 3)
+    private lateinit var networkMonitor: NetworkMonitor
 
     fun getWebView(): WebView = webView
 
@@ -88,6 +89,22 @@ class MainActivity : AppCompatActivity() {
         // Load URL from UrlProvider
         val url = UrlProvider.getChatPlaygroundUrl()
         webView.loadUrl(url)
+
+        networkMonitor = NetworkMonitor(this)
+        networkMonitor.observe { isConnected ->
+            if (isConnected && webView.url == "file:///android_asset/offline.html") {
+                runOnUiThread {
+                    webView.reload()
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::networkMonitor.isInitialized) {
+            networkMonitor.stopObserving()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
