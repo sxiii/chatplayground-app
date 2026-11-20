@@ -18,7 +18,7 @@ class MainActivityTest {
 
     @Test
     fun urlProviderReturnsChatPlaygroundUrl() {
-        assertEquals("https://chatplayground.com", UrlProvider.getChatPlaygroundUrl())
+        assertEquals("https://chatplayground.ai", UrlProvider.getChatPlaygroundUrl())
     }
 
     @Test
@@ -40,7 +40,7 @@ class MainActivityTest {
 
         assertEquals(
             "MainActivity should load the ChatPlayground URL into its WebView",
-            "https://chatplayground.com",
+            "https://chatplayground.ai",
             shadowOf(activity.getWebView()).lastLoadedUrl
         )
     }

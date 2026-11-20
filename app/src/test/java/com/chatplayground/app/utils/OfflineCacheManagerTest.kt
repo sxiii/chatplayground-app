@@ -13,7 +13,7 @@ class OfflineCacheManagerTest {
         val tempDir = Files.createTempDirectory("cache_test").toFile()
         val cacheManager = OfflineCacheManager(tempDir)
 
-        val url = "https://chatplayground.com/api/chat"
+        val url = "https://chatplayground.ai/api/chat"
         val content = "{\"status\":\"ok\"}"
 
         cacheManager.saveCachedResponse(url, content)
@@ -28,7 +28,7 @@ class OfflineCacheManagerTest {
         val tempDir = Files.createTempDirectory("cache_test").toFile()
         val cacheManager = OfflineCacheManager(tempDir)
 
-        val retrieved = cacheManager.getCachedResponse("https://chatplayground.com/nonexistent")
+        val retrieved = cacheManager.getCachedResponse("https://chatplayground.ai/nonexistent")
         assertNull(retrieved)
 
         tempDir.deleteRecursively()

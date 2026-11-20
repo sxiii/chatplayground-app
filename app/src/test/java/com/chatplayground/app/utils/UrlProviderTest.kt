@@ -6,7 +6,7 @@ import org.junit.Test
 class UrlProviderTest {
     @Test
     fun testGetChatPlaygroundUrl() {
-        val expected = "https://chatplayground.com"
+        val expected = "https://chatplayground.ai"
         val actual = UrlProvider.getChatPlaygroundUrl()
         assertEquals(expected, actual)
     }

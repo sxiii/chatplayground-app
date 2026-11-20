@@ -46,7 +46,7 @@
 
 ## Future Improvements
 - [ ] **Add Gradle build cache configuration for Android dependencies** — use `actions/cache` pointing to `~/.gradle` and `app/build/outputs/`.
-- [ ] **Add automated dependency scanning** via Snyk or Dependabot for the Android `build.gradle` files.
+- [x] **Add automated dependency scanning** via Dependabot (Snyk pending) for the Android `build.gradle` files.
 - [ ] **Implement a performance benchmark for WebView page load** in instrumentation tests and export results to a CSV artefact.
 - [ ] **Create a quick start guide** for developers who clone the repo locally (Gradle wrapper, Android SDK environment variables).
 - [ ] **[MEDIUM]** Add a CI preflight step that validates `gradle.properties` defines `agpVersion`, `kotlinVersion`, and `gradleVersion` before `assembleDebug`, failing fast with a clear message.
