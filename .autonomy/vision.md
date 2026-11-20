@@ -53,7 +53,11 @@
 - [ ] **Implement Network Monitoring & Auto-reconnect handling**.
 
 ## New Improvement Suggestions (2026-11-20)
-- [x] **[MEDIUM]** **Add WebView Loading Indicator:** Implement a `ProgressBar` or similar UI element to show while the WebView is loading a page, improving perceived performance. — DONE (commit `3a59476`; CI success).
+- [ ] **[LOW] Custom Tab integration:** Use Android Custom Tabs for external URLs to provide a more integrated browser experience.
+- [ ] **[MEDIUM] Splash Screen:** Implement a native splash screen to improve the app launch experience.
+- [ ] **[LOW] URL Bar Overlay:** Implement a subtle, retractable overlay that displays the current loaded URL for user transparency.
+- [ ] **[MEDIUM] Deep Link Integration:** Configure Android Intent Filters to allow the app to open when users click `chatplayground.ai` links in other apps.
+- [x] **[MEDIUM] Add WebView Loading Indicator:** Implement a `ProgressBar` or similar UI element to show while the WebView is loading a page, improving perceived performance. — DONE (commit `3a59476`; CI success).
 - [x] **[MEDIUM]** **Offline Fallback Page:** Show a friendly offline message or cached version when the network is unavailable instead of the standard browser error. — DONE (commit `ddde05d`).
 - [ ] **[LOW]** **Performance Profiling Hook:** Expose optional logging of page load metrics (first-paint / DOMContentLoaded times) through `WebChromeClient` so future optimization work has data points.
 - [ ] **[LOW]** **Accessibility Contrast Check:** Verify that WebView content and native overlay elements meet contrast ratios for screen-reader and low-vision users.

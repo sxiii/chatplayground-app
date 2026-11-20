@@ -30,6 +30,11 @@ class MainActivity : AppCompatActivity() {
                 super.onProgressChanged(view, newProgress)
                 progressBar.visibility = if (newProgress < 100) View.VISIBLE else View.GONE
             }
+
+            override fun onReceivedTitle(view: WebView?, title: String?) {
+                super.onReceivedTitle(view, title)
+                this@MainActivity.title = title
+            }
         }
 
         // Configure WebViewClient to keep navigation inside the app and
