@@ -25,14 +25,17 @@ while keeping the main content in a WebView.
 - [x] **[MEDIUM] Session Persistence**: Save/restore WebView navigation state (URL, scroll position, form inputs) to survive process death without relying on Activity recreation.
 - [x] **Fix night mode color resources**: Added missing `surface` and `background` colors to base `values/colors.xml` for proper night mode fallback.
 
-## Next Improvement Suggestions (2026-11-20)
+## Next Improvement Suggestions (2026-11-21)
 1. **[MEDIUM] WebView Custom Tabs**: Use Android Custom Tabs for external links to provide a more integrated browser experience without leaving the app context entirely.
-2. **[MEDIUM] Deep Link Integration**: Configure Android Intent Filters for chatplayground.ai links to allow the app to open when users click `chatplayground.ai` links in other apps.
+2. **[MEDIUM] Deep Link Integration**: Configure Android Intent Filters for `chatplayground.ai` links to allow the app to open when users click `chatplayground.ai` links in other apps.
 3. **[MEDIUM] Biometric Authentication for Secure Storage**: Protect stored credentials in SecureStorage using BiometricPrompt before retrieval.
-4. **[LOW] WebView Loading Indicator Enhancement**: Add a loading spinner overlay during WebView page loads.
-5. **[LOW] Error Handling Improvements**: Implement proper error handling for WebView load failures with user-facing error messages.
-6. **[MEDIUM] CI Artifacts Path Fix**: Investigate and fix the "No files were found" errors for JaCoCo coverage artifacts in CI.
-7. **[LOW] Tar Archive Issue**: Investigate tar archive extraction failures in CI workflow.
+4. **[MEDIUM] Fix CI Lint Gate false positive**: Remove or replace the naive `grep -q "warning"` check against HTML lint reports. `./gradlew lint` already fails on lint errors. If we want to fail on warnings, use `android { lintOptions { warningsAsErrors = true } }` in `app/build.gradle` and let Gradle's own exit code handle it.
+5. **[MEDIUM] CI JaCoCo Artifacts**: Resolve "No files were found" errors for JaCoCo coverage artifacts by ensuring execution data files are generated/uploaded to the correct paths in CI.
+6. **[LOW] User-facing WebView load error handling**: Replace or augment the silent offline fallback with a toast or Compose dialog that tells the user the page failed to load and offers retry.
+7. **[LOW] ktlint / Android Lint baseline**: Add `ktlint` or a `baseline.xml` for Android Lint so new warnings can be tracked without blocking CI on pre-existing ones.
+
+## In Progress (2026-11-21)
+- [ ] Remove faulty CI lint check that greps HTML reports for the literal word "warning" (`build.yml` updated; CI green verification pending).
 
 ## Completed Tasks
 - WebView Cache Management

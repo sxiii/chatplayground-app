@@ -112,12 +112,6 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew lint --stacktrace --console=plain
-          for report in app/build/reports/lint-results-debug.html app/build/reports/lint-results-release.html; do
-            if [ -f "$report" ] && grep -q "warning" "$report"; then
-              echo "::error file=$report::Lint warnings found in $report"
-              exit 1
-            fi
-          done
 
       - name: Unit Test Diagnostics
         if: failure()
