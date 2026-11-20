@@ -2,40 +2,40 @@
 
 ## Problem Diagnosis
 
-### Issue: CI Build Failure
-After the JaCoCo configuration fix (commit `06f6a96`), all subsequent CI runs failed at "Build Debug APK" step with exit code 1.
+### Issue: CI Build Failure (Run 44820389942)
+After the vision.md update (commit `80dfd7a`), CI build failed with:
+- **Color resource error**: "The color 'surface' in values-night has no declaration in the base values folder"
+- **Archive extraction errors**: tar failed with exit code 2
+- **JaCoCo artifacts not found**: No coverage files to upload
 
 ### Root Cause Analysis
-Examined CI logs from run `44812307742`. The failure was a **Kotlin compilation error**:
-
-```
-e: file:///home/runner/work/chatplayground-app/chatplayground-app/app/src/main/java/com/chatplayground/app/utils/CacheClearer.kt:5:17 Unresolved reference: test
-e: file:///home/runner/work/chatplayground-app/chatplayground-app/app/src/main/java/com/chatplayground/app/utils/CacheClearer.kt:24:17 Unresolved reference: clearCookies
-```
-
-**Two issues found:**
-1. Line 5: `import androidx.test.core.app.ApplicationProvider` - The `androidx.test:core` library is only a test dependency, but this import was in the **main source file** (not test source), causing "Unresolved reference: test".
-2. Line 24: `webView.clearCookies()` - Method was deprecated and may not be available in all API levels.
+Examined CI logs from run `44820389942`. The primary issue was:
+1. `values-night/colors.xml` defined `surface` and `background` colors but `values/colors.xml` (base) lacked these definitions. Android requires base values for colors used in night mode to prevent runtime crashes.
 
 ### Fix Applied
-- Removed the unused `ApplicationProvider` import from `CacheClearer.kt`
-- Replaced deprecated `webView.clearCookies()` with `CookieManager.getInstance().removeAllCookies(null)` + `flush()` API
-- Added necessary imports: `android.webkit.CookieManager`, `androidx.webkit.WebViewCompat`
+- Added `surface` and `background` color definitions to `app/src/main/res/values/colors.xml`
+- These match the night mode values for consistency
+- Also added `background` color for completeness
 
 ### Verification
-- Pushed fix with commit `165c4a5`
-- New CI run `44819470837` in progress (verified in background monitoring)
+- Pushed fix with commit (pending)
+- Monitoring for successful CI run
 
 ## Improvement Suggestions Added
 
-Updated `.autonomy/vision.md` with the following new medium-priority items:
+Updated `.autonomy/vision.md` with the following new medium/low-priority items:
 
-1. **[MEDIUM] WebView Navigation History** - Implement swipe gestures or UI controls to navigate WebView's history stack (back/forward), providing native-like browsing experience.
-
-2. **[MEDIUM] Session Persistence** - Save/restore WebView navigation state (URL, scroll position, form inputs) to survive process death without relying on Activity recreation.
+1. **[MEDIUM] WebView Custom Tabs**: Use Android Custom Tabs for external links to provide a more integrated browser experience.
+2. **[MEDIUM] Deep Link Integration**: Configure Android Intent Filters for chatplayground.ai links.
+3. **[MEDIUM] Biometric Authentication for Secure Storage**: Protect stored credentials using BiometricPrompt.
+4. **[LOW] WebView Loading Indicator Enhancement**: Add a loading spinner overlay during WebView page loads.
+5. **[LOW] Error Handling Improvements**: Implement proper error handling for WebView load failures.
+6. **[MEDIUM] CI Artifacts Path Fix**: Investigate JaCoCo coverage artifact path issues.
+7. **[LOW] Tar Archive Issue**: Investigate tar archive extraction failures in CI.
 
 ## Next Steps
 
-1. Monitor CI run `44819470837` for completion
-2. If build succeeds: commit the updated cycle_summary.md and vision.md
-3. If build fails: diagnose and fix remaining issues
+1. Commit the colors.xml fix
+2. Push to main and monitor new CI run
+3. If build succeeds: update cycle_summary.md with success
+4. If build fails: diagnose and fix remaining issues (tar/archive problems)

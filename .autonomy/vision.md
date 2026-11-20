@@ -21,6 +21,9 @@ while keeping the main content in a WebView.
 - [x] **[MEDIUM] Offline Fallback Page for WebView network errors** — DONE: implemented in `onReceivedError` with `file:///android_asset/offline.html`.
 - [x] Implement Dark Mode support.
 - [x] Fix Kotlin compilation errors (CacheClearer.kt - removed test import, fixed clearCookies API)
+- [x] **[MEDIUM] WebView Navigation History**: Implement swipe gestures or UI controls to navigate WebView's history stack (back/forward), providing native-like browsing experience.
+- [x] **[MEDIUM] Session Persistence**: Save/restore WebView navigation state (URL, scroll position, form inputs) to survive process death without relying on Activity recreation.
+- [x] **Fix night mode color resources**: Added missing `surface` and `background` colors to base `values/colors.xml` for proper night mode fallback.
 
 ## Next Improvement Suggestions (2026-11-20)
 1. **[MEDIUM] WebView Custom Tabs**: Use Android Custom Tabs for external links to provide a more integrated browser experience without leaving the app context entirely.
@@ -28,10 +31,16 @@ while keeping the main content in a WebView.
 3. **[MEDIUM] Biometric Authentication for Secure Storage**: Protect stored credentials in SecureStorage using BiometricPrompt before retrieval.
 4. **[LOW] WebView Loading Indicator Enhancement**: Add a loading spinner overlay during WebView page loads.
 5. **[LOW] Error Handling Improvements**: Implement proper error handling for WebView load failures with user-facing error messages.
-6. **[MEDIUM] WebView Navigation History**: Implement swipe gestures or UI controls to navigate WebView's history stack (back/forward), providing native-like browsing experience.
+6. **[MEDIUM] CI Artifacts Path Fix**: Investigate and fix the "No files were found" errors for JaCoCo coverage artifacts in CI.
+7. **[LOW] Tar Archive Issue**: Investigate tar archive extraction failures in CI workflow.
 
 ## Completed Tasks
 - WebView Cache Management
 - WebView Loading Indicator
 - WebView Load Retry Policy
 - Offline Fallback Page Loading
+- Dark Mode Support (with proper color resource fallback)
+- Kotlin Compilation Error Fixes
+- SecureStorage.remove() method
+- WebView Navigation History Implementation
+- Session Persistence Implementation
