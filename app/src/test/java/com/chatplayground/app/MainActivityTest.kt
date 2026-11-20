@@ -64,5 +64,19 @@ class MainActivityTest {
             "file:///android_asset/offline.html",
             shadowOf(webView).lastLoadedUrl
         )
+    @Test
+    fun activityUpdatesTitleWhenWebViewTitleChanges() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val webView = activity.getWebView()
+        val chromeClient = webView.webChromeClient
+
+        val newTitle = \"ChatPlayground - Home\"
+        chromeClient?.onReceivedTitle(webView, newTitle)
+
+        assertEquals(
+            \"MainActivity title should be updated to match the WebView page title\",
+            newTitle,
+            activity.title
+        )
     }
 }
