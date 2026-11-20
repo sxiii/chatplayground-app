@@ -48,6 +48,7 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`getString(context, key, default)`**: Returns the decrypted value for [key], or [default] when absent.
 - **`remove(context, key)`**: Best-effort removal of [key]; no-op if absent.
 - **`contains(context, key): Boolean`**: Returns true when [key] is present in secure storage; false otherwise.
+- **`clear(context)`**: Wipes all stored values from secure storage; useful for a "Log out / Reset app" feature.
 
 ## 4. Code Formatting Enforcement (CI)
 

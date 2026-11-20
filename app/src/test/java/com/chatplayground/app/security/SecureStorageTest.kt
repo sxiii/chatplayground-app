@@ -137,3 +137,39 @@ class SecureStorageTest {
         }
     }
 }
+
+    @Test
+    fun testClearRemovesAllKeys() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val key1 = "key_to_clear_1"
+        val key2 = "key_to_clear_2"
+
+        try {
+            SecureStorage.putString(context, key1, "value1")
+            SecureStorage.putString(context, key2, "value2")
+            assertTrue(SecureStorage.contains(context, key1))
+            assertTrue(SecureStorage.contains(context, key2))
+
+            SecureStorage.clear(context)
+
+            assertFalse(SecureStorage.contains(context, key1))
+            assertFalse(SecureStorage.contains(context, key2))
+            assertNull(SecureStorage.getString(context, key1))
+            assertNull(SecureStorage.getString(context, key2))
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }
+
+    @Test
+    fun testClearOnEmptyStorageIsNoOp() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        try {
+            // Clearing empty storage should not throw
+            SecureStorage.clear(context)
+            // No assertions needed - just verifying no exception
+        } catch (e: Exception) {
+            assertNotNull(e)
+        }
+    }

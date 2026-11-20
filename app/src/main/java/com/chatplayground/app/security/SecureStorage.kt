@@ -31,4 +31,9 @@ object SecureStorage {
     fun contains(context: Context, key: String): Boolean {
         return getPrefs(context).contains(key)
     }
+
+    /** Wipes all stored values from secure storage. */
+    fun clear(context: Context) {
+        getPrefs(context).edit().clear().apply()
+    }
 }
