@@ -10,7 +10,10 @@ import android.webkit.WebChromeClient
 import android.widget.ProgressBar
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.chatplayground.app.utils.CacheClearer
+import com.chatplayground.app.utils.UrlProvider
 
 class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView
@@ -80,7 +83,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         // Load URL from UrlProvider
-        val url = com.chatplayground.app.utils.UrlProvider.getChatPlaygroundUrl()
+        val url = UrlProvider.getChatPlaygroundUrl()
         webView.loadUrl(url)
     }
 
@@ -93,6 +96,11 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_external_browser -> {
                 openInExternalBrowser(webView.url)
+                true
+            }
+            R.id.action_clear_cache -> {
+                CacheClearer.clearAll(this, webView)
+                Toast.makeText(this, "Cache cleared", Toast.LENGTH_SHORT).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

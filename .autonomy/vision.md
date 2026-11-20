@@ -53,6 +53,9 @@
 - [ ] **Implement Network Monitoring & Auto-reconnect handling**.
 
 ## New Improvement Suggestions (2026-11-20)
+- [ ] **[LOW] App Icon Update:** Replace current app icon with a modern Material Design vector icon.
+- [ ] **[MEDIUM] WebView Custom Tabs:** Use Android Custom Tabs for external links to provide a more integrated browser experience without leaving the app context entirely.
+- [ ] **[LOW] Breadcrumb/Back Navigation:** Add a dedicated "Back" button or gesture indicator to the native UI to simplify navigation through WebView history.
 - [ ] **[LOW] Custom Tab integration:** Use Android Custom Tabs for external URLs to provide a more integrated browser experience.
 - [ ] **[MEDIUM] Splash Screen:** Implement a native splash screen to improve the app launch experience.
 - [ ] **[LOW] URL Bar Overlay:** Implement a subtle, retractable overlay that displays the current loaded URL for user transparency.
@@ -85,6 +88,6 @@
 - [ ] **[MEDIUM]** **WebView page-load performance profiling:** Log first-paint / `onPageFinished` timings so slow loads can be identified without user reports.
 - [ ] **[LOW]** **Settings screen for app options:** Allow toggling WebView debugging and a \"Clear secure storage\" action that calls `SecureStorage.clear(context)`.
 - [ ] **[LOW] Haptic feedback on menu selections:** Add slight vibration when clicking menu items to improve tactile feel.
-- [ ] **[MEDIUM] WebView Cache Management:** Implement a "Clear Cache" action in the app menu to allow users to reset the browser state.
+- [ ] **[MEDIUM] WebView Cache Management:** Implement a \"Clear Cache\" action in the app menu to allow users to reset the browser state.
 - [ ] **[LOW] App-wide search shortcut:** Implement a global search overlay or shortcut to quickly find content within the app's cached pages.
 - [ ] **[MEDIUM] Adaptive layout for tablets:** Ensure the WebView layout optimizes for larger screens (e.g., multi-pane view or wider margins).
