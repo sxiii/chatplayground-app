@@ -12,9 +12,8 @@ This document describes the core build, CI/CD, and application runtime functions
   2. **Set up JDK:** Configures JDK 17 (Temurin distribution) and enables the Gradle build-cache using `actions/setup-java@v4` (`cache: 'gradle'`).
   3. **Set up Android SDK:** Provisions the Android command-line tools, license acceptance, and `ANDROID_HOME` / `ANDROID_SDK_ROOT` / PATH via `android-actions/setup-android@v3`, declaring the required components through its `packages` input (`platform-tools`, `platforms;android-34`, `build-tools;34.0.0`) with `cmdline-tools-version: latest`.
   4. **Grant Gradle Wrapper Execution Permission:** Ensures `gradlew` is executable (`chmod +x gradlew`).
-  5. **Build Debug APK:** Compiles and assembles the debug build via `./gradlew assembleDebug --stacktrace --console=plain`, teeing the output to `gradle_build_debug.log`.
-  6. **Build Debug APK Diagnostics** (on failure only): Writes the captured error markers and last log lines to the job summary and a public file annotation so the real Gradle error is inspectable without admin log access.
-  7. **Run Unit Tests:** Executes the JVM unit-test suite via `./gradlew test --no-daemon --stacktrace --console=plain` (with a matching on-failure diagnostics step).
+  5. **Build Debug APK:** Compiles and assembles the debug build via `./gradlew assembleDebug --stacktrace --console=plain`.
+  6. **Run Unit Tests:** Executes the JVM unit-test suite via `./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain` (with a matching on-failure diagnostics step in the job summary).
   8. **Build Release APK:** Assembles the (unsigned) release build via `./gradlew assembleRelease --stacktrace --console=plain`.
   9. **Upload Artifacts:** Uploads the compiled APK outputs (`app/build/outputs/apk/`) as build artifacts using `actions/upload-artifact@v4` (runs on success or failure).
 

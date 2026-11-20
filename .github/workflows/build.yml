@@ -57,54 +57,22 @@ jobs:
       - name: Build Debug APK
         run: |
           set -o pipefail
-          ./gradlew assembleDebug --stacktrace --console=plain 2>&1 | tee gradle_build_debug.log
-
-      - name: Build Debug APK Diagnostics
-        if: failure()
-        run: |
-          echo "## Gradle Build Diagnostics" >> "$GITHUB_STEP_SUMMARY"
-          echo "Error markers captured from Gradle output (publicly visible in the job):" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          grep -nE "FAILURE:|error:|^e: |AAPT:|What went wrong|Caused by|Could not (find|resolve)|unresolved reference|cannot find symbol|> Task .* FAILED" gradle_build_debug.log | tail -n 40 >> "$GITHUB_STEP_SUMMARY" \
-            || echo "(no error markers matched; see last lines below)" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Last 40 lines of the Gradle output:" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          tail -n 40 gradle_build_debug.log >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          echo "Full Gradle log:" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          cat gradle_build_debug.log >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          # Surface the first failure marker as a file annotation (publicly readable).
-          FIRST_ERR=$(grep -m1 -E "FAILURE:|error:|^e: |What went wrong|Could not (find|resolve)" gradle_build_debug.log || true)
-          echo "::error file=gradle_build_debug.log::Build Debug APK failed. First error marker: ${FIRST_ERR:-see job summary for details}"
+          ./gradlew assembleDebug --stacktrace --console=plain
 
       - name: Run Unit Tests
         continue-on-error: true
         run: |
-          set -o pipefail
-          ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain 2>&1 | tee gradle_test.log
+          ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain
 
       - name: Verify Dependencies
         run: |
-          set -o pipefail
-          ./gradlew androidDependencies --stacktrace --console=plain 2>&1 | tee gradle_dependencies.log
-          if grep -qE "Could not|FAILED" gradle_dependencies.log; then
-            echo "## Dependency Resolution Errors" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            grep -E "Could not|FAILED" gradle_dependencies.log | tail -n 10 >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            exit 1
-          fi
+          ./gradlew androidDependencies --stacktrace --console=plain
 
       - name: Generate JaCoCo coverage report
         if: always()
         continue-on-error: true
         run: |
-          set -o pipefail
-          ./gradlew jacocoTestReport --stacktrace --console=plain 2>&1 | tee jacoco_report.log
+          ./gradlew jacocoTestReport --stacktrace --console=plain
 
       - name: Debug JaCoCo Files
         if: always()
@@ -153,14 +121,7 @@ jobs:
         if: failure()
         run: |
           echo "## Unit Test Diagnostics" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          grep -nE "FAILED|Tests? .* failed|> Task .* FAILED" gradle_test.log | tail -n 40 >> "$GITHUB_STEP_SUMMARY" \
-            || echo "(no failure markers matched)" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          echo "Last 40 lines:" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          tail -n 40 gradle_test.log >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          echo "Unit tests failed. Check the GitHub Actions job console for Gradle's failure output." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace --console=plain
@@ -184,13 +145,6 @@ jobs:
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/release/app-release-unsigned.apk
-        if: always()
-
-      - name: Upload Gradle Debug Log
-        uses: actions/upload-artifact@v4
-        with:
-          name: gradle-build-debug-log
-          path: gradle_build_debug.log
         if: always()
 
   release-tag:
