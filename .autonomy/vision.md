@@ -69,6 +69,8 @@
 - [ ] **[MEDIUM]** **Custom Theme Engine:** Allow users to inject a custom CSS file into the WebView to theme the site.
 - [ ] **[MEDIUM]** **URL History Navigation:** Add \"Back\" and \"Forward\" buttons/gestures to the native UI for better WebView navigation.
 - [ ] **[LOW]** **Page Title Sync:** Update the Android Activity title to match the current page title of the WebView.
+- [ ] **[MEDIUM]** **WebView scroll position restoration after rotation/process death:** save and restore `WebView` state with `saveState`/`restoreState` so the user does not lose their place.
+- [ ] **[HIGH]** **Safe link interception for non-HTTP schemes:** in `WebViewClient.shouldOverrideUrlLoading`, block or confirm non-http/https/intent schemes to prevent accidental navigation or app launches.
 - [ ] **[MEDIUM]** **Custom Error Pages:** Provide specific, styled local HTML pages for common errors (404, 500) to improve the offline/error experience.
 - [ ] **[LOW]** **App Version Info:** Add a small \"About\" section or menu item showing the current app version and build number.
 - [x] **[HIGH]** **Synchronize `docs/FUNCTIONS.md` with actual CI/Build config:**
