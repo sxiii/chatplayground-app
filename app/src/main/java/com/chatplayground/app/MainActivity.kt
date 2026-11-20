@@ -1,11 +1,15 @@
 package com.chatplayground.app
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.webkit.WebChromeClient
 import android.widget.ProgressBar
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -58,5 +62,27 @@ class MainActivity : AppCompatActivity() {
         // Load URL from UrlProvider
         val url = com.chatplayground.app.utils.UrlProvider.getChatPlaygroundUrl()
         webView.loadUrl(url)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_external_browser -> {
+                openInExternalBrowser(webView.url)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun openInExternalBrowser(url: String?) {
+        url?.let {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+            startActivity(intent)
+        }
     }
 }

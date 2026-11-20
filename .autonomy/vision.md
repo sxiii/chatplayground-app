@@ -56,12 +56,17 @@
 - [x] **[MEDIUM]** **Add WebView Loading Indicator:** Implement a `ProgressBar` or similar UI element to show while the WebView is loading a page, improving perceived performance. — DONE (commit `3a59476`; CI success).
 - [x] **[MEDIUM]** **Offline Fallback Page:** Show a friendly offline message or cached version when the network is unavailable instead of the standard browser error. — DONE (commit `ddde05d`).
 - [ ] **[LOW]** **Performance Profiling Hook:** Expose optional logging of page load metrics (first-paint / DOMContentLoaded times) through `WebChromeClient` so future optimization work has data points.
-- [ ] **[LOW]** **Accessibility Contrast Check:** Verify that WebView content and native overlay elements meet minimum contrast ratios for screen-reader and low-vision users.
-- [ ] **[MEDIUM]** **Add "Share" Button:** Implement a share action in the app's menu or a floating button to share the current WebView URL with other applications.
-- [ ] **[LOW]** **Implement "Clear Cache" Option:** Add a user-accessible option to clear the WebView's cache and secure storage, useful for troubleshooting or freeing up storage.
+- [ ] **[LOW]** **Accessibility Contrast Check:** Verify that WebView content and native overlay elements meet contrast ratios for screen-reader and low-vision users.
+- [ ] **[MEDIUM]** **Add \"Share\" Button:** Implement a share action in the app's menu or a floating button to share the current WebView URL with other applications.
+- [ ] **[LOW]** **Implement \"Clear Cache\" Option:** Add a user-accessible option to clear the WebView's cache and secure storage, useful for troubleshooting or freeing up storage.
 - [ ] **[MEDIUM]** **Custom User-Agent:** Allow setting a custom User-Agent string via a settings config to bypass site restrictions.
 - [ ] **[LOW]** **External Browser Option:** Add a menu option to open the current URL in the system's default browser.
 - [ ] **[MEDIUM]** **WebView Zoom Control:** Implement basic zoom support for users with visual impairments.
+- [ ] **[MEDIUM]** **Custom Theme Engine:** Allow users to inject a custom CSS file into the WebView to theme the site.
+- [ ] **[MEDIUM]** **URL History Navigation:** Add \"Back\" and \"Forward\" buttons/gestures to the native UI for better WebView navigation.
+- [ ] **[LOW]** **Page Title Sync:** Update the Android Activity title to match the current page title of the WebView.
+- [ ] **[MEDIUM]** **Custom Error Pages:** Provide specific, styled local HTML pages for common errors (404, 500) to improve the offline/error experience.
+- [ ] **[LOW]** **App Version Info:** Add a small \"About\" section or menu item showing the current app version and build number.
 - [x] **[HIGH]** **Synchronize `docs/FUNCTIONS.md` with actual CI/Build config:**
     - `actions/setup-java` is currently `@v5` in `build.yml` but `@v4` in docs.
     - `android-actions/setup-android` is pinned to a specific SHA in `build.yml` but `@v3` in docs.
@@ -70,6 +75,6 @@
 - [ ] **[MEDIUM]** **Update `ci_debugging.md` to reflect `ci-workflow-hygiene`:**
     - Ensure it no longer suggests parsing `.log` files (removed from `build.yml`) and focuses on exit codes and `--stacktrace` output in the job console.
 - [x] **[MEDIUM]** **Implement `SecureStorage.clear(context)`** — DONE (commit `6878f98`; CI success).
-    - Provide a way to wipe all secure preferences, useful for a "Log out / Reset app" feature.
+    - Provide a way to wipe all secure preferences, useful for a \"Log out / Reset app\" feature.
 - [ ] **[MEDIUM]** **WebView page-load performance profiling:** Log first-paint / `onPageFinished` timings so slow loads can be identified without user reports.
-- [ ] **[LOW]** **Settings screen for app options:** Allow toggling WebView debugging and a "Clear secure storage" action that calls `SecureStorage.clear(context)`.
+- [ ] **[LOW]** **Settings screen for app options:** Allow toggling WebView debugging and a \"Clear secure storage\" action that calls `SecureStorage.clear(context)`.
