@@ -21,16 +21,7 @@ android {
     testOptions {
         unitTests.all {
             // JUnit 4 (no useJUnitPlatform()).
-            // Explicitly enable JaCoCo on each unit-test task so AGP writes
-            // build/jacoco/<taskName>.exec which jacocoTestReport consumes.
-            // Without isEnabled = true, no .exec files are produced and
-            // jacocoTestReport fails with "No execution data found".
-            jacoco {
-                isEnabled = true
-                includeNoLocationClasses = true
-                // Robolectric/AGP stub classes are generated, not authored code.
-                excludes = ['jdk.internal.*']
-            }
+            // JaCoCo is configured at the task level via jacocoTestReport task below.
         }
         unitTests.includeAndroidResources = true
     }
@@ -52,30 +43,13 @@ jacoco {
 // Register the report explicitly because the Android unit-test task is not
 // wired to a JaCoCo report task by the Java plugin.
 tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport) {
-    // Start enabled; onlyIf below controls whether execution actually happens.
-    // NOTE: enabled=false causes Gradle to throw when the task is requested on
-    // the CLI, so we keep enabled=true and rely on onlyIf to skip.
     enabled = true
-    // Skip gracefully when no JaCoCo execution data exists (e.g. AGP did not
-    // write .exec files for unit tests). Failing here blocks the whole CI
-    // pipeline even though compilation and tests succeed.
-    onlyIf {
-        def jacocoDir = file("$buildDir/jacoco")
-        jacocoDir.exists() && jacocoDir.listFiles()?.any { it.name.endsWith('.exec') } == true
-    }
     dependsOn 'testDebugUnitTest'
-    reports {
-        xml.required = false
-        html.required = false
-        csv.required = false
-    }
-    executionData.setFrom(files(
-            fileTree(dir: "$buildDir/jacoco", include: ['*.exec']),
-            fileTree(dir: "$buildDir/intermediates/unit_test_coverage/debug", include: ['*.exec']),
-            fileTree(dir: "$buildDir/intermediates/unit_test_coverage/release", include: ['*.exec']),
-            fileTree(dir: "$buildDir/outputs/unit_test_coverage/debug", include: ['*.exec']),
-            fileTree(dir: "$buildDir/outputs/unit_test_coverage/release", include: ['*.exec'])
-    ))
+    
+    executionData.setFrom(
+            fileTree(dir: "$buildDir/jacoco", include: ['*.exec'])
+    )
+    
     classDirectories.setFrom(files(
             fileTree(dir: "$buildDir/tmp/kotlin-classes/debug", exclude: [
                     '**/R.class',
@@ -86,11 +60,16 @@ tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport)
             ])
     ))
     sourceDirectories.setFrom(files('src/main/java', 'src/main/kotlin'))
+    reports {
+        xml.required = false
+        html.required = false
+        csv.required = false
+    }
 }
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.activity:activity-compose:1.8.0'
     implementation platform('androidx.compose:compose-bom:2023.08.00')
     implementation 'androidx.compose.ui:ui'

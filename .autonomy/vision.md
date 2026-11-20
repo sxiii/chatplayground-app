@@ -24,8 +24,9 @@ while keeping the main content in a WebView.
 ## Next Improvement Suggestions (2026-11-20)
 1. **[MEDIUM] WebView Custom Tabs**: Use Android Custom Tabs for external links to provide a more integrated browser experience without leaving the app context entirely.
 2. **[MEDIUM] Deep Link Integration**: Configure Android Intent Filters for chatplayground.ai links to allow the app to open when users click `chatplayground.ai` links in other apps.
-3. **[LOW] WebView Loading Indicator Enhancement**: Add a loading spinner overlay during WebView page loads.
-4. **[LOW] Error Handling Improvements**: Implement proper error handling for WebView load failures with user-facing error messages.
+3. **[MEDIUM] Biometric Authentication for Secure Storage**: Protect stored credentials in SecureStorage using BiometricPrompt before retrieval.
+4. **[LOW] WebView Loading Indicator Enhancement**: Add a loading spinner overlay during WebView page loads.
+5. **[LOW] Error Handling Improvements**: Implement proper error handling for WebView load failures with user-facing error messages.
 
 ## Completed Tasks
 - WebView Cache Management
