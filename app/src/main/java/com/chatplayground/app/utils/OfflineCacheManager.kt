@@ -1,6 +1,7 @@
 package com.chatplayground.app.utils
 
 import java.io.File
+import java.nio.file.Files
 import java.security.MessageDigest
 
 class OfflineCacheManager(private val cacheDir: File) {
@@ -16,13 +17,13 @@ class OfflineCacheManager(private val cacheDir: File) {
             cacheDir.mkdirs()
         }
         val file = getCacheFile(url)
-        file.writeText(data)
+        Files.write(file.toPath(), data.toByteArray(Charsets.UTF_8))
     }
 
     fun getCachedResponse(url: String): String? {
         val file = getCacheFile(url)
         return if (file.exists()) {
-            file.readText()
+            String(Files.readAllBytes(file.toPath()), Charsets.UTF_8)
         } else {
             null
         }
@@ -30,7 +31,10 @@ class OfflineCacheManager(private val cacheDir: File) {
 
     fun clearCache() {
         if (cacheDir.exists()) {
-            cacheDir.listFiles()?.forEach { it.delete() }
+            val files = cacheDir.listFiles() ?: return
+            for (file in files) {
+                file.delete()
+            }
         }
     }
 }
