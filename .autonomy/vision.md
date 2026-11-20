@@ -32,6 +32,7 @@
 - [x] **[MEDIUM]** Pin `android-actions/setup-android` to a specific version/digest instead of floating `@v3` for reproducible CI builds. — DONE
 - [x] Add unit test for SecureStorage encryption edge cases and fallback mechanisms. — DONE (commit `071b87f`; CI run #103 green).
 - [ ] **[HIGH]** Implement `SecureStorage.contains(context, key)` to check key presence without decrypting — add `testContainsReturnsTrueAfterPut` and `testContainsReturnsFalseForMissingKey` unit tests.
+- [ ] **[HIGH]** Fix Kotlin version mismatch to support newer AndroidX libraries: CI build of `appcompat:1.8.0` fails with "binary version of its metadata is 2.1.0, expected version is 1.9.0" — upgrade `kotlinVersion`, or pin `appcompat` back to a 1.9-compatible release, and prove it with a green CI run.
 - [ ] **Add Espresso UI tests for WebView.**
 - [x] Add code formatting enforcement (ktlint).
 - [ ] Add automated UI integration tests using Espresso.
