@@ -1,0 +1,86 @@
+package com.chatplayground.app
+
+import android.view.View
+import android.widget.ProgressBar
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.Robolectric
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+/**
+ * Verifies that MainActivity displays a native loading indicator while the
+ * WebView is performing a page load and hides it once the load completes.
+ */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
+class MainActivityLoadingIndicatorTest {
+
+    private fun findLoadingProgress(activity: MainActivity): ProgressBar? {
+        val id = activity.resources.getIdentifier("loading_progress", "id", activity.packageName)
+        if (id == 0) return null
+        return activity.findViewById<ProgressBar>(id)
+    }
+
+    @Test
+    fun loadingIndicatorIsVisibleWhenPageLoadStarts() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val progress = findLoadingProgress(activity)
+
+        assertNotNull(
+            "MainActivity should contain a loading_progress view",
+            progress
+        )
+        assertEquals(
+            "The loading indicator should be visible while the page is loading",
+            View.VISIBLE,
+            progress!!.visibility
+        )
+    }
+
+    @Test
+    fun loadingIndicatorIsHiddenWhenPageLoadCompletes() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val progress = findLoadingProgress(activity)
+        assertNotNull("MainActivity should contain a loading_progress view", progress)
+
+        val webView = activity.getWebView()
+        val chromeClient = webView.webChromeClient
+        assertNotNull(
+            "MainActivity should install a WebChromeClient to track load progress",
+            chromeClient
+        )
+
+        chromeClient!!.onProgressChanged(webView, 100)
+
+        assertEquals(
+            "The loading indicator should be hidden once the page finishes loading",
+            View.GONE,
+            progress!!.visibility
+        )
+    }
+
+    @Test
+    fun loadingIndicatorRemainsVisibleDuringPartialLoad() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val progress = findLoadingProgress(activity)
+        assertNotNull("MainActivity should contain a loading_progress view", progress)
+
+        val webView = activity.getWebView()
+        val chromeClient = webView.webChromeClient
+        assertNotNull(
+            "MainActivity should install a WebChromeClient to track load progress",
+            chromeClient
+        )
+
+        chromeClient!!.onProgressChanged(webView, 50)
+
+        assertEquals(
+            "The loading indicator should remain visible while the load is still in progress",
+            View.VISIBLE,
+            progress!!.visibility
+        )
+    }
+}

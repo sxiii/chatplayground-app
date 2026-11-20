@@ -55,6 +55,8 @@
 ## New Improvement Suggestions (2026-11-20)
 - [ ] **[MEDIUM]** **Add WebView Loading Indicator:** Implement a `ProgressBar` or similar UI element to show while the WebView is loading a page, improving perceived performance.
 - [ ] **[MEDIUM]** **Offline Fallback Page:** Show a friendly offline message or cached version when the network is unavailable instead of the standard browser error.
++ - [ ] **[LOW]** **Performance Profiling Hook:** Expose optional logging of page load metrics (first-paint / DOMContentLoaded times) through `WebChromeClient` so future optimization work has data points.
++ - [ ] **[LOW]** **Accessibility Contrast Check:** Verify that WebView content and native overlay elements meet minimum contrast ratios for screen-reader and low-vision users.
 - [x] **[HIGH]** **Synchronize `docs/FUNCTIONS.md` with actual CI/Build config:**
     - `actions/setup-java` is currently `@v5` in `build.yml` but `@v4` in docs.
     - `android-actions/setup-android` is pinned to a specific SHA in `build.yml` but `@v3` in docs.
@@ -62,5 +64,7 @@
     - `ktlint` is no longer enforced in CI (removed due to config failures), but `docs/FUNCTIONS.md` still claims it is a dedicated CI step.
 - [ ] **[MEDIUM]** **Update `ci_debugging.md` to reflect `ci-workflow-hygiene`:**
     - Ensure it no longer suggests parsing `.log` files (removed from `build.yml`) and focuses on exit codes and `--stacktrace` output in the job console.
-- [ ] **[MEDIUM]** **Implement `SecureStorage.clear(context)`**:
+- [x] **[MEDIUM]** **Implement `SecureStorage.clear(context)`** — DONE (commit `6878f98`; CI success).
     - Provide a way to wipe all secure preferences, useful for a "Log out / Reset app" feature.
+- [ ] **[MEDIUM]** **WebView page-load performance profiling:** Log first-paint / `onPageFinished` timings so slow loads can be identified without user reports.
+- [ ] **[LOW]** **Settings screen for app options:** Allow toggling WebView debugging and a "Clear secure storage" action that calls `SecureStorage.clear(context)`.
