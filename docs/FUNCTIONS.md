@@ -59,6 +59,10 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`contains(context, key): Boolean`**: Returns true when [key] is present in secure storage; false otherwise.
 - **`clear(context)`**: Wipes all stored values from secure storage; useful for a "Log out / Reset app" feature.
 
+### Biometric Authentication (`SecureStorage`)
+- **`authenticateWithBiometric(context, onSuccess, onFailure)`**: Displays a system biometric prompt (fingerprint/face) via `BiometricPrompt` and invokes [onSuccess] on successful authentication or [onFailure] on cancellation/error.
+- **`getStringWithBiometric(context, key)`**: Returns the decrypted value for [key] only after successful biometric authentication; returns `null` if authentication has not been performed or fails.
+
 ## 4. Code Formatting Enforcement (CI)
 
 ### ktlint (`org.jmailen.gradle.kotlinter`)
