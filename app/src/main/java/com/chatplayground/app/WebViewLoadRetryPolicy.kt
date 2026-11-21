@@ -24,9 +24,11 @@ class WebViewLoadRetryPolicy(
     private val handler = Handler(Looper.getMainLooper())
 
     /** Number of retries already attempted. */
-    fun retryCount(): Int {
-        synchronized(lock) { return retryCount }
-    }
+    val retryCountValue: Int
+        get() = synchronized(lock) { retryCount }
+
+    /** Number of retries already attempted. */
+    fun retryCount(): Int = retryCountValue
 
     /**
      * Returns true if the load failure should be retried: only main-frame
@@ -35,7 +37,11 @@ class WebViewLoadRetryPolicy(
     fun shouldRetry(isMainFrame: Boolean): Boolean {
         synchronized(lock) {
             if (!isMainFrame) return false
-            return retryCount < maxRetries
+            if (retryCount < maxRetries) {
+                retryCount++
+                return true
+            }
+            return false
         }
     }
 

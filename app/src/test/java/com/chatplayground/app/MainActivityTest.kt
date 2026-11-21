@@ -13,7 +13,6 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowWebResourceRequest
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [26])
@@ -31,10 +30,7 @@ class MainActivityTest {
 
         assertNotNull("WebView should be created in onCreate", webView)
         assertNotNull("WebViewClient should be set", webView.webViewClient)
-        assertTrue(
-            "WebViewClient should be set",
-            webView.webViewClient != null
-        )
+        assertTrue("WebViewClient should be set", webView.webViewClient != null)
     }
 
     @Test
@@ -54,7 +50,6 @@ class MainActivityTest {
         val webView = activity.getWebView()
         val webViewClient = webView.webViewClient
 
-        // Simulate a network error (e.g., host lookup failed)
         webViewClient?.onReceivedError(
             webView,
             android.webkit.WebViewClient.ERROR_HOST_LOOKUP,
@@ -78,47 +73,42 @@ class MainActivityTest {
         val newTitle = "ChatPlayground - Home"
         chromeClient?.onReceivedTitle(webView, newTitle)
 
-        assertEquals(
-            "MainActivity title should be updated to match the WebView page title",
-            newTitle,
-            activity.title
-        )
+        assertEquals("ChatPlayground - Home", activity.title)
+    }
+
+    private fun requestFor(url: String): WebResourceRequest {
+        return object : WebResourceRequest {
+            override fun getUrl(): android.net.Uri = android.net.Uri.parse(url)
+            override fun isForMainFrame(): Boolean = true
+            override fun isRedirect(): Boolean = false
+            override fun hasGesture(): Boolean = false
+            override fun getMethod(): String = "GET"
+            override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
+        }
     }
 
     @Test
     fun webViewInterceptsNonHttpSchemes() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        val webViewClient = webView.webViewClient
-
-        // Simulate a mailto: link click
-        val mailtoUri = android.net.Uri.parse("mailto:support@chatplayground.ai")
-        val request = ShadowWebResourceRequest(mailtoUri)
-
-        val handled = webViewClient?.shouldOverrideUrlLoading(webView, request)
-
-        assertTrue(
-            "WebViewClient should intercept non-HTTP schemes like mailto:",
-            handled ?: false
+        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
+            webView,
+            requestFor("mailto:support@chatplayground.ai")
         )
+
+        assertTrue("WebViewClient should intercept non-HTTP schemes like mailto:", handled ?: false)
     }
 
     @Test
     fun webViewAllowsHttpHttpsSchemes() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        val webViewClient = webView.webViewClient
-
-        // Simulate an https link click
-        val httpsUri = android.net.Uri.parse("https://chatplayground.ai/about")
-        val request = ShadowWebResourceRequest(httpsUri)
-
-        val handled = webViewClient?.shouldOverrideUrlLoading(webView, request)
-
-        assertFalse(
-            "WebViewClient should NOT intercept HTTP/HTTPS schemes (let WebView handle them)",
-            handled ?: false
+        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
+            webView,
+            requestFor("https://chatplayground.ai/about")
         )
+
+        assertFalse("WebViewClient should NOT intercept HTTP/HTTPS schemes", handled ?: false)
     }
 
     @Test
@@ -128,20 +118,16 @@ class MainActivityTest {
         val webView = activity.getWebView()
         val shadowWebView = shadowOf(webView)
 
-        // Set an arbitrary scroll position
-        val scrollX = 100
-        val scrollY = 200
-        shadowWebView.scrollTo(scrollX, scrollY)
+        shadowWebView.scrollTo(100, 200)
 
-        // Simulate activity recreation with saved state
         val bundle = android.os.Bundle()
         controller.saveInstanceState(bundle).pause().stop().destroy()
-        
+
         val newController = Robolectric.buildActivity(MainActivity::class.java).create(bundle).start().restoreInstanceState(bundle).resume()
         val newActivity = newController.get()
         val newWebView = newActivity.getWebView()
 
-        assertEquals("WebView should restore scrollX position", scrollX, newWebView.scrollX)
-        assertEquals("WebView should restore scrollY position", scrollY, newWebView.scrollY)
+        assertEquals("WebView should restore scrollX position", 100, newWebView.scrollX)
+        assertEquals("WebView should restore scrollY position", 200, newWebView.scrollY)
     }
 }

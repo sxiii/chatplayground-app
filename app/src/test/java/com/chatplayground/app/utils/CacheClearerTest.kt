@@ -22,13 +22,13 @@ class CacheClearerTest {
         val url = "https://chatplayground.ai/cache-test"
 
         cacheManager.saveCachedResponse(url, "cached-data")
-        assertTrue("Cache should exist before clearing", cacheManager.getCachedResponse(url) != null)
+        assertTrue(cacheManager.getCachedResponse(url) != null)
 
         val webView = WebView(context)
         CacheClearer.clearAll(context, webView)
 
-        assertFalse("Offline cache should be cleared", cacheManager.getCachedResponse(url) != null)
-        assertTrue("WebView cache should have been requested for clearing", shadowOf(webView).wasClearCacheCalled)
+        assertFalse(cacheManager.getCachedResponse(url) != null)
+        assertTrue(shadowOf(webView).isClearCacheCalled)
     }
 
     @Test
