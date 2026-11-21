@@ -31,7 +31,7 @@ while keeping the main content in a WebView.
 3. **[MEDIUM] Biometric Authentication for Secure Storage**: Protect stored credentials in SecureStorage using BiometricPrompt before retrieval.
 4. **[MEDIUM] Fix CI Lint Gate false positive**: Remove or replace the naive `grep -q "warning"` check against HTML lint reports. `./gradlew lint` already fails on lint errors. If we want to fail on warnings, use `android { lintOptions { warningsAsErrors = true } }` in `app/build.gradle` and let Gradle's own exit code handle it.
 5. **[MEDIUM] CI JaCoCo Artifacts**: Resolve "No files were found" errors for JaCoCo coverage artifacts by ensuring execution data files are generated/uploaded to the correct paths in CI.
-6. **[LOW] User-facing WebView load error handling**: Replace or augment the silent offline fallback with a toast or Compose dialog that tells the user the page failed to load and offers retry.
+6. **[LOW] User-facing WebView load error handling**: Replace or augment the silent offline fallback with a toast or Compose dialog that tells the user the page failed to load and offers retry. — DONE: `MainActivity` now shows `Toast.makeText(..., "Network error occurred. Showing offline page.", ...)` before loading `offline.html` on network errors. Covered by `MainActivityLoadErrorNotificationTest` (asserts toast text and duration).
 7. **[LOW] ktlint / Android Lint baseline**: Add `ktlint` or a `baseline.xml` for Android Lint so new warnings can be tracked without blocking CI on pre-existing ones.
 
 ## In Progress (2026-11-21)

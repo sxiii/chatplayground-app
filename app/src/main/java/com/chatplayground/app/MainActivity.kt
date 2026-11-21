@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
                 super.onReceivedError(view, errorCode, description, failingUrl)
                 when (errorCode) {
                     ERROR_HOST_LOOKUP, ERROR_CONNECT, ERROR_TIMEOUT, ERROR_FAILED_SSL_HANDSHAKE -> {
+                        Toast.makeText(this@MainActivity, "Network error occurred. Showing offline page.", Toast.LENGTH_SHORT).show()
                         view?.loadUrl("file:///android_asset/offline.html")
                     }
                     else -> {
