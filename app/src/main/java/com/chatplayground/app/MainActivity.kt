@@ -110,19 +110,15 @@ class MainActivity : AppCompatActivity() {
                 // minSdk is 24, so Android dispatches to the WebResourceRequest overload
                 // below; this deprecated branch is kept for compatibility and treats the
                 // error as a main-frame navigation failure.
-                onReceivedError(view ?: return,
-                    object : WebResourceRequest {
-                        override fun getUrl(): android.net.Uri = failingUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
-                        override fun isForMainFrame(): Boolean = true
-                        override fun isRedirect(): Boolean = false
-                        override fun hasGesture(): Boolean = false
-                        override fun getMethod(): String = "GET"
-                        override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
-                    },
-                    object : WebResourceError() {
-                        override fun getErrorCode(): Int = errorCode
-                        override fun getDescription(): String? = description
-                    })
+                val request = object : WebResourceRequest {
+                    override fun getUrl(): android.net.Uri = failingUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
+                    override fun isForMainFrame(): Boolean = true
+                    override fun isRedirect(): Boolean = false
+                    override fun hasGesture(): Boolean = false
+                    override fun getMethod(): String = "GET"
+                    override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
+                }
+                handleWebViewError(view ?: return, errorCode, request.isForMainFrame())
             }
 
             override fun onReceivedError(
@@ -136,6 +132,10 @@ class MainActivity : AppCompatActivity() {
                 val code = error?.getErrorCode() ?: return
                 val isMainFrame = request?.isForMainFrame() ?: true
 
+                handleWebViewError(view ?: return, code, isMainFrame)
+            }
+
+            private fun handleWebViewError(view: WebView, code: Int, isMainFrame: Boolean) {
                 // A failed sub-resource (an image, analytics beacon, iframe, …) must
                 // not replace the whole page with the offline fallback and must not
                 // show a network-error toast. Only main-frame navigations fall back.
@@ -144,12 +144,12 @@ class MainActivity : AppCompatActivity() {
                 when (code) {
                     ERROR_HOST_LOOKUP, ERROR_CONNECT, ERROR_TIMEOUT, ERROR_FAILED_SSL_HANDSHAKE -> {
                         Toast.makeText(this@MainActivity, "Network error occurred. Showing offline page.", Toast.LENGTH_SHORT).show()
-                        view?.loadUrl("file:///android_asset/offline.html")
+                        view.loadUrl("file:///android_asset/offline.html")
                     }
                     else -> {
                         if (loadRetryPolicy.shouldRetry(true)) {
                             loadRetryPolicy.scheduleRetryWithBackoff {
-                                view?.reload()
+                                view.reload()
                             }
                         } else {
                             loadRetryPolicy.reset()
