@@ -20,5 +20,6 @@ class TestWebResourceError(
 fun webResourceError(
     errorCode: Int,
     description: String,
-): WebResourceError =
-    TestWebResourceError(errorCode, description)
+): WebResourceError {
+    return TestWebResourceError(errorCode, description)
+}
