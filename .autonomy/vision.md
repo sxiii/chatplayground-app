@@ -83,6 +83,7 @@ while keeping the main content in a WebView.
 
 28. **[x] [LOW] Silent drop of unusable URLs**: `MainActivity.handleUrl` returns `true` for URLs that match no rule (blank/malformed) without any trace. Acceptance: log at debug level so unsupported schemes are diagnosable. DONE 2026-11-22: `handleUrl` logs `Log.d("MainActivity", "Unsupported URL dropped: $url")`; covered by `MainActivityTest.handleUrlLogsDebugForUnsupportedUrls`. CI run `45072664722` success — full build + all tests + lintKotlin green on GitHub workers.
 29. **[LOW] Add automated UI regression test for offline state recovery** — ensure that reconnecting after network loss successfully reloads the target URL when currently displaying the offline fallback page.
+30. **[LOW] Add unit tests for `LinkRouter` edge cases** — verify that `LinkRouter` correctly identifies malformed URIs, empty URLs, and unusual schemes to prevent `handleUrl` from dropping potentially valid but obscure links.
 
 ## Completed (2026-11-22, Custom Tabs cycle)
 - **MEDIUM: WebView Custom Tabs for external links**: added `LinkRouter`
