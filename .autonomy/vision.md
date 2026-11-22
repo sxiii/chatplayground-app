@@ -79,7 +79,7 @@ while keeping the main content in a WebView.
 
 26. **[x] [LOW] Offline-page fallback tests bypass the WebViewClient dispatch path**: DONE 2026-11-22. `MainActivitySubResourceErrorTest` now drives `WebViewClient.onReceivedError(WebView, WebResourceRequest, WebResourceError)` end to end: main-frame network errors fall back to `offline.html` with a toast (`webViewClientOnReceivedErrorMainFrameFallsBackToOfflinePage`); sub-resource errors leave the page loaded with no toast (`webViewClientOnReceivedErrorSubResourceLeavesPageLoaded`). `webResourceError()` same-package factory (`app/src/test/java/android/webkit/WebResourceErrorFactory.kt`) constructs the otherwise-inaccessible `WebResourceError`. CI run `45057992176` success — full build + all tests + lintKotlin green on GitHub workers.
 
-27. **[MEDIUM] Custom Tab warm-up and theming**: `MainActivity.launchInCustomTab` builds a default `CustomTabsIntent` on every click — cold start, default toolbar, visible flip. Acceptance: one `CustomTabsClient` warm-up bound in `onStart` and released in `onStop`, toolbar colour taken from the app theme, and a test asserting the launched intent carries the browser package.
+27. **[x] [MEDIUM] Custom Tab warm-up and theming**: DONE 2026-11-22. `MainActivity` now binds a `CustomTabsClient` to the default provider in `onStart` (released in `onStop`), stamps the resolved browser package on the launched `CustomTabsIntent`, and themes the toolbar from `colorPrimary`. Covered by `MainActivityCustomTabTest`.
 
 28. **[LOW] Silent drop of unusable URLs**: `MainActivity.handleUrl` returns `true` for URLs that match no rule (blank/malformed) without any trace. Acceptance: log at debug level so unsupported schemes are diagnosable.
 

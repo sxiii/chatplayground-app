@@ -1,9 +1,11 @@
 package com.chatplayground.app
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,7 +19,11 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.browser.customtabs.CustomTabsService
+import androidx.browser.customtabs.CustomTabsServiceConnection
+import androidx.core.content.ContextCompat
 import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.LinkRouter
@@ -347,10 +353,15 @@ class MainActivity : AppCompatActivity() {
     /** Opens [uri] in a Custom Tab, falling back to a plain browser Intent. */
     private fun launchInCustomTab(uri: Uri) {
         try {
-            CustomTabsIntent.Builder()
-                .setShowTitle(true)
-                .build()
-                .launchUrl(this, uri)
+            val builder = CustomTabsIntent.Builder()
+            // Theme the Custom Tab toolbar to match the app's theme colour so the
+            // external chrome looks native rather than a default unthemed browser.
+            builder.setToolbarColor(themePrimaryColor())
+            // Stamp the resolved provider package so the Intent targets a warm,
+            // already-bound Custom Tabs client instead of a cold bind at click time.
+            customTabsPackage?.let { builder.setPackage(it) }
+            val intent = builder.build()
+            launchCustomTabsIntent(intent, uri)
         } catch (e: Exception) {
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
@@ -360,7 +371,79 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /** Resolves `colorPrimary` from the current theme (light or dark). */
+    private fun themePrimaryColor(): Int {
+        val typedValue = TypedValue()
+        return if (theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)) {
+            typedValue.data
+        } else {
+            ContextCompat.getColor(this, R.color.primary)
+        }
+    }
+
     internal var externalLinkLauncher: (Uri) -> Unit = { launchInCustomTab(it) }
+
+    /** Injectable seam: launches a built [CustomTabsIntent]. Defaults to a real launch. */
+    internal var launchCustomTabsIntent: (CustomTabsIntent, Uri) -> Unit = { intent, uri ->
+        intent.launchUrl(this@MainActivity, uri)
+    }
+
+    /** Package of the default Custom Tabs provider, resolved at runtime. */
+    internal var customTabsPackage: String? = null
+
+    /** The warm Custom Tabs client bound in `onStart`; released in `onStop`. */
+    internal var customTabsClient: CustomTabsClient? = null
+
+    /** True while the Custom Tabs service connection is bound (set in `onStart`). */
+    internal var isCustomTabsBound: Boolean = false
+
+    private val customTabsServiceConnection = object : CustomTabsServiceConnection {
+        override fun onCustomTabsServiceConnected(name: ComponentName, client: CustomTabsClient) {
+            customTabsPackage = name.packageName
+            customTabsClient = client
+            client.warmup(0)
+            isCustomTabsBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            customTabsPackage = null
+            customTabsClient = null
+            isCustomTabsBound = false
+        }
+    }
+
+    /** Resolves the default Custom Tabs provider package from the package manager. */
+    private fun resolveCustomTabsPackage(): String? {
+        val pm = packageManager
+        val intent = Intent(CustomTabsService.CUSTOM_TABS_CONNECTION)
+        return pm.queryIntentServices(intent, 0).firstOrNull()?.resolveInfo?.serviceInfo?.packageName
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Bind to the default Custom Tabs provider once so the first external link
+        // opens on a warm connection; released in onStop. Bind failures are silent —
+        // the launch path simply falls back to a cold CustomTabsIntent.Builder.
+        val intent = Intent(CustomTabsService.CUSTOM_TABS_CONNECTION).apply {
+            resolveCustomTabsPackage()?.let { setPackage(it) }
+        }
+        if (bindService(intent, customTabsServiceConnection, Context.BIND_AUTO_CREATE)) {
+            return
+        }
+        customTabsPackage = resolveCustomTabsPackage()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Release the warm client so we don't hold the provider connection past
+        // the activity's life. Only unbind if we actually bound successfully.
+        if (isCustomTabsBound) {
+            unbindService(customTabsServiceConnection)
+            isCustomTabsBound = false
+        }
+        customTabsClient = null
+        customTabsPackage = null
+    }
 
     private fun openInExternalBrowser(url: String?) {
         url?.let {
