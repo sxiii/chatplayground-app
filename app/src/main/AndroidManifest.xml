@@ -12,10 +12,32 @@
         android:label="ChatPlayground"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatPlayground">
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- App Links: https://chatplayground.ai/... opens the app.
+                 autoVerify requires the site to host /.well-known/assetlinks.json;
+                 without it the link still resolves via the chooser dialog. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="chatplayground.ai" />
+                <data android:scheme="https" android:host="www.chatplayground.ai" />
+            </intent-filter>
+
+            <!-- Custom scheme: chatplayground://app/<path> -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="chatplayground" />
             </intent-filter>
         </activity>
     </application>

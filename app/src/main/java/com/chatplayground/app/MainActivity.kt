@@ -15,6 +15,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.chatplayground.app.utils.CacheClearer
+import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.UrlProvider
 
 class MainActivity : AppCompatActivity() {
@@ -87,9 +88,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        // Load URL from UrlProvider
-        val url = UrlProvider.getChatPlaygroundUrl()
-        webView.loadUrl(url)
+        // Load the deep link that launched us when it is a ChatPlayground URL,
+        // otherwise fall back to the default start page.
+        val startUrl = DeepLinkResolver.resolve(intent?.data?.toString())
+            ?: UrlProvider.getChatPlaygroundUrl()
+        webView.loadUrl(startUrl)
 
         networkMonitor = NetworkMonitor(this)
         networkMonitor.observe { isConnected ->
@@ -106,6 +109,20 @@ class MainActivity : AppCompatActivity() {
         if (::networkMonitor.isInitialized) {
             networkMonitor.stopObserving()
         }
+    }
+
+    /**
+     * A deep link arrived while this activity was already running (the manifest
+     * declares `launchMode="singleTop"`), so navigate the existing WebView
+     * instead of stacking a second activity.
+     */
+    public override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val deepLinkUrl = DeepLinkResolver.resolve(intent.data?.toString()) ?: return
+        if (!::webView.isInitialized) return
+        loadRetryPolicy.reset()
+        webView.loadUrl(deepLinkUrl)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
