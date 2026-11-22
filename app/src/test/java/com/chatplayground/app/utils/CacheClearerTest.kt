@@ -8,10 +8,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
 import androidx.test.core.app.ApplicationProvider
 
-@Config(sdk = [30])
 @RunWith(RobolectricTestRunner::class)
 class CacheClearerTest {
 

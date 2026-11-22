@@ -8,14 +8,12 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /**
  * Verifies that the merged manifest actually advertises MainActivity for both
  * deep-link shapes, so an external app or the system browser can open it.
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [26])
 class ManifestDeepLinkTest {
 
     private fun resolvesFor(uri: String): Boolean {

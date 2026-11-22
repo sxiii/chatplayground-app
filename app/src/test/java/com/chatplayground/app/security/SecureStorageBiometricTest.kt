@@ -11,7 +11,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /**
  * Verifies [SecureStorage.getStringWithBiometric] enforces biometric
@@ -23,7 +22,6 @@ import org.robolectric.annotation.Config
  * meaningful instead of being unreachable behind a KeyStoreException.
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [30])
 class SecureStorageBiometricTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()

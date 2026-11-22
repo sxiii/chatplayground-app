@@ -11,7 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowNetwork
 
 /**
@@ -23,7 +22,6 @@ import org.robolectric.shadows.ShadowNetwork
  * explicitly instead of relying on the default-network shadow to fire them.
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [26])
 class NetworkMonitorObserveTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()

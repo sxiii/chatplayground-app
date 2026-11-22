@@ -9,14 +9,12 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
 
 /**
  * Verifies that MainActivity routes deep links into the WebView instead of
  * always starting on the default URL.
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [26])
 class MainActivityDeepLinkTest {
 
     private fun viewIntent(uri: String): Intent {

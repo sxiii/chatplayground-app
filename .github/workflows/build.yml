@@ -76,6 +76,9 @@ jobs:
       - name: Check Unit Test Results
         run: python3 ci_check_tests.py
 
+      - name: Verify Robolectric SDK Consistency
+        run: python3 ci_check_robolectric_sdk.py
+
       - name: Verify Dependencies
         run: |
           ./gradlew androidDependencies --stacktrace --console=plain
