@@ -27,6 +27,9 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`ci_check_robolectric_sdk.py`** — guard run in CI after `Check Unit Test Results` (and usable locally). It fails the build when the properties file is missing, when its `sdk` value is not exactly `26`, or when any test source under `app/src/test/java` still pins an SDK through `@Config(sdk = …)` / `@Config(minSdk = …)` / `@Config(maxSdk = …)`. Per-class pins silently override the properties file and are what let a Robolectric upgrade reintroduce the API-level test failures fixed on 2026-11-22.
 - **Adding a test:** no annotation needed — inherit `sdk=26` from the properties file. If a case genuinely needs another API level, change the properties file (one place) rather than adding a class-level override, and update this section.
 
+### `app/build.gradle` (module build configuration)
+- **`buildFeatures.buildConfig = true`** — AGP 8 defaults `BuildConfig` generation off; the app reads `BuildConfig.DEBUG` for debug-only behaviour (WebView remote debugging), so the class must be generated.
+
 ### `gradle.properties` (build configuration)
 - **`android.useAndroidX=true`** — required because the app depends exclusively on AndroidX artifacts while AGP 8.2.0 defaults this flag to `false`. Without it, a clean CI runner fails configuration before any task runs.
 - **`org.gradle.jvmargs`** — raises the Gradle daemon heap (`-Xmx2048m`) for Compose + Kotlin builds.

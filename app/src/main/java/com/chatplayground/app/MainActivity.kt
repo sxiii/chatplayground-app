@@ -21,6 +21,7 @@ import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.UrlProvider
 import com.chatplayground.app.utils.WebViewConfigurator
+import com.chatplayground.app.utils.WebViewDebugging
 
 class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView

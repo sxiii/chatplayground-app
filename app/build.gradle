@@ -34,6 +34,13 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
+    // AGP 8 defaults buildConfig generation off. The app needs
+    // `BuildConfig.DEBUG` as the single source of truth for debug-only
+    // behaviour such as WebView remote debugging.
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 jacoco {
