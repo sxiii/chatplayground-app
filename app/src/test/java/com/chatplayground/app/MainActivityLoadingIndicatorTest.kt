@@ -85,4 +85,49 @@ class MainActivityLoadingIndicatorTest {
             progress!!.visibility
         )
     }
+
+    @Test
+    fun loadingIndicatorIsShownOnPageStarted() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val progress = findLoadingProgress(activity)
+        assertNotNull(progress)
+        progress!!.visibility = View.GONE
+
+        val webView = activity.getWebView()
+        val client = webView.webViewClient
+        assertNotNull(client)
+
+        client!!.onPageStarted(webView, "https://chatplayground.ai", null)
+        assertEquals(View.VISIBLE, progress.visibility)
+    }
+
+    @Test
+    fun loadingIndicatorIsHiddenOnPageFinished() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val progress = findLoadingProgress(activity)
+        assertNotNull(progress)
+        progress!!.visibility = View.VISIBLE
+
+        val webView = activity.getWebView()
+        val client = webView.webViewClient
+        assertNotNull(client)
+
+        client!!.onPageFinished(webView, "https://chatplayground.ai")
+        assertEquals(View.GONE, progress.visibility)
+    }
+
+    @Test
+    fun loadingIndicatorIsHiddenOnReceivedError() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val progress = findLoadingProgress(activity)
+        assertNotNull(progress)
+        progress!!.visibility = View.VISIBLE
+
+        val webView = activity.getWebView()
+        val client = webView.webViewClient
+        assertNotNull(client)
+
+        client!!.onReceivedError(webView, android.webkit.WebViewClient.ERROR_HOST_LOOKUP, "Error", "https://chatplayground.ai")
+        assertEquals(View.GONE, progress.visibility)
+    }
 }
