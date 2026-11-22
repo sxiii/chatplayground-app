@@ -14,6 +14,7 @@ import android.widget.Toast
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.activity.OnBackPressedCallback
 import androidx.browser.customtabs.CustomTabsIntent
 import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.DeepLinkResolver
@@ -34,6 +35,20 @@ class MainActivity : AppCompatActivity() {
 
         webView = findViewById(R.id.webview)
         val progressBar = findViewById<ProgressBar>(R.id.loading_progress)
+
+        // System Back walks the WebView history first, like a browser: only the
+        // last Back press leaves the app. Without this, one tap on Back closes
+        // the activity and discards the in-app navigation stack.
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (::webView.isInitialized && webView.canGoBack()) {
+                    webView.goBack()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
