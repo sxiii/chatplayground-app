@@ -1,147 +1,29 @@
-# Autonomous Development Cycle Summary (2026-11-22, ktlint enforcement)
+# Autonomous Development Cycle Summary (2026-11-22, WebViewClient dispatch-path tests)
 
 ## Baseline check
-`git log` head `2a480c7..a8875ba`; GitHub status page operational. CI was NOT green at head `ff9df92` — run `45047936905` failed on `:app:lintKotlinTest`.
+`git log` head `d593f1e`; GitHub status page operational; CI green at run `45051970118` (full build + all tests + lintKotlin). Working tree clean at `d593f1e == origin/main`.
 
 ## Task selection
-`.autonomy/vision.md` item 2 (ktlint enforcement) was in progress: `docs/FUNCTIONS.md` §5 claims `org.jmailen.gradle.kotlinter` 4.3.0 + CI `ktlintCheck` step, both now present, but CI exposed remaining ktlint violations in unit test sources that the local formatting pass missed.
+From `.autonomy/vision.md`, item #26 (LOW) — offline-page fallback tests bypass the WebViewClient dispatch path. `MainActivitySubResourceErrorTest` called `activity.handleWebViewError(...)` directly but never drove `WebViewClient.onReceivedError(WebView, WebResourceRequest, WebResourceError)`, so the dispatch-to-handler wiring was untested end to end.
 
-## TDD / CI-only build environment
-Project policy forbids a local Java/Gradle harness, so RED/GREEN were observed on GitHub workers:
+## TDD in a CI-only build environment
+Project policy forbids local Java/Gradle, so RED/GREEN were observed on GitHub workers across five round-trips:
 
 | Step | Commit | CI run | Result |
 |---|---|---|---|
-| RED (lint fails) | `ff9df92` | `45047936905` | failure — `:app:lintKotlinTest` sources failed lint check |
-| GREEN (fixes) | `a8875ba` | `45050177038` | failure — Maven Central HTTP 429 on `robolectric:nativeruntime-dist-compat:1.0.20` (transient, not code) |
-| GREEN (re-trigger) | `d48f8f7` | `45050740924` | success — full build + all tests + lintKotlin green |
+| RED (tests + vision.md) | `4b1383e` | `45054771648` | failure — `ShadowToast.resetLatestToast` unresolved; `WebResourceError(errorCode, description)` inaccessible ctor; missing `assertNotNull` import |
+| GREEN (fix #1) | `2b75350` | `45055623889` | failure — `object : WebResourceError()` still calls package-private no-arg ctor from test package |
+| GREEN (fix #2) | `7f869dd` | `45056131624` | failure — `lintKotlinTest`: import order, unused import, missing blank lines before overrides, function-signature formatting |
+| GREEN (fix #3) | `802148e` | `45056768306` | failure — `lintKotlinTest`: factory body `=` on same line as signature |
+| GREEN (fix #4) | `5fa1d2e` | `45057992176` | success — full build + all tests + lintKotlin green |
 
 ## Diff review
-- Fixed: 9 test files (max-line-length wrapping, multiline-expression-wrapping, no-wildcard-imports) — `MainActivityTest.kt`, `MainActivityLoadErrorNotificationTest.kt`, `MainActivityLoadingIndicatorTest.kt`, `MainActivityNetworkMonitorTest.kt`, `MainActivitySubResourceErrorTest.kt`, `ManifestPermissionTest.kt`, `utils/WebViewConfiguratorTest.kt`, `security/SecureStorageTest.kt`, `WebViewLoadRetryPolicyHighLevelTest.kt`.
+- New: `MainActivitySubResourceErrorTest.webViewClientOnReceivedErrorMainFrameFallsBackToOfflinePage`, `.webViewClientOnReceivedErrorSubResourceLeavesPageLoaded`, `WebResourceErrorFactory.kt` (`TestWebResourceError` + `webResourceError()`).
+- Changed: `.autonomy/vision.md` (#24/#25 marked done, #26 marked done), `.autonomy/last_run.md`, `.autonomy/cycle_summary.md`.
 - No test weakened, no unrelated formatting churn, no credential changes.
 
 ## Verification
-CI run `45050740924`: Build Debug APK, Run Unit Tests, Check Unit Test Results, Verify Robolectric SDK Consistency, Verify Dependencies, Verify JaCoCo Report Present, Run Lint, Run lintKotlin, Build Release APK, Assert APK Artifacts Exist — all success. Pushed `ff9df92..d48f8f7` to `origin/main`.
+CI run `45057992176` at head `5fa1d2e`: Build Debug APK, Run Unit Tests, Check Unit Test Results, Verify Robolectric SDK Consistency, Verify Dependencies, Generate JaCoCo coverage report, Verify JaCoCo Report Present, Upload JaCoCo Report, Run Lint, Run lintKotlin, Build Release APK, Assert APK Artifacts Exist — all success. Pushed `d593f1e..5fa1d2e` to `origin/main`.
 
 ## Carried forward
-`.autonomy/vision.md` next actions: JaCoCo reports, misleading CI step name, offline-page dispatch-path tests. `autonomy/vision.md` gained two improvement suggestions (JaCoCo, CI step name).
-
----\n
-
-## Baseline check
-`git log` head `07f5e3e`; GitHub Actions run `44976992088` = success (5m17s).
-GitHub status page operational. So CI was green before any change in this cycle —
-the previous cycle's Robolectric fixes are confirmed on the runner.
-
-## Task selection
-From `.autonomy/vision.md` the highest-value open item with a real user impact was
-**#2 Custom Tabs for external links** (the HIGH item is test-infrastructure
-consistency; it is queued next). Chosen scope: user-clicked off-domain links leave
-the WebView through a Custom Tab instead of hijacking the app's single WebView.
-
-## TDD in a CI-only build environment
-Project policy forbids a local Java/Gradle harness, so RED/GREEN were observed on
-GitHub workers:
-
-| Step | Commit | CI run | Result |
-|---|---|---|---|
-| RED (tests only) | `ae00434` | `44978726869` | failure — `Unresolved reference: LinkRouter`, `externalLinkLauncher` |
-| GREEN (implementation) | `4cfbfd7` | `44979464647` | success — 19 suites, all passed |
-
-Design refinement during GREEN: the first spec routed *every* off-domain `http(s)`
-navigation to a Custom Tab, which would break in-WebView OAuth/form redirects
-(Custom Tabs do not share the WebView cookie jar). The implemented rule is
-gesture-gated — `request.hasGesture()` — with a dedicated test
-(`offDomainRedirectWithoutUserGestureStaysInWebView`) pinning that behaviour.
-
-## Diff review
-- New: `LinkRouter.kt`, `LinkRouterTest.kt`.
-- Changed: `MainActivity` (routing + seam + imports), `MainActivityTest`
-  (`requestFor(url, hasGesture)`, 3 new cases), `app/build.gradle` (one
-  dependency), `docs/FUNCTIONS.md` (documented before implementation).
-- No test weakened, no unrelated formatting churn, no credential changes.
-
-## Verification
-CI run `44979464647`: APK debug + release built, JaCoCo exec uploaded, lint passed,
-`Check Unit Test Results` reported 19 XML suites with zero failures/errors.
-
-## Carried forward
-`.autonomy/vision.md` now lists six ranked items; the next cycle should start with
-the HIGH Robolectric SDK-consistency task (`robolectric.properties`).
-
----
-
-# Autonomous Development Cycle Summary (2026-11-22, Robolectric SDK consistency)
-
-## Baseline check
-`git log` head `4cfbfd7`; GitHub Actions run `44979464647` = success (8m34s). GitHub status page operational — no incidents on 2026-11-22. CI was green before this cycle; Custom Tabs cycle is closed and all 19 test suites passed on the runner.
-
-## Task selection
-From `.autonomy/vision.md` the highest-value open item was **#1 Robolectric SDK consistency (HIGH)** — seven suites inherited Robolectric's default SDK while others pinned 26 or 30, reintroducing `NoClassDefFoundError`/`KeyStoreException` after dependency bumps. Acceptance: `app/src/test/resources/robolectric.properties` (`sdk=26`) as the single source of truth, all per-class pins removed, plus a CI guard.
-
-## TDD in a CI-only build environment
-Project policy forbids a local Java/Gradle harness, so RED/GREEN were verified with the guard itself (no compile needed — it's a pure config check):
-
-| Step | Commit | Result |
-|---|---|---|
-| RED — guard runs and fails | working tree | exit 1: 11 per-class pins + missing/wrong SDK all detected |
-| Guard edge cases | scratch copy | rejects `sdk=30`; rejects `@Config(minSdk = 24)`; passes clean state |
-| GREEN — implementation | `7fc2b07` | properties file created; 11 pins removed; CI step added; docs updated |
-
-## Diff review
-- New: `app/src/test/resources/robolectric.properties` (`sdk=26`); `ci_check_robolectric_sdk.py`.
-- Changed: `.github/workflows/build.yml` (add `Verify Robolectric SDK Consistency` after `Check Unit Test Results`), `docs/FUNCTIONS.md` (§1), 11 test files (drop `@Config` + unused import), `MainActivityLoadingIndicatorTest.kt` (doc comment).
-- No test weakened, no unrelated churn, no credential changes.
-
-## Verification
-- `ci_check_robolectric_sdk.py`: OK — `sdk=26` pinned; no per-class SDK overrides.
-- Pushed `4cfbfd7..7fc2b07` to `origin/main`; CI run `44982364135` in progress at cutover.
-
-## Carried forward
-`.autonomy/vision.md` lists six open items; top is ktlint enforcement (§4 documents `org.jmailen.gradle.kotlinter` 4.3.0 but neither `app/build.gradle` nor the workflow contains it) plus two new MEDIUM items (WebView back-button history navigation; Mixed Content / HTTPS enforcement).
-
-## Next Action
-Wait for CI run `44982364135` to finish; if green, take the ktlint item next.
-
----
-
-# Autonomous Development Cycle Summary (2026-11-22, Back-button history navigation)
-
-## Baseline check
-`git log` head `541e3c8`; GitHub Actions runs `44982364135`, `44982565509`, `44982708419`
-all success. GitHub status page: no unresolved incidents. CI was green before this cycle.
-
-## Task selection
-`.autonomy/vision.md` #7 (MEDIUM, WebView back-button history navigation) — measurable UX
-defect: the system Back button finished `MainActivity` on the first press, discarding the
-in-WebView navigation stack. #2 (ktlint) was ranked above it but deferred: its formatting
-pass can only be produced by Gradle, and this project forbids local Java/Gradle harnesses,
-so it needs a CI-side design (formatting job + diff artifact) before it can land honestly.
-Recorded that reasoning in `autonomy/vision.md`.
-
-## TDD in a CI-only build environment
-Policy forbids a local Java/Gradle harness, so RED/GREEN were observed on GitHub workers:
-
-| Step | Commit | CI run | Result |
-|---|---|---|---|
-| docs first | `ecb95da` | (with RED) | `docs/FUNCTIONS.md` §4 documents the required Back semantics |
-| RED (tests only) | `4265871` | `44987520776` | **failure** — `backPressNavigatesWebViewHistoryInsteadOfFinishingActivity` at `MainActivityTest.kt:215` (`goBackInvocations` expected 1, was 0); 88 tests, 1 failed |
-| GREEN (implementation) | `76ec46f` | `44987959751` | **success** — all steps green, all suites passed |
-
-The second spec (`backPressFinishesActivityWhenWebViewHasNoHistory`) passed at RED because
-it pins pre-existing behaviour that the implementation must preserve — that is intentional.
-
-## Diff review
-- New behaviour: `MainActivity.onCreate` registers an `OnBackPressedCallback`: `goBack()`
-  while `webView.canGoBack()`, else `isEnabled = false` + re-dispatch so the activity finishes.
-- Changed: `MainActivityTest.kt` (+2 cases, uses Robolectric `ShadowWebView.goBackInvocations`
-  and `pushEntryToHistory`), `docs/FUNCTIONS.md`, `autonomy/vision.md`.
-- No test weakened, no unrelated churn, no credential or workflow changes.
-
-## Verification
-CI run `44987959751`: `Build Debug APK`, `Run Unit Tests`, `Check Unit Test Results`,
-`Verify Robolectric SDK Consistency`, `Run Lint`, `Build Release APK`, `Assert APK Artifacts
-Exist`, `Upload APK Artifacts` — all success.
-
-## Next Action
-Take #2 in `.autonomy/vision.md` — Mixed Content / HTTPS enforcement (`MIXED_CONTENT_NEVER_ALLOW`
-+ unit test), then #4 JaCoCo `xml`/`html` reports. The ktlint item needs a design decision.
+`.autonomy/vision.md` next actions: Custom Tab warm-up and theming (#27, MEDIUM), silent URL drop logging (#28, LOW).
