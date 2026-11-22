@@ -2,9 +2,9 @@
 
 ## Completed Cycle: Unit Test Compilation Fixes & CI Enforcement
 - **Fixed Unit Test Compilation Failures**: Resolved 4 compilation errors across test files blocking the unit test suite:
-  - `MainActivityTest.kt`: Replaced invalid `shadowWebView.scrollTo(100, 200)` with `webView.scrollTo(100, 200)` and updated `webViewSavesAndRestoresScrollPosition` to test navigation history persistence (`saveState`/`restoreState`), which is supported by Robolectric's `ShadowWebView`.
-  - `NetworkMonitorLifecycleTest.kt`: Replaced JUnit 5 `assertDoesNotThrow` with standard direct execution in JUnit 4.
-  - `NetworkMonitorObserveTest.kt`: Specified explicit type parameter `listOf<Boolean>()` for empty list comparison.
-  - `CacheClearerTest.kt`: Fixed `isClearCacheCalled` property access to correct Robolectric API method `wasClearCacheCalled()`.
+  - `MainActivityTest.kt`: Replaced invalid `shadowWebView.scrollTo(100, 200)` with `webView.scrollTo(100, 200)` and rewrote `webViewSavesAndRestoresScrollPosition` as navigation-history-restore test (Robolectric `ShadowWebView.saveState`/`restoreState` persists history only, not scroll offsets).
+  - `NetworkMonitorLifecycleTest.kt`: Removed JUnit 5 `assertDoesNotThrow` (project uses JUnit 4).
+  - `NetworkMonitorObserveTest.kt`: Fixed `emptyList()` type inference (`listOf<Boolean>()`).
+  - `CacheClearerTest.kt`: Fixed `isClearCacheCalled` property to correct Robolectric API `wasClearCacheCalled()`.
 - **Enforced CI Test Failures**: Removed `continue-on-error: true` from the `Run Unit Tests` step in `.github/workflows/build.yml` so unit test failures correctly block the build pipeline.
-- **Git Status**: Changes committed and pushed to `origin/main`.
+- **Git Status**: All changes committed and pushed to `origin/main` (commit `7477fc3`).
