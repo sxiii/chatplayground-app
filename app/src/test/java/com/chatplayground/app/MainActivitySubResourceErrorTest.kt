@@ -38,7 +38,7 @@ class MainActivitySubResourceErrorTest {
         override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
     }
 
-    private class TestWebResourceError(private val code: Int, private val desc: String?) : WebResourceError {
+    private class TestWebResourceError(private val code: Int, private val desc: String?) : WebResourceError() {
         override fun getErrorCode(): Int = code
         override fun getDescription(): String? = desc
     }
