@@ -68,8 +68,8 @@ tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport)
     ))
     sourceDirectories.setFrom(files('src/main/java', 'src/main/kotlin'))
     reports {
-        xml.required = false
-        html.required = false
+        xml.required = true
+        html.required = true
         csv.required = false
     }
 }

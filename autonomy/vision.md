@@ -30,3 +30,9 @@ Ranked open tasks this cycle (evidence in `.autonomy/vision.md`):
 - Configure Android Intent Filters for deep linking. (DONE 2026-11-22)
 - Add `getOfflineUrl` utility to `UrlProvider` with TDD. (DONE — offline page handled in
   `onReceivedError`; re-scope only if a test seam is still wanted)
+
+## Improvement Suggestions (2026-11-22)
+
+- **[MEDIUM] Enable JaCoCo xml/html coverage reports and upload them in CI** — `jacocoTestReport` writes only raw `.exec` data (`xml.required = html.required = false`). Enable `xml` and `html` reports, upload `app/build/reports/jacoco/**` as a workflow artifact, and fail the build when the report is absent.
+- **[MEDIUM] ktlint enforcement gap** — `docs/FUNCTIONS.md` §5 claims `org.jmailen.gradle.kotlinter` 4.3.0 + a CI `ktlintCheck` step; neither exists. Either implement it (CI-side formatting job with diff artifact, since local Gradle is forbidden) or delete the section.
+- **[LOW] Misleading CI step name** — `Upload JUnit Test Results` duplicates `Collect JUnit Test Results`; rename or drop.
