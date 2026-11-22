@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                     override fun getMethod(): String = "GET"
                     override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
                 }
-                handleWebViewError(view ?: return, errorCode, request.isForMainFrame())
+                this@MainActivity.handleWebViewError(view ?: return, errorCode, request.isForMainFrame())
             }
 
             override fun onReceivedError(
@@ -132,30 +132,7 @@ class MainActivity : AppCompatActivity() {
                 val code = error?.getErrorCode() ?: return
                 val isMainFrame = request?.isForMainFrame() ?: true
 
-                handleWebViewError(view ?: return, code, isMainFrame)
-            }
-
-            internal fun handleWebViewError(view: WebView, code: Int, isMainFrame: Boolean) {
-                // A failed sub-resource (an image, analytics beacon, iframe, …) must
-                // not replace the whole page with the offline fallback and must not
-                // show a network-error toast. Only main-frame navigations fall back.
-                if (!isMainFrame) return
-
-                when (code) {
-                    ERROR_HOST_LOOKUP, ERROR_CONNECT, ERROR_TIMEOUT, ERROR_FAILED_SSL_HANDSHAKE -> {
-                        Toast.makeText(this@MainActivity, "Network error occurred. Showing offline page.", Toast.LENGTH_SHORT).show()
-                        view.loadUrl("file:///android_asset/offline.html")
-                    }
-                    else -> {
-                        if (loadRetryPolicy.shouldRetry(true)) {
-                            loadRetryPolicy.scheduleRetryWithBackoff {
-                                view.reload()
-                            }
-                        } else {
-                            loadRetryPolicy.reset()
-                        }
-                    }
-                }
+                this@MainActivity.handleWebViewError(view ?: return, code, isMainFrame)
             }
         }
         // Load the deep link that launched us when it is a ChatPlayground URL,
@@ -294,6 +271,36 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return true
+    }
+
+    /**
+     * Handles a WebView load error. A failed sub-resource (an image, analytics
+     * beacon, iframe, …) must not replace the whole page with the offline
+     * fallback and must not show a network-error toast; only main-frame
+     * navigations fall back. Extracted from the anonymous `WebViewClient` so it
+     * can be exercised directly by unit tests.
+     */
+    internal fun handleWebViewError(view: WebView, code: Int, isMainFrame: Boolean) {
+        if (!isMainFrame) return
+
+        when (code) {
+            WebViewClient.ERROR_HOST_LOOKUP,
+            WebViewClient.ERROR_CONNECT,
+            WebViewClient.ERROR_TIMEOUT,
+            WebViewClient.ERROR_FAILED_SSL_HANDSHAKE -> {
+                Toast.makeText(this, "Network error occurred. Showing offline page.", Toast.LENGTH_SHORT).show()
+                view.loadUrl("file:///android_asset/offline.html")
+            }
+            else -> {
+                if (loadRetryPolicy.shouldRetry(true)) {
+                    loadRetryPolicy.scheduleRetryWithBackoff {
+                        view.reload()
+                    }
+                } else {
+                    loadRetryPolicy.reset()
+                }
+            }
+        }
     }
 
     /** Opens [uri] in a Custom Tab, falling back to a plain browser Intent. */
