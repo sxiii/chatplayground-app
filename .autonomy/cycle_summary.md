@@ -1,20 +1,42 @@
-# Autonomous Development Cycle Summary (2026-11-22)
+# Autonomous Development Cycle Summary (2026-11-22, Custom Tabs)
 
-## Completed Cycle: Fix Robolectric Runtime Test Failures
-After the previous cycle got unit-test compilation green and removed `continue-on-error`, the first real run (actions run 44974421742) compiled cleanly but reported **7 failures / 70 tests** — so CI correctly blocked the build. This cycle fixed all 7.
+## Baseline check
+`git log` head `07f5e3e`; GitHub Actions run `44976992088` = success (5m17s).
+GitHub status page operational. So CI was green before any change in this cycle —
+the previous cycle's Robolectric fixes are confirmed on the runner.
 
-### Root causes & fixes
-- `MainActivityLoadingIndicatorTest` (3 failures, `NoClassDefFoundError` at activity create): pinned `@Config(sdk = [34])` → `sdk = [26]`, matching `MainActivityTest.kt`, which constructs `MainActivity` + WebView successfully at 26. Robolectric 4.18 cannot load the WebView stack at API 34.
-- `SecureStorageBiometricTest` (3 failures, `KeyStoreException`/`NoSuchAlgorithmException`): `SecureStorage` hard-coded `EncryptedSharedPreferences` + `MasterKeys` (Android Keystore), which Robolectric does not provide. Introduced an `EncryptedStore` interface + `EncryptedSharedPreferencesStore` production impl and an injectable `SecureStorage.storeFactory`; the test now uses an in-memory store so biometric allow/deny/fail-closed behavior is asserted for real.
-- `NetworkMonitorObserveTest` (class-level `UnsupportedOperationException` at `DefaultSdkProvider`): the class used `@Config(minSdk = N)` with no pinned SDK, which Robolectric rejects, and drove transitions through shadow calls that need a full network setup. Repinned `sdk = [26]` and rewrote tests to drive `onAvailable`/`onLost` through `ShadowConnectivityManager.getNetworkCallbacks()` and `ShadowNetwork.newInstance`, which also lets the suite assert the callback-no-leak invariant (`observe()` twice → 1 registered; `stopObserving()` → 0) and `onLost`→offline delivery.
+## Task selection
+From `.autonomy/vision.md` the highest-value open item with a real user impact was
+**#2 Custom Tabs for external links** (the HIGH item is test-infrastructure
+consistency; it is queued next). Chosen scope: user-clicked off-domain links leave
+the WebView through a Custom Tab instead of hijacking the app's single WebView.
 
-### Scope discipline
-An initial `NetworkMonitor.observe()` change (emit current state on subscribe) was reverted — it was unrequested behavior change; the fix belongs in test infrastructure, not the production contract.
+## TDD in a CI-only build environment
+Project policy forbids a local Java/Gradle harness, so RED/GREEN were observed on
+GitHub workers:
 
-### Verification
-- No local JDK/Gradle in this environment and project policy is "GitHub workers compile"; every Robolectric API used (`ShadowConnectivityManager.getNetworkCallbacks`, `ShadowNetwork.newInstance(int)`, `@Config(sdk=[26])`) was verified against Robolectric source/javadoc before editing.
-- `docs/FUNCTIONS.md` updated first (user rule: functions documented before implementation) for the new `EncryptedStore` seam.
-- GitHub status page: All Systems Operational — CI failure was not infra.
+| Step | Commit | CI run | Result |
+|---|---|---|---|
+| RED (tests only) | `ae00434` | `44978726869` | failure — `Unresolved reference: LinkRouter`, `externalLinkLauncher` |
+| GREEN (implementation) | `4cfbfd7` | `44979464647` | success — 19 suites, all passed |
 
-### Pushed
-Committed and pushed to `origin/main`; the triggered Actions run is the validation surface.
+Design refinement during GREEN: the first spec routed *every* off-domain `http(s)`
+navigation to a Custom Tab, which would break in-WebView OAuth/form redirects
+(Custom Tabs do not share the WebView cookie jar). The implemented rule is
+gesture-gated — `request.hasGesture()` — with a dedicated test
+(`offDomainRedirectWithoutUserGestureStaysInWebView`) pinning that behaviour.
+
+## Diff review
+- New: `LinkRouter.kt`, `LinkRouterTest.kt`.
+- Changed: `MainActivity` (routing + seam + imports), `MainActivityTest`
+  (`requestFor(url, hasGesture)`, 3 new cases), `app/build.gradle` (one
+  dependency), `docs/FUNCTIONS.md` (documented before implementation).
+- No test weakened, no unrelated formatting churn, no credential changes.
+
+## Verification
+CI run `44979464647`: APK debug + release built, JaCoCo exec uploaded, lint passed,
+`Check Unit Test Results` reported 19 XML suites with zero failures/errors.
+
+## Carried forward
+`.autonomy/vision.md` now lists six ranked items; the next cycle should start with
+the HIGH Robolectric SDK-consistency task (`robolectric.properties`).

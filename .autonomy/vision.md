@@ -25,15 +25,49 @@ while keeping the main content in a WebView.
 - [x] **[MEDIUM] Session Persistence**: Save/restore WebView navigation state (URL, scroll position, form inputs) to survive process death without relying on Activity recreation.
 - [x] **Fix night mode color resources**: Added missing `surface` and `background` colors to base `values/colors.xml` for proper night mode fallback.
 
-## Next Improvement Suggestions (2026-11-22)
+## Next Improvement Suggestions (2026-11-22, after the Custom Tabs cycle)
 
-1. **[MEDIUM] ktlint enforcement is documented but absent**: `docs/FUNCTIONS.md` §4 claims `org.jmailen.gradle.kotlinter` 4.3.0 is applied and a CI `ktlintCheck` step blocks the pipeline; neither exists in `app/build.gradle` or `.github/workflows/build.yml`. Acceptance: either implement it (with formatting fixed first, in a dedicated cycle) or correct the docs. Prefer correcting the docs in the same cycle that implements it.
-2. **[MEDIUM] WebView Custom Tabs for external links**: route off-domain `http(s)` links through `androidx.browser` CustomTabsIntent so store/payment flows keep a trusted chrome and the back stack returns to the app.
-3. **[MEDIUM] CI JaCoCo artifacts**: the `jacocoTestReport` task disables every report (`xml/html/csv.required = false`) while CI uploads `app/build/jacoco/*.exec`; AGP 8 writes coverage to `app/build/outputs/unit_test_coverage/`. Acceptance: one report format enabled and the upload path matches where AGP actually writes `.exec`/`coverage.ec`.
-4. **[LOW] Lint baseline for pre-existing warnings**: add `app/lint-baseline.xml` via `android { lint { baseline = file("lint-baseline.xml") } }` so new lint warnings are attributable.
-5. **[HIGH] Robolectric test-SDK consistency**: unit tests mix `@Config(sdk = [34])`, `[30]`, `[26]` and an implicit default. Robolectric 4.18 lacks full WebView/Keystore support at 34, which produced `NoClassDefFoundError` and `KeyStoreException`. Acceptance: every Robolectric test pins a supported SDK (or the SDK is set once in `testOptions`) and no test depends on an unpinned default.
-6. **[MEDIUM] SecureStorage test seam for the preference store**: `SecureStorage` hard-codes `EncryptedSharedPreferences` + `MasterKeys` (AndroidKeyStore), which cannot run under Robolectric, so `SecureStorageTest` swallows every exception and asserts nothing. Acceptance: inject the prefs backing store behind an interface, default it to the encrypted implementation in production, and let tests use an in-memory implementation so the round-trip assertions are real.
-7. **[LOW] Rename the misleading CI step**: the step named `Upload JUnit Test Results` is a `run:` step that only copies XMLs into `junit-results/`; either make it `actions/upload-artifact` or rename it to `Collect JUnit Test Results (post-failure)`. A duplicate `Collect JUnit Test Results` step also exists earlier in the job.
+1. **[HIGH] Robolectric SDK consistency**: seven test classes carry no `@Config` at all
+   (`ManifestPermissionTest`, `NetworkMonitorTest`, `NetworkMonitorLifecycleTest`,
+   `DeepLinkResolverTest`, `NotificationServiceTest`, `OfflineCacheManagerTest`,
+   `UrlProviderTest`) and therefore inherit Robolectric's default SDK, while
+   `CacheClearerTest`/`SecureStorage*` pin 30 and the activity tests pin 26.
+   Acceptance: one source of truth — `app/src/test/resources/robolectric.properties`
+   (`sdk=26`) — plus removal of contradictory per-class pins, so a Robolectric
+   upgrade cannot silently reintroduce the `NoClassDefFoundError`/`KeyStoreException`
+   failures fixed on 2026-11-22.
+2. **[MEDIUM] Docs claim ktlint enforcement that does not exist**: `docs/FUNCTIONS.md`
+   §4 describes `org.jmailen.gradle.kotlinter` 4.3.0 applied to `app` plus a CI
+   `ktlintCheck` step; neither `app/build.gradle` nor `.github/workflows/build.yml`
+   contains it. Acceptance: implement it (formatting pass first) or delete §4.
+3. **[MEDIUM] Custom Tab warm-up and theming**: `MainActivity.launchInCustomTab`
+   builds a default `CustomTabsIntent` on every click — cold start, default toolbar,
+   visible flip. Acceptance: one `CustomTabsClient` warm-up bound in `onStart` and
+   released in `onStop`, toolbar colour taken from the app theme, and a test asserting
+   the launched intent carries the browser package.
+4. **[MEDIUM] JaCoCo report is disabled**: `jacocoTestReport` sets
+   `xml.required = html.required = csv.required = false`, so CI uploads only raw
+   `.exec` data (35 KB) and no human-readable coverage. Acceptance: enable `xml`
+   (and `html`), upload `app/build/reports/jacoco/**`, fail if the report is absent.
+5. **[LOW] Misleading CI step name**: `Upload JUnit Test Results`
+   (`.github/workflows/build.yml:111`) is a `run:` step that only copies XMLs and
+   duplicates `Collect JUnit Test Results` (line 66). Acceptance: rename it to
+   `Collect JUnit Test Results (post-failure)` or drop the duplicate.
+6. **[LOW] Silent drop of unusable URLs**: `MainActivity.handleUrl` returns `true`
+   for URLs that match no rule (blank/malformed) without any trace. Acceptance: log
+   at debug level (or show a toast) so unsupported schemes are diagnosable.
+
+## Completed (2026-11-22, Custom Tabs cycle)
+- **MEDIUM: WebView Custom Tabs for external links**: added `LinkRouter`
+  (`isInAppUrl` / `isExternalWebUrl` / `isExternalScheme`, `java.net.URI` based) and
+  routed `MainActivity.shouldOverrideUrlLoading` through `handleUrl`. Only
+  user-initiated (`request.hasGesture()`) off-domain links leave the WebView, so
+  OAuth redirects and form posts keep their in-WebView session; non-web schemes still
+  go to `ACTION_VIEW`. `externalLinkLauncher` is the injectable seam;
+  `androidx.browser:browser:1.8.0` added. CI run `44979464647`: green, 19 suites
+  (new `LinkRouterTest` + 3 new `MainActivityTest` cases).
+- RED evidence: run `44978726869` failed with `Unresolved reference: LinkRouter`
+  and `externalLinkLauncher` before the implementation was pushed.
 
 ## Completed (2026-11-22)
 - **HIGH: Unit-test failures now fail CI**: Removed `continue-on-error: true` from the `Run Unit Tests` step in `.github/workflows/build.yml`, added a `Collect JUnit Test Results` step that copies `app/build/test-results/**/*.xml` into `junit-results/`, and a `Check Unit Test Results` step (`ci_check_tests.py`) that fails the pipeline when any `<testsuite>` reports non-zero `failures`/`errors` or when no JUnit reports exist. Documented in `docs/FUNCTIONS.md` §1.
