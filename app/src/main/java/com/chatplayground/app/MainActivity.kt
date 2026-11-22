@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.webkit.WebChromeClient
@@ -96,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                 progressBar.visibility = View.GONE
             }
 
+            @Suppress("DEPRECATION")
             override fun onReceivedError(
                 view: WebView?,
                 errorCode: Int,
@@ -104,7 +107,41 @@ class MainActivity : AppCompatActivity() {
             ) {
                 super.onReceivedError(view, errorCode, description, failingUrl)
                 progressBar.visibility = View.GONE
-                when (errorCode) {
+                // minSdk is 24, so Android dispatches to the WebResourceRequest overload
+                // below; this deprecated branch is kept for compatibility and treats the
+                // error as a main-frame navigation failure.
+                onReceivedError(view ?: return,
+                    object : WebResourceRequest {
+                        override fun getUrl(): android.net.Uri = failingUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
+                        override fun isForMainFrame(): Boolean = true
+                        override fun isRedirect(): Boolean = false
+                        override fun hasGesture(): Boolean = false
+                        override fun getMethod(): String = "GET"
+                        override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
+                    },
+                    object : WebResourceError {
+                        override fun getErrorCode(): Int = errorCode
+                        override fun getDescription(): String? = description
+                    })
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                super.onReceivedError(view, request, error)
+                progressBar.visibility = View.GONE
+
+                val code = error?.getErrorCode() ?: return
+                val isMainFrame = request?.isForMainFrame() ?: true
+
+                // A failed sub-resource (an image, analytics beacon, iframe, …) must
+                // not replace the whole page with the offline fallback and must not
+                // show a network-error toast. Only main-frame navigations fall back.
+                if (!isMainFrame) return
+
+                when (code) {
                     ERROR_HOST_LOOKUP, ERROR_CONNECT, ERROR_TIMEOUT, ERROR_FAILED_SSL_HANDSHAKE -> {
                         Toast.makeText(this@MainActivity, "Network error occurred. Showing offline page.", Toast.LENGTH_SHORT).show()
                         view?.loadUrl("file:///android_asset/offline.html")
