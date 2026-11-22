@@ -112,6 +112,42 @@ class MainActivityTest {
     }
 
     @Test
+    fun externalHttpLinkOpensInCustomTabInsteadOfWebView() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val opened = mutableListOf<android.net.Uri>()
+        activity.externalLinkLauncher = { opened.add(it) }
+        val webView = activity.getWebView()
+
+        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
+            webView,
+            requestFor("https://github.com/sxiii/chatplayground-app")
+        )
+
+        assertTrue("Off-domain links must be intercepted by the app", handled ?: false)
+        assertEquals(
+            "Off-domain links must be handed to the Custom Tab launcher",
+            listOf(android.net.Uri.parse("https://github.com/sxiii/chatplayground-app")),
+            opened
+        )
+    }
+
+    @Test
+    fun inAppLinkDoesNotOpenCustomTab() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val opened = mutableListOf<android.net.Uri>()
+        activity.externalLinkLauncher = { opened.add(it) }
+        val webView = activity.getWebView()
+
+        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
+            webView,
+            requestFor("https://chatplayground.ai/pricing")
+        )
+
+        assertFalse("In-app links must stay in the WebView", handled ?: false)
+        assertTrue("In-app links must not open a Custom Tab", opened.isEmpty())
+    }
+
+    @Test
     fun webViewSavesAndRestoresNavigationState() {
         val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
         val activity = controller.get()
