@@ -19,7 +19,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivityRetryBudgetTest {
-
     @Test
     fun oneNonNetworkErrorConsumesExactlyOneRetry() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
@@ -31,13 +30,13 @@ class MainActivityRetryBudgetTest {
             webView,
             WebViewClient.ERROR_UNKNOWN,
             "Load failed",
-            "https://chatplayground.ai"
+            "https://chatplayground.ai",
         )
 
         assertEquals(
             "One failed load must consume exactly one retry-budget unit",
             1,
-            activity.loadRetryPolicy.retryCountValue
+            activity.loadRetryPolicy.retryCountValue,
         )
     }
 }

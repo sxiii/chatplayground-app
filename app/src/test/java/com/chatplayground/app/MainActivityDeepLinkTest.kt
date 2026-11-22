@@ -16,7 +16,6 @@ import org.robolectric.Shadows.shadowOf
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivityDeepLinkTest {
-
     private fun viewIntent(uri: String): Intent {
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
         return Intent(Intent.ACTION_VIEW, Uri.parse(uri)).apply {
@@ -26,43 +25,46 @@ class MainActivityDeepLinkTest {
 
     @Test
     fun launchIntentDeepLinkIsLoadedInsteadOfDefaultUrl() {
-        val activity = Robolectric.buildActivity(
-            MainActivity::class.java,
-            viewIntent("https://chatplayground.ai/chat/42")
-        ).create().get()
+        val activity =
+            Robolectric.buildActivity(
+                MainActivity::class.java,
+                viewIntent("https://chatplayground.ai/chat/42"),
+            ).create().get()
 
         assertEquals(
             "A deep link must replace the default start URL",
             "https://chatplayground.ai/chat/42",
-            shadowOf(activity.getWebView()).lastLoadedUrl
+            shadowOf(activity.getWebView()).lastLoadedUrl,
         )
     }
 
     @Test
     fun launchIntentCustomSchemeIsLoadedAsHttpsUrl() {
-        val activity = Robolectric.buildActivity(
-            MainActivity::class.java,
-            viewIntent("chatplayground://app/chat/42")
-        ).create().get()
+        val activity =
+            Robolectric.buildActivity(
+                MainActivity::class.java,
+                viewIntent("chatplayground://app/chat/42"),
+            ).create().get()
 
         assertEquals(
             "chatplayground://... must be normalised to the https URL",
             "https://chatplayground.ai/chat/42",
-            shadowOf(activity.getWebView()).lastLoadedUrl
+            shadowOf(activity.getWebView()).lastLoadedUrl,
         )
     }
 
     @Test
     fun launchIntentWithUnsupportedUrlKeepsDefaultUrl() {
-        val activity = Robolectric.buildActivity(
-            MainActivity::class.java,
-            viewIntent("https://example.com/phish")
-        ).create().get()
+        val activity =
+            Robolectric.buildActivity(
+                MainActivity::class.java,
+                viewIntent("https://example.com/phish"),
+            ).create().get()
 
         assertEquals(
             "Unsupported links must not hijack the start URL",
             "https://chatplayground.ai",
-            shadowOf(activity.getWebView()).lastLoadedUrl
+            shadowOf(activity.getWebView()).lastLoadedUrl,
         )
     }
 
@@ -76,7 +78,7 @@ class MainActivityDeepLinkTest {
         assertEquals(
             "onNewIntent must navigate the existing WebView",
             "https://chatplayground.ai/settings",
-            shadowOf(webView).lastLoadedUrl
+            shadowOf(webView).lastLoadedUrl,
         )
     }
 
@@ -90,7 +92,7 @@ class MainActivityDeepLinkTest {
         assertEquals(
             "Unsupported onNewIntent data must not navigate",
             "https://chatplayground.ai",
-            shadowOf(webView).lastLoadedUrl
+            shadowOf(webView).lastLoadedUrl,
         )
     }
 }

@@ -9,7 +9,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class WebViewLoadRetryPolicyTest {
-
     @Test
     fun shouldRetryReturnsTrueForMainFrameWhenUnderMaxRetries() {
         val policy = WebViewLoadRetryPolicy(maxRetries = 3)

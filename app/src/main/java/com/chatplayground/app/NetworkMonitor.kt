@@ -31,7 +31,7 @@ class NetworkMonitor(context: Context) {
             val actNw = cm.getNetworkCapabilities(nw)
             if (actNw == null) return false
             actNw.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                    actNw.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+                actNw.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
         } else {
             @Suppress("DEPRECATION")
             cm.activeNetworkInfo?.isConnectedOrConnecting == true
@@ -46,17 +46,18 @@ class NetworkMonitor(context: Context) {
         // calls (e.g. activity recreation) do not leak ConnectivityManager
         // NetworkCallback registrations that can no longer be unregistered.
         stopObserving()
-        val callbackObj = object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                isConnected = true
-                callback(true)
-            }
+        val callbackObj =
+            object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    isConnected = true
+                    callback(true)
+                }
 
-            override fun onLost(network: Network) {
-                isConnected = false
-                callback(false)
+                override fun onLost(network: Network) {
+                    isConnected = false
+                    callback(false)
+                }
             }
-        }
         this.callbackObj = callbackObj
         cm.registerDefaultNetworkCallback(callbackObj)
     }

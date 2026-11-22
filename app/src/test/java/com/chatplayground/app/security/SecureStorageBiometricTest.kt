@@ -23,18 +23,23 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class SecureStorageBiometricTest {
-
     private val context: Context = ApplicationProvider.getApplicationContext()
 
     /** In-memory stand-in for [EncryptedSharedPreferencesStore]. */
     private class InMemoryEncryptedStore : EncryptedStore {
         private val data = mutableMapOf<String, String>()
 
-        override fun putString(key: String, value: String) {
+        override fun putString(
+            key: String,
+            value: String,
+        ) {
             data[key] = value
         }
 
-        override fun getString(key: String, default: String?): String? {
+        override fun getString(
+            key: String,
+            default: String?,
+        ): String? {
             return if (data.containsKey(key)) data[key] else default
         }
 
@@ -75,7 +80,7 @@ class SecureStorageBiometricTest {
 
         assertNull(
             "Should return null when biometric authenticator denies access",
-            result
+            result,
         )
     }
 
@@ -90,7 +95,7 @@ class SecureStorageBiometricTest {
         assertEquals(
             "Should return the stored value after successful biometric auth",
             "secret_value",
-            result
+            result,
         )
     }
 
@@ -103,7 +108,7 @@ class SecureStorageBiometricTest {
 
         assertNull(
             "Should return null for a missing key even when authenticated",
-            result
+            result,
         )
     }
 

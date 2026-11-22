@@ -20,17 +20,17 @@ import org.robolectric.Shadows.shadowOf
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivityTeardownTest {
-
     @Test
     fun activityDestroysItsWebViewWhenTornDown() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java)
-            .create().start().resume()
+        val controller =
+            Robolectric.buildActivity(MainActivity::class.java)
+                .create().start().resume()
         val activity = controller.get()
         val webView = activity.getWebView()
         assertNotNull("WebView should be created in onCreate", webView)
         assertFalse(
             "Precondition: the WebView must not be destroyed while the activity is alive",
-            shadowOf(webView).wasDestroyCalled()
+            shadowOf(webView).wasDestroyCalled(),
         )
 
         controller.pause().stop().destroy()
@@ -38,19 +38,20 @@ class MainActivityTeardownTest {
         assertTrue(
             "MainActivity must call WebView.destroy() in onDestroy, otherwise the " +
                 "WebView outlives the activity and leaks its context",
-            shadowOf(webView).wasDestroyCalled()
+            shadowOf(webView).wasDestroyCalled(),
         )
     }
 
     @Test
     fun activityDetachesWebViewFromItsParentWhenTornDown() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java)
-            .create().start().resume()
+        val controller =
+            Robolectric.buildActivity(MainActivity::class.java)
+                .create().start().resume()
         val activity = controller.get()
         val webView = activity.getWebView()
         assertNotNull(
             "Precondition: the WebView must be attached to the activity layout",
-            webView.parent
+            webView.parent,
         )
 
         controller.pause().stop().destroy()
@@ -59,7 +60,7 @@ class MainActivityTeardownTest {
             "MainActivity must detach the WebView from its parent in onDestroy: a WebView " +
                 "destroyed while still attached is removed on the next layout pass, which " +
                 "can touch an already-freed renderer",
-            webView.parent
+            webView.parent,
         )
     }
 }

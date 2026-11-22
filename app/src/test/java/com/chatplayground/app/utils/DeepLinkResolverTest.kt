@@ -11,14 +11,13 @@ import org.junit.Test
  * and how they are mapped onto the canonical in-app WebView URL.
  */
 class DeepLinkResolverTest {
-
     private val canonical = "https://chatplayground.ai"
 
     @Test
     fun resolvesCanonicalHttpsUrlUnchanged() {
         assertEquals(
             "https://chatplayground.ai/chat/42",
-            DeepLinkResolver.resolve("https://chatplayground.ai/chat/42")
+            DeepLinkResolver.resolve("https://chatplayground.ai/chat/42"),
         )
     }
 
@@ -31,7 +30,7 @@ class DeepLinkResolverTest {
     fun resolvesWwwHostToCanonicalHost() {
         assertEquals(
             "https://chatplayground.ai/settings?tab=theme",
-            DeepLinkResolver.resolve("https://www.chatplayground.ai/settings?tab=theme")
+            DeepLinkResolver.resolve("https://www.chatplayground.ai/settings?tab=theme"),
         )
     }
 
@@ -39,7 +38,7 @@ class DeepLinkResolverTest {
     fun upgradesHttpToHttps() {
         assertEquals(
             "https://chatplayground.ai/about",
-            DeepLinkResolver.resolve("http://chatplayground.ai/about")
+            DeepLinkResolver.resolve("http://chatplayground.ai/about"),
         )
     }
 
@@ -47,7 +46,7 @@ class DeepLinkResolverTest {
     fun resolvesCustomSchemePath() {
         assertEquals(
             "https://chatplayground.ai/chat/42",
-            DeepLinkResolver.resolve("chatplayground://app/chat/42")
+            DeepLinkResolver.resolve("chatplayground://app/chat/42"),
         )
     }
 
@@ -60,7 +59,7 @@ class DeepLinkResolverTest {
     fun preservesQueryAndFragmentForCustomScheme() {
         assertEquals(
             "https://chatplayground.ai/chat?id=7#msg-9",
-            DeepLinkResolver.resolve("chatplayground://app/chat?id=7#msg-9")
+            DeepLinkResolver.resolve("chatplayground://app/chat?id=7#msg-9"),
         )
     }
 

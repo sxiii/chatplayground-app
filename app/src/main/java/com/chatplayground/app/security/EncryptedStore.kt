@@ -9,9 +9,19 @@ package com.chatplayground.app.security
  * [SecureStorage.storeFactory].
  */
 interface EncryptedStore {
-    fun putString(key: String, value: String)
-    fun getString(key: String, default: String?): String?
+    fun putString(
+        key: String,
+        value: String,
+    )
+
+    fun getString(
+        key: String,
+        default: String?,
+    ): String?
+
     fun remove(key: String)
+
     fun contains(key: String): Boolean
+
     fun clear()
 }

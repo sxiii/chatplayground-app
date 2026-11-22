@@ -6,14 +6,16 @@ import java.io.FileOutputStream
 import java.security.MessageDigest
 
 class OfflineCacheManager(private val cacheDir: File) {
-
     private fun getCacheFile(url: String): File {
         val bytes = MessageDigest.getInstance("MD5").digest(url.toByteArray())
         val hash = bytes.joinToString("") { "%02x".format(it) }
         return File(cacheDir, "cache_$hash.json")
     }
 
-    fun saveCachedResponse(url: String, data: String) {
+    fun saveCachedResponse(
+        url: String,
+        data: String,
+    ) {
         if (!cacheDir.exists()) {
             cacheDir.mkdirs()
         }

@@ -16,7 +16,7 @@ import android.os.Looper
  */
 class WebViewLoadRetryPolicy(
     private val maxRetries: Int = 3,
-    private val baseDelayMs: Long = 1000
+    private val baseDelayMs: Long = 1000,
 ) {
     private var retryCount = 0
     private val lock = Any()
@@ -59,7 +59,10 @@ class WebViewLoadRetryPolicy(
     }
 
     /** Schedule [action] to run after [delayMs] on the main thread. */
-    fun scheduleRetry(delayMs: Long, action: () -> Unit) {
+    fun scheduleRetry(
+        delayMs: Long,
+        action: () -> Unit,
+    ) {
         handler.postDelayed(action, delayMs)
     }
 

@@ -1,7 +1,6 @@
 package com.chatplayground.app
 
 import android.content.Context
-import android.net.ConnectivityManager
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Test
 import org.junit.runner.RunWith

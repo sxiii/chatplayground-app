@@ -1,22 +1,22 @@
 package com.chatplayground.app
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.webkit.WebChromeClient
 import android.widget.ProgressBar
-import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
-import android.content.Context
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.activity.OnBackPressedCallback
 import androidx.browser.customtabs.CustomTabsIntent
 import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.DeepLinkResolver
@@ -52,93 +52,121 @@ class MainActivity : AppCompatActivity() {
         // System Back walks the WebView history first, like a browser: only the
         // last Back press leaves the app. Without this, one tap on Back closes
         // the activity and discards the in-app navigation stack.
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (::webView.isInitialized && webView.canGoBack()) {
-                    webView.goBack()
-                } else {
-                    isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (::webView.isInitialized && webView.canGoBack()) {
+                        webView.goBack()
+                    } else {
+                        isEnabled = false
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            },
+        )
+
+        webView.webChromeClient =
+            object : WebChromeClient() {
+                override fun onProgressChanged(
+                    view: WebView?,
+                    newProgress: Int,
+                ) {
+                    super.onProgressChanged(view, newProgress)
+                    progressBar.visibility = if (newProgress < 100) View.VISIBLE else View.GONE
+                }
+
+                override fun onReceivedTitle(
+                    view: WebView?,
+                    title: String?,
+                ) {
+                    super.onReceivedTitle(view, title)
+                    this@MainActivity.title = title
                 }
             }
-        })
-
-        webView.webChromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                super.onProgressChanged(view, newProgress)
-                progressBar.visibility = if (newProgress < 100) View.VISIBLE else View.GONE
-            }
-
-            override fun onReceivedTitle(view: WebView?, title: String?) {
-                super.onReceivedTitle(view, title)
-                this@MainActivity.title = title
-            }
-        }
 
         // Configure WebViewClient to keep navigation inside the app and
         // retry main-frame load failures with exponential backoff.
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: android.webkit.WebResourceRequest): Boolean {
-                val url = request.url.toString()
-                // Non-web schemes are always delegated to the system.
-                if (LinkRouter.isExternalScheme(url)) return handleUrl(url)
-                // Keep script/redirect navigations (OAuth, form posts) inside the
-                // WebView; only user-initiated off-domain links leave the app.
-                if (!request.hasGesture()) return false
-                return handleUrl(url)
-            }
-
-            override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                progressBar.visibility = View.VISIBLE
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                progressBar.visibility = View.GONE
-            }
-
-            @Suppress("DEPRECATION")
-            override fun onReceivedError(
-                view: WebView?,
-                errorCode: Int,
-                description: String?,
-                failingUrl: String?
-            ) {
-                super.onReceivedError(view, errorCode, description, failingUrl)
-                progressBar.visibility = View.GONE
-                // minSdk is 24, so Android dispatches to the WebResourceRequest overload
-                // below; this deprecated branch is kept for compatibility and treats the
-                // error as a main-frame navigation failure.
-                val request = object : WebResourceRequest {
-                    override fun getUrl(): android.net.Uri = failingUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
-                    override fun isForMainFrame(): Boolean = true
-                    override fun isRedirect(): Boolean = false
-                    override fun hasGesture(): Boolean = false
-                    override fun getMethod(): String = "GET"
-                    override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
+        webView.webViewClient =
+            object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: android.webkit.WebResourceRequest,
+                ): Boolean {
+                    val url = request.url.toString()
+                    // Non-web schemes are always delegated to the system.
+                    if (LinkRouter.isExternalScheme(url)) return handleUrl(url)
+                    // Keep script/redirect navigations (OAuth, form posts) inside the
+                    // WebView; only user-initiated off-domain links leave the app.
+                    if (!request.hasGesture()) return false
+                    return handleUrl(url)
                 }
-                this@MainActivity.handleWebViewError(view ?: return, errorCode, request.isForMainFrame())
+
+                override fun onPageStarted(
+                    view: WebView?,
+                    url: String?,
+                    favicon: android.graphics.Bitmap?,
+                ) {
+                    super.onPageStarted(view, url, favicon)
+                    progressBar.visibility = View.VISIBLE
+                }
+
+                override fun onPageFinished(
+                    view: WebView?,
+                    url: String?,
+                ) {
+                    super.onPageFinished(view, url)
+                    progressBar.visibility = View.GONE
+                }
+
+                @Suppress("DEPRECATION")
+                override fun onReceivedError(
+                    view: WebView?,
+                    errorCode: Int,
+                    description: String?,
+                    failingUrl: String?,
+                ) {
+                    super.onReceivedError(view, errorCode, description, failingUrl)
+                    progressBar.visibility = View.GONE
+                    // minSdk is 24, so Android dispatches to the WebResourceRequest overload
+                    // below; this deprecated branch is kept for compatibility and treats the
+                    // error as a main-frame navigation failure.
+                    val request =
+                        object : WebResourceRequest {
+                            override fun getUrl(): android.net.Uri = failingUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
+
+                            override fun isForMainFrame(): Boolean = true
+
+                            override fun isRedirect(): Boolean = false
+
+                            override fun hasGesture(): Boolean = false
+
+                            override fun getMethod(): String = "GET"
+
+                            override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
+                        }
+                    this@MainActivity.handleWebViewError(view ?: return, errorCode, request.isForMainFrame())
+                }
+
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?,
+                ) {
+                    super.onReceivedError(view, request, error)
+                    progressBar.visibility = View.GONE
+
+                    val code = error?.getErrorCode() ?: return
+                    val isMainFrame = request?.isForMainFrame() ?: true
+
+                    this@MainActivity.handleWebViewError(view ?: return, code, isMainFrame)
+                }
             }
-
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                super.onReceivedError(view, request, error)
-                progressBar.visibility = View.GONE
-
-                val code = error?.getErrorCode() ?: return
-                val isMainFrame = request?.isForMainFrame() ?: true
-
-                this@MainActivity.handleWebViewError(view ?: return, code, isMainFrame)
-            }
-        }
         // Load the deep link that launched us when it is a ChatPlayground URL,
         // otherwise fall back to the default start page.
-        val startUrl = DeepLinkResolver.resolve(intent?.data?.toString())
-            ?: UrlProvider.getChatPlaygroundUrl()
+        val startUrl =
+            DeepLinkResolver.resolve(intent?.data?.toString())
+                ?: UrlProvider.getChatPlaygroundUrl()
         webView.loadUrl(startUrl)
 
         networkMonitor = NetworkMonitor(this)
@@ -222,24 +250,28 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
         val isDarkMode = prefs.getBoolean("dark_mode", false)
         AppCompatDelegate.setDefaultNightMode(
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES 
-            else AppCompatDelegate.MODE_NIGHT_NO
+            if (isDarkMode) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            },
         )
     }
 
     private fun toggleTheme() {
         val current = AppCompatDelegate.getDefaultNightMode()
-        val newMode = if (current == AppCompatDelegate.MODE_NIGHT_YES) {
-            AppCompatDelegate.MODE_NIGHT_NO
-        } else {
-            AppCompatDelegate.MODE_NIGHT_YES
-        }
+        val newMode =
+            if (current == AppCompatDelegate.MODE_NIGHT_YES) {
+                AppCompatDelegate.MODE_NIGHT_NO
+            } else {
+                AppCompatDelegate.MODE_NIGHT_YES
+            }
         AppCompatDelegate.setDefaultNightMode(newMode)
-        
+
         // Save preference
         val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
         prefs.edit().putBoolean("dark_mode", newMode == AppCompatDelegate.MODE_NIGHT_YES).apply()
-        
+
         // Recreate activity to apply theme
         recreate()
     }
@@ -284,14 +316,19 @@ class MainActivity : AppCompatActivity() {
      * navigations fall back. Extracted from the anonymous `WebViewClient` so it
      * can be exercised directly by unit tests.
      */
-    internal fun handleWebViewError(view: WebView, code: Int, isMainFrame: Boolean) {
+    internal fun handleWebViewError(
+        view: WebView,
+        code: Int,
+        isMainFrame: Boolean,
+    ) {
         if (!isMainFrame) return
 
         when (code) {
             WebViewClient.ERROR_HOST_LOOKUP,
             WebViewClient.ERROR_CONNECT,
             WebViewClient.ERROR_TIMEOUT,
-            WebViewClient.ERROR_FAILED_SSL_HANDSHAKE -> {
+            WebViewClient.ERROR_FAILED_SSL_HANDSHAKE,
+            -> {
                 Toast.makeText(this, "Network error occurred. Showing offline page.", Toast.LENGTH_SHORT).show()
                 view.loadUrl("file:///android_asset/offline.html")
             }

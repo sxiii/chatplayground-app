@@ -1,7 +1,7 @@
 package com.chatplayground.app
 
-import android.webkit.WebViewClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebViewClient
 import com.chatplayground.app.utils.UrlProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -15,7 +15,6 @@ import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class MainActivityTest {
-
     @Test
     fun urlProviderReturnsChatPlaygroundUrl() {
         assertEquals("https://chatplayground.ai", UrlProvider.getChatPlaygroundUrl())
@@ -38,7 +37,7 @@ class MainActivityTest {
         assertEquals(
             "MainActivity should load the ChatPlayground URL into its WebView",
             "https://chatplayground.ai",
-            shadowOf(activity.getWebView()).lastLoadedUrl
+            shadowOf(activity.getWebView()).lastLoadedUrl,
         )
     }
 
@@ -52,13 +51,13 @@ class MainActivityTest {
             webView,
             android.webkit.WebViewClient.ERROR_HOST_LOOKUP,
             "Failed to resolve host",
-            "https://chatplayground.ai"
+            "https://chatplayground.ai",
         )
 
         assertEquals(
             "MainActivity should load the offline fallback page on network error",
             "file:///android_asset/offline.html",
-            shadowOf(webView).lastLoadedUrl
+            shadowOf(webView).lastLoadedUrl,
         )
     }
 
@@ -74,13 +73,21 @@ class MainActivityTest {
         assertEquals("ChatPlayground - Home", activity.title)
     }
 
-    private fun requestFor(url: String, hasGesture: Boolean = false): WebResourceRequest {
+    private fun requestFor(
+        url: String,
+        hasGesture: Boolean = false,
+    ): WebResourceRequest {
         return object : WebResourceRequest {
             override fun getUrl(): android.net.Uri = android.net.Uri.parse(url)
+
             override fun isForMainFrame(): Boolean = true
+
             override fun isRedirect(): Boolean = false
+
             override fun hasGesture(): Boolean = hasGesture
+
             override fun getMethod(): String = "GET"
+
             override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
         }
     }
@@ -89,10 +96,11 @@ class MainActivityTest {
     fun webViewInterceptsNonHttpSchemes() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
-            webView,
-            requestFor("mailto:support@chatplayground.ai")
-        )
+        val handled =
+            webView.webViewClient?.shouldOverrideUrlLoading(
+                webView,
+                requestFor("mailto:support@chatplayground.ai"),
+            )
 
         assertTrue("WebViewClient should intercept non-HTTP schemes like mailto:", handled ?: false)
     }
@@ -101,10 +109,11 @@ class MainActivityTest {
     fun webViewAllowsHttpHttpsSchemes() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
-            webView,
-            requestFor("https://chatplayground.ai/about")
-        )
+        val handled =
+            webView.webViewClient?.shouldOverrideUrlLoading(
+                webView,
+                requestFor("https://chatplayground.ai/about"),
+            )
 
         assertFalse("WebViewClient should NOT intercept HTTP/HTTPS schemes", handled ?: false)
     }
@@ -116,16 +125,17 @@ class MainActivityTest {
         activity.externalLinkLauncher = { opened.add(it) }
         val webView = activity.getWebView()
 
-        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
-            webView,
-            requestFor("https://github.com/sxiii/chatplayground-app", hasGesture = true)
-        )
+        val handled =
+            webView.webViewClient?.shouldOverrideUrlLoading(
+                webView,
+                requestFor("https://github.com/sxiii/chatplayground-app", hasGesture = true),
+            )
 
         assertTrue("Off-domain links must be intercepted by the app", handled ?: false)
         assertEquals(
             "Off-domain links must be handed to the Custom Tab launcher",
             listOf(android.net.Uri.parse("https://github.com/sxiii/chatplayground-app")),
-            opened
+            opened,
         )
     }
 
@@ -136,10 +146,11 @@ class MainActivityTest {
         activity.externalLinkLauncher = { opened.add(it) }
         val webView = activity.getWebView()
 
-        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
-            webView,
-            requestFor("https://chatplayground.ai/pricing")
-        )
+        val handled =
+            webView.webViewClient?.shouldOverrideUrlLoading(
+                webView,
+                requestFor("https://chatplayground.ai/pricing"),
+            )
 
         assertFalse("In-app links must stay in the WebView", handled ?: false)
         assertTrue("In-app links must not open a Custom Tab", opened.isEmpty())
@@ -152,10 +163,11 @@ class MainActivityTest {
         activity.externalLinkLauncher = { opened.add(it) }
         val webView = activity.getWebView()
 
-        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
-            webView,
-            requestFor("https://chatplayground.ai/pricing", hasGesture = true)
-        )
+        val handled =
+            webView.webViewClient?.shouldOverrideUrlLoading(
+                webView,
+                requestFor("https://chatplayground.ai/pricing", hasGesture = true),
+            )
 
         assertFalse("In-app links must stay in the WebView", handled ?: false)
         assertTrue("In-app links must not open a Custom Tab", opened.isEmpty())
@@ -168,14 +180,15 @@ class MainActivityTest {
         activity.externalLinkLauncher = { opened.add(it) }
         val webView = activity.getWebView()
 
-        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
-            webView,
-            requestFor("https://accounts.google.com/o/oauth2/auth", hasGesture = false)
-        )
+        val handled =
+            webView.webViewClient?.shouldOverrideUrlLoading(
+                webView,
+                requestFor("https://accounts.google.com/o/oauth2/auth", hasGesture = false),
+            )
 
         assertFalse(
             "Scripted/redirect navigation (e.g. OAuth) must stay in the WebView",
-            handled ?: false
+            handled ?: false,
         )
         assertTrue("Scripted navigation must not launch a Custom Tab", opened.isEmpty())
     }
@@ -185,7 +198,7 @@ class MainActivityTest {
         val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
         val activity = controller.get()
         val webView = activity.getWebView()
-        
+
         shadowOf(webView).pushEntryToHistory("https://chatplayground.ai/page1")
         shadowOf(webView).pushEntryToHistory("https://chatplayground.ai/page2")
 
@@ -215,16 +228,16 @@ class MainActivityTest {
         assertEquals(
             "Back must navigate the WebView history instead of closing the activity",
             1,
-            shadowWebView.goBackInvocations
+            shadowWebView.goBackInvocations,
         )
         assertEquals(
             "Back must return the WebView to the previous page",
             "https://chatplayground.ai/",
-            webView.url
+            webView.url,
         )
         assertFalse(
             "The activity must stay open while WebView history remains",
-            activity.isFinishing
+            activity.isFinishing,
         )
     }
 
@@ -242,7 +255,7 @@ class MainActivityTest {
         assertEquals("Back must not navigate when there is no history", 0, shadowWebView.goBackInvocations)
         assertTrue(
             "The activity must finish when the WebView has no back entry",
-            activity.isFinishing
+            activity.isFinishing,
         )
     }
 }

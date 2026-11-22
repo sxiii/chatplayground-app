@@ -9,7 +9,6 @@ import org.junit.Test
  * and which must leave it through a Custom Tab.
  */
 class LinkRouterTest {
-
     @Test
     fun chatPlaygroundHostStaysInWebView() {
         assertTrue(LinkRouter.isInAppUrl("https://chatplayground.ai/pricing"))

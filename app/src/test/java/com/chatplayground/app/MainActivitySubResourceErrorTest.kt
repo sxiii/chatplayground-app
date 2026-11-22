@@ -1,6 +1,5 @@
 package com.chatplayground.app
 
-import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import org.junit.Assert.assertEquals
@@ -22,7 +21,6 @@ import org.robolectric.shadows.ShadowToast
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivitySubResourceErrorTest {
-
     @Test
     fun subResourceErrorLeavesPageLoadedAndShowsNoToast() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
@@ -38,7 +36,7 @@ class MainActivitySubResourceErrorTest {
         assertEquals(
             "A sub-resource error must not replace the current page",
             "https://chatplayground.ai",
-            shadowOf(webView).lastLoadedUrl
+            shadowOf(webView).lastLoadedUrl,
         )
         // No toast must be shown for sub-resource failures.
         assertNull("No toast should be shown for a sub-resource error", ShadowToast.getLatestToast())
@@ -55,7 +53,7 @@ class MainActivitySubResourceErrorTest {
         assertEquals(
             "A main-frame network error should fall back to the offline page",
             "file:///android_asset/offline.html",
-            shadowOf(webView).lastLoadedUrl
+            shadowOf(webView).lastLoadedUrl,
         )
         val latestToast = ShadowToast.getLatestToast()
         assertEquals("Should show a toast on main-frame network error", Toast.LENGTH_SHORT, latestToast!!.duration)

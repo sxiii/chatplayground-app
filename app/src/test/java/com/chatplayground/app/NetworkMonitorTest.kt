@@ -18,7 +18,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class NetworkMonitorTest {
-
     private fun context(): Context = ApplicationProvider.getApplicationContext()
 
     @Test
@@ -27,7 +26,7 @@ class NetworkMonitorTest {
 
         assertFalse(
             "A Robolectric device with no active network should be reported offline",
-            monitor.checkConnectivity()
+            monitor.checkConnectivity(),
         )
     }
 

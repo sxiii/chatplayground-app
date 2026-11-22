@@ -2,17 +2,16 @@ package com.chatplayground.app.utils
 
 import android.content.Context
 import android.webkit.WebView
+import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import androidx.test.core.app.ApplicationProvider
 
 @RunWith(RobolectricTestRunner::class)
 class CacheClearerTest {
-
     @Test
     fun clearAllClearsOfflineCacheAndWebViewCache() {
         val context = ApplicationProvider.getApplicationContext<Context>()

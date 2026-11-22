@@ -22,7 +22,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class WebViewDebuggingTest {
-
     private val recorded = mutableListOf<Boolean>()
     private val original = WebViewDebugging.applyDebuggingEnabled
 
@@ -43,7 +42,7 @@ class WebViewDebuggingTest {
         assertEquals(
             "Debug builds must expose chrome://inspect",
             listOf(true),
-            recorded
+            recorded,
         )
     }
 
@@ -53,7 +52,7 @@ class WebViewDebuggingTest {
 
         assertTrue(
             "Release builds must never expose the WebView renderer to adb",
-            recorded.isEmpty()
+            recorded.isEmpty(),
         )
     }
 
@@ -67,7 +66,7 @@ class WebViewDebuggingTest {
         assertEquals(
             "MainActivity must enable WebView debugging from BuildConfig.DEBUG",
             listOf(true),
-            recorded
+            recorded,
         )
     }
 }

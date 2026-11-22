@@ -5,7 +5,6 @@ import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class NotificationServiceTest {
-
     @Test
     fun testHandleTokenRefresh() {
         val service = NotificationService()
@@ -19,7 +18,7 @@ class NotificationServiceTest {
         val service = NotificationService()
         val title = "New Message"
         val body = "Hello from ChatPlayground!"
-        
+
         val notification = service.displayNotification(title, body)
         assertNotNull(notification)
         assertEquals(title, notification.title)

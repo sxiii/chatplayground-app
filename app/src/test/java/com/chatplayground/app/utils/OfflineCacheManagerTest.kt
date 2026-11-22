@@ -3,11 +3,9 @@ package com.chatplayground.app.utils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
-import java.io.File
 import java.nio.file.Files
 
 class OfflineCacheManagerTest {
-
     @Test
     fun testSaveAndRetrieveCache() {
         val tempDir = Files.createTempDirectory("cache_test").toFile()

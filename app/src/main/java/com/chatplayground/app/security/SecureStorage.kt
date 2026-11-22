@@ -35,21 +35,35 @@ object SecureStorage {
 
     private fun getStore(context: Context): EncryptedStore = storeFactory(context)
 
-    fun putString(context: Context, key: String, value: String) {
+    fun putString(
+        context: Context,
+        key: String,
+        value: String,
+    ) {
         getStore(context).putString(key, value)
     }
 
-    fun getString(context: Context, key: String, default: String? = null): String? {
+    fun getString(
+        context: Context,
+        key: String,
+        default: String? = null,
+    ): String? {
         return getStore(context).getString(key, default)
     }
 
     /** Removes [key] from secure storage. Best-effort; no-op if absent. */
-    fun remove(context: Context, key: String) {
+    fun remove(
+        context: Context,
+        key: String,
+    ) {
         getStore(context).remove(key)
     }
 
     /** Returns true when [key] is present in secure storage; false otherwise. */
-    fun contains(context: Context, key: String): Boolean {
+    fun contains(
+        context: Context,
+        key: String,
+    ): Boolean {
         return getStore(context).contains(key)
     }
 
@@ -63,7 +77,10 @@ object SecureStorage {
      * authentication. Returns `null` when authentication fails or is denied,
      * so protected reads fail closed.
      */
-    fun getStringWithBiometric(context: Context, key: String): String? {
+    fun getStringWithBiometric(
+        context: Context,
+        key: String,
+    ): String? {
         return if (authenticator.authenticate(context)) getString(context, key) else null
     }
 }

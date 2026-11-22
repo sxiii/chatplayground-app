@@ -15,7 +15,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class ManifestDeepLinkTest {
-
     private fun resolvesFor(uri: String): Boolean {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
@@ -27,7 +26,7 @@ class ManifestDeepLinkTest {
     fun manifestResolvesHttpsAppLinkForMainActivity() {
         assertTrue(
             "MainActivity must handle https://chatplayground.ai links",
-            resolvesFor("https://chatplayground.ai/chat/42")
+            resolvesFor("https://chatplayground.ai/chat/42"),
         )
     }
 
@@ -35,7 +34,7 @@ class ManifestDeepLinkTest {
     fun manifestResolvesWwwHttpsAppLinkForMainActivity() {
         assertTrue(
             "MainActivity must handle https://www.chatplayground.ai links",
-            resolvesFor("https://www.chatplayground.ai/chat/42")
+            resolvesFor("https://www.chatplayground.ai/chat/42"),
         )
     }
 
@@ -43,7 +42,7 @@ class ManifestDeepLinkTest {
     fun manifestResolvesCustomSchemeForMainActivity() {
         assertTrue(
             "MainActivity must handle chatplayground:// links",
-            resolvesFor("chatplayground://app/chat/42")
+            resolvesFor("chatplayground://app/chat/42"),
         )
     }
 }

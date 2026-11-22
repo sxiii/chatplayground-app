@@ -13,7 +13,6 @@ import java.net.URISyntaxException
  * its host rules with [DeepLinkResolver].
  */
 object LinkRouter {
-
     const val IN_APP_HOST = "chatplayground.ai"
 
     private val IN_APP_HOSTS = setOf(IN_APP_HOST, "www.$IN_APP_HOST")

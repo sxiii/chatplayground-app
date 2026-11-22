@@ -4,7 +4,6 @@ import android.webkit.WebView
 
 /** Enables WebView remote debugging (`chrome://inspect` over adb) for debug builds only. */
 object WebViewDebugging {
-
     /**
      * Injectable seam: production calls the real static API, tests substitute a recorder to
      * assert the decision — Robolectric's `ShadowWebView` implements

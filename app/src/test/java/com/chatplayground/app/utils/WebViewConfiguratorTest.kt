@@ -19,7 +19,6 @@ import org.robolectric.RuntimeEnvironment
  */
 @RunWith(RobolectricTestRunner::class)
 class WebViewConfiguratorTest {
-
     private fun configuredWebView(): WebView {
         val webView = WebView(RuntimeEnvironment.getApplication())
         WebViewConfigurator.configure(webView)
@@ -30,7 +29,7 @@ class WebViewConfiguratorTest {
     fun configureEnablesJavaScript() {
         assertTrue(
             "The chatplayground.ai SPA cannot render without JavaScript",
-            configuredWebView().settings.javaScriptEnabled
+            configuredWebView().settings.javaScriptEnabled,
         )
     }
 
@@ -38,7 +37,7 @@ class WebViewConfiguratorTest {
     fun configureEnablesDomStorage() {
         assertTrue(
             "Session state lives in localStorage/sessionStorage",
-            configuredWebView().settings.domStorageEnabled
+            configuredWebView().settings.domStorageEnabled,
         )
     }
 
@@ -47,7 +46,7 @@ class WebViewConfiguratorTest {
         assertEquals(
             "HTTPS pages must not load HTTP sub-resources",
             WebSettings.MIXED_CONTENT_NEVER_ALLOW,
-            configuredWebView().settings.mixedContentMode
+            configuredWebView().settings.mixedContentMode,
         )
     }
 
@@ -78,7 +77,7 @@ class WebViewConfiguratorTest {
         assertEquals(
             "MainActivity must apply the mixed-content policy",
             WebSettings.MIXED_CONTENT_NEVER_ALLOW,
-            settings.mixedContentMode
+            settings.mixedContentMode,
         )
     }
 }

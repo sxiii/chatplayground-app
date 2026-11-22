@@ -14,7 +14,6 @@ import java.net.URISyntaxException
  * `null` so callers keep their default navigation target.
  */
 object DeepLinkResolver {
-
     const val CANONICAL_URL = "https://chatplayground.ai"
     const val CUSTOM_SCHEME = "chatplayground"
 
@@ -25,11 +24,12 @@ object DeepLinkResolver {
         val trimmed = url?.trim().orEmpty()
         if (trimmed.isEmpty()) return null
 
-        val uri = try {
-            URI(trimmed)
-        } catch (e: URISyntaxException) {
-            return null
-        }
+        val uri =
+            try {
+                URI(trimmed)
+            } catch (e: URISyntaxException) {
+                return null
+            }
 
         val scheme = uri.scheme?.lowercase() ?: return null
         return when (scheme) {

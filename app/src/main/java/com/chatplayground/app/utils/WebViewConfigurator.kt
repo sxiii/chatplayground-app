@@ -12,15 +12,14 @@ import android.webkit.WebView
  * and before the first `loadUrl`, so no page can render under stock defaults.
  */
 object WebViewConfigurator {
-
     /**
      * Configures [webView] with:
      * - JavaScript enabled (required by the ChatPlayground SPA)
      * - DOM storage enabled (session/conversation state survives reloads)
      * - Mixed content never allowed (HTTPS pages never load HTTP sub-resources)
      * - Local file and content:// access disabled (never render user-supplied files;
-       bundled assets such as `file:///android_asset/offline.html` remain loadable
-       because they are served by the asset/resource loaders, not the file:// scheme)
+     bundled assets such as `file:///android_asset/offline.html` remain loadable
+     because they are served by the asset/resource loaders, not the file:// scheme)
      *
      * Idempotent: safe to call repeatedly; later calls override earlier ones.
      */

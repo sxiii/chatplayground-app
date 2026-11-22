@@ -17,7 +17,10 @@ class NotificationService {
         return currentToken
     }
 
-    fun displayNotification(title: String, body: String): PushNotification {
+    fun displayNotification(
+        title: String,
+        body: String,
+    ): PushNotification {
         val notification = PushNotification(title, body)
         displayedNotifications.add(notification)
         return notification

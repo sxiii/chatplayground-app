@@ -7,12 +7,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowToast
 
 @RunWith(RobolectricTestRunner::class)
 class MainActivityLoadErrorNotificationTest {
-
     @Test
     fun activityShowsToastOnNetworkError() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
@@ -24,7 +22,7 @@ class MainActivityLoadErrorNotificationTest {
             webView,
             WebViewClient.ERROR_HOST_LOOKUP,
             "Failed to resolve host",
-            "https://chatplayground.ai"
+            "https://chatplayground.ai",
         )
 
         val latestToast = ShadowToast.getLatestToast()

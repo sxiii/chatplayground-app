@@ -2,10 +2,8 @@ package com.chatplayground.app
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.os.HandlerThread
 import android.os.Looper
 import android.webkit.WebView
-import java.util.concurrent.CountDownLatch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -14,6 +12,7 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowNetwork
+import java.util.concurrent.CountDownLatch
 
 /**
  * Behavioral test for [MainActivity]'s `NetworkMonitor.observe` callback.
@@ -26,7 +25,6 @@ import org.robolectric.shadows.ShadowNetwork
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivityNetworkMonitorTest {
-
     @Test
     fun networkMonitorRunsOfflinePageReloadOnMainThread() {
         // Build the activity: onCreate registers the NetworkMonitor callback.
@@ -34,17 +32,18 @@ class MainActivityNetworkMonitorTest {
 
         // Precondition: WebView is showing the offline fallback page.
         val reloadedOn = mutableListOf<String>()
-        val recorder = object : WebView(activity) {
-            override fun reload() {
-                reloadedOn.add(Thread.currentThread().name)
+        val recorder =
+            object : WebView(activity) {
+                override fun reload() {
+                    reloadedOn.add(Thread.currentThread().name)
+                }
             }
-        }
         activity.webView = recorder
         recorder.loadUrl("file:///android_asset/offline.html")
         assertEquals(
             "WebView must start on the offline fallback page",
             "file:///android_asset/offline.html",
-            recorder.url
+            recorder.url,
         )
 
         // Locate the NetworkCallback the activity registered (it fires on the
@@ -71,7 +70,7 @@ class MainActivityNetworkMonitorTest {
         assertTrue("reload() must have been invoked", reloadedOn.isNotEmpty())
         assertTrue(
             "reload() must run on the UI thread ($mainThreadName), not the connectivity agent thread",
-            reloadedOn.any { it == mainThreadName }
+            reloadedOn.any { it == mainThreadName },
         )
     }
 }

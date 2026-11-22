@@ -2,8 +2,8 @@ package com.chatplayground.app.security
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 

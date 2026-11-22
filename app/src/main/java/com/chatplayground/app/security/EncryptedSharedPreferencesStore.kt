@@ -13,22 +13,27 @@ import androidx.security.crypto.MasterKeys
  * not exercised by Robolectric unit tests; see [EncryptedStore].
  */
 class EncryptedSharedPreferencesStore(private val context: Context) : EncryptedStore {
-
     private val prefs: SharedPreferences by lazy {
         EncryptedSharedPreferences.create(
             SecureStorage.PREF_NAME,
             MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
             context,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
     }
 
-    override fun putString(key: String, value: String) {
+    override fun putString(
+        key: String,
+        value: String,
+    ) {
         prefs.edit().putString(key, value).apply()
     }
 
-    override fun getString(key: String, default: String?): String? {
+    override fun getString(
+        key: String,
+        default: String?,
+    ): String? {
         return prefs.getString(key, default)
     }
 

@@ -23,7 +23,6 @@ import org.robolectric.shadows.ShadowNetwork
  */
 @RunWith(RobolectricTestRunner::class)
 class NetworkMonitorObserveTest {
-
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val cm: ConnectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -74,13 +73,13 @@ class NetworkMonitorObserveTest {
         assertEquals(
             "repeated observe() must not leak ConnectivityManager callbacks",
             1,
-            registeredCallbacks().size
+            registeredCallbacks().size,
         )
 
         monitor.stopObserving()
         assertTrue(
             "stopObserving() must unregister the callback",
-            registeredCallbacks().isEmpty()
+            registeredCallbacks().isEmpty(),
         )
     }
 

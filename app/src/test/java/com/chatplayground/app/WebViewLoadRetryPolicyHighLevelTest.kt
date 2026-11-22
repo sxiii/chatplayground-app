@@ -1,6 +1,5 @@
 package com.chatplayground.app
 
-import android.os.Handler
 import android.os.Looper
 import org.junit.Assert.*
 import org.junit.Test
@@ -9,7 +8,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class WebViewLoadRetryPolicyHighLevelTest {
-
     @Test
     fun testInitialState() {
         val policy = WebViewLoadRetryPolicy()

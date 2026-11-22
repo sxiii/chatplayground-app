@@ -19,7 +19,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivityLoadingIndicatorTest {
-
     private fun findLoadingProgress(activity: MainActivity): ProgressBar? {
         val id = activity.resources.getIdentifier("loading_progress", "id", activity.packageName)
         if (id == 0) return null
@@ -33,12 +32,12 @@ class MainActivityLoadingIndicatorTest {
 
         assertNotNull(
             "MainActivity should contain a loading_progress view",
-            progress
+            progress,
         )
         assertEquals(
             "The loading indicator should be visible while the page is loading",
             View.VISIBLE,
-            progress!!.visibility
+            progress!!.visibility,
         )
     }
 
@@ -52,7 +51,7 @@ class MainActivityLoadingIndicatorTest {
         val chromeClient = webView.webChromeClient
         assertNotNull(
             "MainActivity should install a WebChromeClient to track load progress",
-            chromeClient
+            chromeClient,
         )
 
         chromeClient!!.onProgressChanged(webView, 100)
@@ -60,7 +59,7 @@ class MainActivityLoadingIndicatorTest {
         assertEquals(
             "The loading indicator should be hidden once the page finishes loading",
             View.GONE,
-            progress!!.visibility
+            progress!!.visibility,
         )
     }
 
@@ -74,7 +73,7 @@ class MainActivityLoadingIndicatorTest {
         val chromeClient = webView.webChromeClient
         assertNotNull(
             "MainActivity should install a WebChromeClient to track load progress",
-            chromeClient
+            chromeClient,
         )
 
         chromeClient!!.onProgressChanged(webView, 50)
@@ -82,7 +81,7 @@ class MainActivityLoadingIndicatorTest {
         assertEquals(
             "The loading indicator should remain visible while the load is still in progress",
             View.VISIBLE,
-            progress!!.visibility
+            progress!!.visibility,
         )
     }
 
