@@ -5,6 +5,7 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.widget.Toast
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -74,12 +75,15 @@ class MainActivitySubResourceErrorTest {
 
     @Test
     fun webViewClientOnReceivedErrorMainFrameFallsBackToOfflinePage() {
-        ShadowToast.resetLatestToast()
+        ShadowToast.reset()
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
         val client = webView.webViewClient ?: return
 
-        val error = WebResourceError(WebViewClient.ERROR_HOST_LOOKUP, "Failed to resolve host")
+        val error = object : WebResourceError() {
+            override fun getErrorCode(): Int = WebViewClient.ERROR_HOST_LOOKUP
+            override fun getDescription(): CharSequence = "Failed to resolve host"
+        }
         client.onReceivedError(
             webView,
             resourceRequestFor("https://chatplayground.ai", isMainFrame = true),
@@ -96,12 +100,15 @@ class MainActivitySubResourceErrorTest {
 
     @Test
     fun webViewClientOnReceivedErrorSubResourceLeavesPageLoaded() {
-        ShadowToast.resetLatestToast()
+        ShadowToast.reset()
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
         val client = webView.webViewClient ?: return
 
-        val error = WebResourceError(WebViewClient.ERROR_HOST_LOOKUP, "Failed to resolve host")
+        val error = object : WebResourceError() {
+            override fun getErrorCode(): Int = WebViewClient.ERROR_HOST_LOOKUP
+            override fun getDescription(): CharSequence = "Failed to resolve host"
+        }
         client.onReceivedError(
             webView,
             resourceRequestFor("https://chatplayground.ai/image.png", isMainFrame = false),
