@@ -61,6 +61,13 @@ This document describes the core build, CI/CD, and application runtime functions
 - **Cache Management**: Provides a menu option to clear both the WebView's internal cache and the application's offline response cache.
 - **Back-Button History Navigation**: Overrides `onBackPressed()` so that pressing the system back button navigates backward in the WebView history stack (`webView.goBack()`) when `webView.canGoBack()` is true, falling through to default activity finish behavior only when there is no in-app browsing history.
 
+### WebView Settings (`WebViewConfigurator`)
+- **`WebViewConfigurator.configure(webView: WebView)`**: Applies the app-wide `WebSettings` policy. Called from `MainActivity.onCreate` right after `findViewById(R.id.webview)` and before the first `loadUrl`, so no page can render under stock WebView defaults.
+- **JavaScript enabled** (`javaScriptEnabled = true`): `chatplayground.ai` is a client-rendered single-page app; `WebSettings` defaults JavaScript to *disabled*, so an unconfigured WebView shows an empty document.
+- **DOM storage enabled** (`domStorageEnabled = true`): the SPA keeps session and conversation state in `localStorage` / `sessionStorage`; without it, reloads and process-death restores drop the user's state.
+- **Mixed content never allowed** (`mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW`): an `https://chatplayground.ai` page must not pull `http://` sub-resources, which would otherwise be silently blocked or downgraded depending on platform defaults. The policy is set explicitly rather than inherited.
+- **Local file and `content://` access disabled** (`allowFileAccess = false`, `allowContentAccess = false`): the wrapper never renders user-supplied local files. Bundled assets stay reachable at `file:///android_asset/...` (the offline fallback page), because `allowFileAccess` does not gate the asset and resource loaders.
+
 ### Link Routing (`LinkRouter`)
 - **`isInAppUrl(url: String?): Boolean`**: true when `url` parses as an `http`/`https` URL whose host is `chatplayground.ai` or `www.chatplayground.ai` (case-insensitive; look-alike hosts and subdomains are rejected). Parsed with `java.net.URI`, so the policy is plain-JVM testable.
 - **`isExternalWebUrl(url: String?): Boolean`**: true for any other `http`/`https` URL — these are handed to a Custom Tab.
