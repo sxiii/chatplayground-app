@@ -20,7 +20,7 @@ Delivered **Robolectric SDK consistency** (vision item 1, HIGH), test-first:
 ## Evidence
 - `git log` head `7fc2b07`; pushed `4cfbfd7..7fc2b07` to `main`.
 - Guard manual verification: fail on missing file / wrong SDK / per-class pin; pass on clean state.
-- CI run `44982364135` triggered by the push — in progress at cutover. Full-suite CI must stay green and a deliberately wrong `sdk` value must fail (proven locally by guard runs).
+- CI run `44982364135` triggered by the push — **completed success** (all steps incl. `Verify Robolectric SDK Consistency` green, 19 suites passed).
 
 ## Next Action
-Watch CI run `44982364135` to green; if it passes, select from `.autonomy/vision.md` — top open item is ktlint enforcement (§4 does not exist in CI/build.gradle). If CI run fails, read `gh run view 44982364135` and fix per the failure policy (no repeated unsuccessful approach).
+Select from `.autonomy/vision.md` — top open item is ktlint enforcement (§4 documents `org.jmailen.gradle.kotlinter` 4.3.0 but neither `app/build.gradle` nor the workflow contains it); next are Custom Tab warm-up/theming, JaCoCo report enablement, and the two new MEDIUM items (WebView back-button history navigation; Mixed Content / HTTPS enforcement).
