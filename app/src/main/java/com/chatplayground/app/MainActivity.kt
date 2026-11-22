@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                         override fun getMethod(): String = "GET"
                         override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
                     },
-                    object : WebResourceError(errorCode, description) {
+                    object : WebResourceError() {
                         override fun getErrorCode(): Int = errorCode
                         override fun getDescription(): String? = description
                     })
