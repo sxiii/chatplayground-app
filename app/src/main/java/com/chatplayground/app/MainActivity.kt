@@ -42,6 +42,10 @@ class MainActivity : AppCompatActivity() {
         // mixed content never allowed, local file/content access disabled.
         WebViewConfigurator.configure(webView)
 
+        // Expose chrome://inspect to debug builds only; a release build never
+        // exposes its renderer or page state to an attached debugger.
+        WebViewDebugging.configure(BuildConfig.DEBUG)
+
         // System Back walks the WebView history first, like a browser: only the
         // last Back press leaves the app. Without this, one tap on Back closes
         // the activity and discards the in-app navigation stack.
