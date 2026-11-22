@@ -143,8 +143,12 @@ class MainActivity : AppCompatActivity() {
 
         networkMonitor = NetworkMonitor(this)
         networkMonitor.observe { isConnected ->
-            if (isConnected && webView.url == "file:///android_asset/offline.html") {
-                runOnUiThread {
+            // The ConnectivityManager.NetworkCallback fires on the connectivity
+            // agent thread, so the whole decision (reading webView.url and
+            // choosing whether to reload) must run on the UI thread, not just
+            // the reload() call. Otherwise webView.url is read off-thread.
+            runOnUiThread {
+                if (isConnected && webView.url == "file:///android_asset/offline.html") {
                     webView.reload()
                 }
             }
