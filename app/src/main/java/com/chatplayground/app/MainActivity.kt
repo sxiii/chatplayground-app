@@ -357,10 +357,10 @@ class MainActivity : AppCompatActivity() {
             // Theme the Custom Tab toolbar to match the app's theme colour so the
             // external chrome looks native rather than a default unthemed browser.
             builder.setToolbarColor(themePrimaryColor())
+            val intent = builder.build()
             // Stamp the resolved provider package so the Intent targets a warm,
             // already-bound Custom Tabs client instead of a cold bind at click time.
-            customTabsPackage?.let { builder.setPackage(it) }
-            val intent = builder.build()
+            customTabsPackage?.let { intent.intent.setPackage(it) }
             launchCustomTabsIntent(intent, uri)
         } catch (e: Exception) {
             try {
@@ -416,7 +416,7 @@ class MainActivity : AppCompatActivity() {
     private fun resolveCustomTabsPackage(): String? {
         val pm = packageManager
         val intent = Intent(CustomTabsService.CUSTOM_TABS_CONNECTION)
-        return pm.queryIntentServices(intent, 0).firstOrNull()?.resolveInfo?.serviceInfo?.packageName
+        return pm.queryIntentServices(intent, 0).firstOrNull()?.serviceInfo?.packageName
     }
 
     override fun onStart() {
