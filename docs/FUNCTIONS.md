@@ -52,6 +52,7 @@ This document describes the core build, CI/CD, and application runtime functions
 - **Offline Fallback**: Overrides `onReceivedError` to load a local `offline.html` asset when a network error occurs, avoiding the default browser error page.
 - **External Browser**: Provides a menu option to open the current WebView URL in the system's default browser via `Intent.ACTION_VIEW`.
 - **Safe Link Interception**: Overrides `shouldOverrideUrlLoading` to intercept non-HTTP/HTTPS schemes (e.g., `mailto:`, `tel:`, `sms:`), preventing them from loading in the WebView and instead launching the appropriate external application via an `ACTION_VIEW` Intent. Returns `false` for HTTP/HTTPS to allow normal navigation.
+- **Custom Tabs for External Links**: Off-domain `http`/`https` links clicked within the WebView are intercepted and opened using `androidx.browser.customtabs.CustomTabsIntent`, providing a secure, trusted browser chrome for external sites, payments, and OAuth flows while keeping the user within the app context.
 - **Cache Management**: Provides a menu option to clear both the WebView's internal cache and the application's offline response cache.
 
 ### Secure Storage (`SecureStorage`)
