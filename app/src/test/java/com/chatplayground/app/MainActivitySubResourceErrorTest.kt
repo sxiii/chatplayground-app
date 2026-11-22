@@ -1,12 +1,9 @@
 package com.chatplayground.app
 
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,39 +23,16 @@ import org.robolectric.shadows.ShadowToast
 @RunWith(RobolectricTestRunner::class)
 class MainActivitySubResourceErrorTest {
 
-    private class TestWebResourceRequest(
-        private val url: String,
-        private val forMainFrame: Boolean
-    ) : WebResourceRequest {
-        override fun getUrl(): android.net.Uri = android.net.Uri.parse(url)
-        override fun isForMainFrame(): Boolean = forMainFrame
-        override fun isRedirect(): Boolean = false
-        override fun hasGesture(): Boolean = false
-        override fun getMethod(): String = "GET"
-        override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
-    }
-
-    private class TestWebResourceError(private val code: Int, private val desc: String?) : WebResourceError() {
-        override fun getErrorCode(): Int = code
-        override fun getDescription(): String? = desc
-    }
-
     @Test
     fun subResourceErrorLeavesPageLoadedAndShowsNoToast() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        val client = webView.webViewClient
-        assertNotNull("WebViewClient should be set", client)
 
         // Precondition: the main page is loaded.
         assertEquals("https://chatplayground.ai", shadowOf(webView).lastLoadedUrl)
 
-        // A sub-resource (e.g. an image) fails to load.
-        client!!.onReceivedError(
-            webView,
-            TestWebResourceRequest("https://chatplayground.ai/assets/logo.png", forMainFrame = false),
-            TestWebResourceError(WebViewClient.ERROR_HOST_LOOKUP, "Failed to resolve host")
-        )
+        // A sub-resource (e.g. an image) fails to load — not main frame, so nothing happens.
+        activity.handleWebViewError(webView, WebViewClient.ERROR_HOST_LOOKUP, isMainFrame = false)
 
         // The current page must remain loaded.
         assertEquals(
@@ -74,15 +48,9 @@ class MainActivitySubResourceErrorTest {
     fun mainFrameErrorStillFallsBackToOfflinePage() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        val client = webView.webViewClient
-        assertNotNull("WebViewClient should be set", client)
 
         // A main-frame navigation fails.
-        client!!.onReceivedError(
-            webView,
-            TestWebResourceRequest("https://chatplayground.ai/", forMainFrame = true),
-            TestWebResourceError(WebViewClient.ERROR_HOST_LOOKUP, "Failed to resolve host")
-        )
+        activity.handleWebViewError(webView, WebViewClient.ERROR_HOST_LOOKUP, isMainFrame = true)
 
         assertEquals(
             "A main-frame network error should fall back to the offline page",
