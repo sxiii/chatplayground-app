@@ -110,5 +110,5 @@ This document describes the core build, CI/CD, and application runtime functions
 
 ### ktlint (`org.jmailen.kotlinter`)
 - **Plugin**: `org.jmailen.kotlinter` version `4.3.0`, applied to the `app` module.
-- **`./gradlew ktlintCheck`**: Verifies Kotlin source formatting for `src/main` and `src/test` source sets (`ignoreTestSourceSet = false`, no experimental rules). Runs as a dedicated CI step after `Run Lint`; failure blocks the pipeline.
-- **`./gradlew ktlintFormat`**: Auto-fixes formatting violations locally before pushing.
+- **`./gradlew :app:lintKotlin`**: Verifies Kotlin source formatting for `src/main` and `src/test` source sets (`ignoreTestSourceSet = false`, no experimental rules). Runs as a dedicated CI step after `Run Lint`; failure blocks the pipeline.
+- **`./gradlew :app:formatKotlin`**: Auto-fixes formatting violations locally before pushing.
