@@ -382,7 +382,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /** Resolves `colorPrimary` from the current theme (light or dark). */
-    private fun themePrimaryColor(): Int {
+    internal fun themePrimaryColor(): Int {
         val typedValue = TypedValue()
         return if (theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)) {
             typedValue.data
