@@ -3,6 +3,7 @@ package com.chatplayground.app
 import android.webkit.WebViewClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.webResourceError
 import android.widget.Toast
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -80,10 +81,7 @@ class MainActivitySubResourceErrorTest {
         val webView = activity.getWebView()
         val client = webView.webViewClient ?: return
 
-        val error = object : WebResourceError() {
-            override fun getErrorCode(): Int = WebViewClient.ERROR_HOST_LOOKUP
-            override fun getDescription(): CharSequence = "Failed to resolve host"
-        }
+        val error = webResourceError(WebViewClient.ERROR_HOST_LOOKUP, "Failed to resolve host")
         client.onReceivedError(
             webView,
             resourceRequestFor("https://chatplayground.ai", isMainFrame = true),
@@ -105,10 +103,7 @@ class MainActivitySubResourceErrorTest {
         val webView = activity.getWebView()
         val client = webView.webViewClient ?: return
 
-        val error = object : WebResourceError() {
-            override fun getErrorCode(): Int = WebViewClient.ERROR_HOST_LOOKUP
-            override fun getDescription(): CharSequence = "Failed to resolve host"
-        }
+        val error = webResourceError(WebViewClient.ERROR_HOST_LOOKUP, "Failed to resolve host")
         client.onReceivedError(
             webView,
             resourceRequestFor("https://chatplayground.ai/image.png", isMainFrame = false),
