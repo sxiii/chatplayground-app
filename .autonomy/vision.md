@@ -27,35 +27,14 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (2026-11-22, after the Custom Tabs cycle)
 
-1. **[HIGH] Robolectric SDK consistency**: seven test classes carry no `@Config` at all
-   (`ManifestPermissionTest`, `NetworkMonitorTest`, `NetworkMonitorLifecycleTest`,
-   `DeepLinkResolverTest`, `NotificationServiceTest`, `OfflineCacheManagerTest`,
-   `UrlProviderTest`) and therefore inherit Robolectric's default SDK, while
-   `CacheClearerTest`/`SecureStorage*` pin 30 and the activity tests pin 26.
-   Acceptance: one source of truth — `app/src/test/resources/robolectric.properties`
-   (`sdk=26`) — plus removal of contradictory per-class pins, so a Robolectric
-   upgrade cannot silently reintroduce the `NoClassDefFoundError`/`KeyStoreException`
-   failures fixed on 2026-11-22.
-2. **[MEDIUM] Docs claim ktlint enforcement that does not exist**: `docs/FUNCTIONS.md`
-   §4 describes `org.jmailen.gradle.kotlinter` 4.3.0 applied to `app` plus a CI
-   `ktlintCheck` step; neither `app/build.gradle` nor `.github/workflows/build.yml`
-   contains it. Acceptance: implement it (formatting pass first) or delete §4.
-3. **[MEDIUM] Custom Tab warm-up and theming**: `MainActivity.launchInCustomTab`
-   builds a default `CustomTabsIntent` on every click — cold start, default toolbar,
-   visible flip. Acceptance: one `CustomTabsClient` warm-up bound in `onStart` and
-   released in `onStop`, toolbar colour taken from the app theme, and a test asserting
-   the launched intent carries the browser package.
-4. **[MEDIUM] JaCoCo report is disabled**: `jacocoTestReport` sets
-   `xml.required = html.required = csv.required = false`, so CI uploads only raw
-   `.exec` data (35 KB) and no human-readable coverage. Acceptance: enable `xml`
-   (and `html`), upload `app/build/reports/jacoco/**`, fail if the report is absent.
-5. **[LOW] Misleading CI step name**: `Upload JUnit Test Results`
-   (`.github/workflows/build.yml:111`) is a `run:` step that only copies XMLs and
-   duplicates `Collect JUnit Test Results` (line 66). Acceptance: rename it to
-   `Collect JUnit Test Results (post-failure)` or drop the duplicate.
-6. **[LOW] Silent drop of unusable URLs**: `MainActivity.handleUrl` returns `true`
-   for URLs that match no rule (blank/malformed) without any trace. Acceptance: log
-   at debug level (or show a toast) so unsupported schemes are diagnosable.
+1. **[x] [HIGH] Robolectric SDK consistency**: DONE 2026-11-22. One source of truth — `app/src/test/resources/robolectric.properties` (`sdk=26`) — plus removal of all eleven contradictory per-class `@Config(sdk/minSdk/maxSdk)` pins (`CacheClearerTest`, `SecureStorage*`, `WebViewLoadRetryPolicy*`, `MainActivity*`, `ManifestDeepLinkTest`, `NetworkMonitorObserveTest`). Guard `ci_check_robolectric_sdk.py` runs in CI after `Check Unit Test Results` and fails the build when the file is missing, `sdk != 26`, or any test pins an SDK. CI run `44982364135` (in progress at cutover).
+2. **[MEDIUM] Docs claim ktlint enforcement that does not exist**: `docs/FUNCTIONS.md` §4 describes `org.jmailen.gradle.kotlinter` 4.3.0 applied to `app` plus a CI `ktlintCheck` step; neither `app/build.gradle` nor `.github/workflows/build.yml` contains it. Acceptance: implement it (formatting pass first) or delete §4.
+3. **[MEDIUM] Custom Tab warm-up and theming**: `MainActivity.launchInCustomTab` builds a default `CustomTabsIntent` on every click — cold start, default toolbar, visible flip. Acceptance: one `CustomTabsClient` warm-up bound in `onStart` and released in `onStop`, toolbar colour taken from the app theme, and a test asserting the launched intent carries the browser package.
+4. **[MEDIUM] JaCoCo report is disabled**: `jacocoTestReport` sets `xml.required = html.required = csv.required = false`, so CI uploads only raw `.exec` data (35 KB) and no human-readable coverage. Acceptance: enable `xml` (and `html`), upload `app/build/reports/jacoco/**`, fail if the report is absent.
+5. **[LOW] Misleading CI step name**: `Upload JUnit Test Results` (`.github/workflows/build.yml:111`) is a `run:` step that only copies XMLs and duplicates `Collect JUnit Test Results` (line 66). Acceptance: rename it to `Collect JUnit Test Results (post-failure)` or drop the duplicate.
+6. **[LOW] Silent drop of unusable URLs**: `MainActivity.handleUrl` returns `true` for URLs that match no rule (blank/malformed) without any trace. Acceptance: log at debug level (or show a toast) so unsupported schemes are diagnosable.
+7. **[MEDIUM] WebView back-button history navigation**: pressing the system Back button closes the activity immediately, discarding in-WebView navigation history. Acceptance: override `onBackPressed` so Back first calls `webView.goBack()` when the WebView has a back entry; only falls through to `super` (activity finish) when there is no history. Covered by a `MainActivityTest` case asserting goBack is invoked and finish is not.
+8. **[MEDIUM] Mixed Content / HTTPS enforcement**: `WebViewSettings` allow mixed content on several API levels, so an HTTPS page loading HTTP sub-resources triggers silent mixed-content warnings or blocked loads. Acceptance: set `WebViewSettings.MixedContentHandling` to `NEVER_ALLOW` (or `ALWAYS_ALLOW` gated behind a user setting), plus a unit test asserting the setting.
 
 ## Completed (2026-11-22, Custom Tabs cycle)
 - **MEDIUM: WebView Custom Tabs for external links**: added `LinkRouter`
