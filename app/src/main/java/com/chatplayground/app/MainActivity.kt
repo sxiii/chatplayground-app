@@ -111,7 +111,6 @@ class MainActivity : AppCompatActivity() {
                     }
                     else -> {
                         if (loadRetryPolicy.shouldRetry(true)) {
-                            loadRetryPolicy.recordRetry()
                             loadRetryPolicy.scheduleRetryWithBackoff {
                                 view?.reload()
                             }
