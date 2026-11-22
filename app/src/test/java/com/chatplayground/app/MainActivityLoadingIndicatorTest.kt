@@ -13,9 +13,12 @@ import org.robolectric.annotation.Config
 /**
  * Verifies that MainActivity displays a native loading indicator while the
  * WebView is performing a page load and hides it once the load completes.
+ *
+ * Pinned to SDK 26 to match [MainActivityTest]: Robolectric 4.18 cannot load
+ * the WebView stack at API 34 and throws NoClassDefFoundError there.
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [34])
+@Config(sdk = [26])
 class MainActivityLoadingIndicatorTest {
 
     private fun findLoadingProgress(activity: MainActivity): ProgressBar? {

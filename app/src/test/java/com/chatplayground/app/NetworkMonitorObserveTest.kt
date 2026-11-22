@@ -2,9 +2,6 @@ package com.chatplayground.app
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.os.Build
-import android.telephony.TelephonyManager
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -13,83 +10,89 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.shadows.ShadowConnectivityManager
-import org.robolectric.shadows.ShadowNetworkInfo
+import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowNetwork
 
 /**
- * Simulates network state transitions through Robolectric's
- * [ShadowConnectivityManager] to verify [NetworkMonitor.observe] delivers
- * onAvailable / onLost to its registered callback and flips [isConnected].
+ * Behavioral tests for [NetworkMonitor.observe].
  *
- * Robolectric's default device has no active network and does not replay
- * ConnectivityManager callbacks, so these transitions must be driven
- * explicitly (see .autonomy/vision.md).
+ * Robolectric does not replay real ConnectivityManager transitions on its own,
+ * but [org.robolectric.shadows.ShadowConnectivityManager] exposes the set of
+ * registered callbacks. The tests therefore drive `onAvailable`/`onLost`
+ * explicitly instead of relying on the default-network shadow to fire them.
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(minSdk = Build.VERSION_CODES.N)
-@Suppress("DEPRECATION")
+@Config(sdk = [26])
 class NetworkMonitorObserveTest {
 
-    private lateinit var monitor: NetworkMonitor
-    private lateinit var shadowCm: ShadowConnectivityManager
+    private val context: Context = ApplicationProvider.getApplicationContext()
+    private val cm: ConnectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    private fun registeredCallbacks() = shadowOf(cm).networkCallbacks
 
     @Before
-    fun setUp() {
-        val context: Context = ApplicationProvider.getApplicationContext()
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        shadowCm = shadowOf(cm)
-        monitor = NetworkMonitor(context)
+    fun clearRegisteredCallbacks() {
+        // ShadowConnectivityManager keeps registrations in a static set; clear it
+        // so each test starts from a known state.
+        registeredCallbacks().clear()
     }
 
     @Test
     fun observeReportsOnlineThenOfflineOnNetworkTransitions() {
+        val monitor = NetworkMonitor(context)
         val events = mutableListOf<Boolean>()
+
         monitor.observe { events.add(it) }
 
-        // A mobile network comes online.
-        val info = ShadowNetworkInfo.newInstance(
-            null,
-            ConnectivityManager.TYPE_MOBILE,
-            TelephonyManager.NETWORK_TYPE_LTE,
-            true,
-            NetworkInfo.State.CONNECTED
-        )
-        shadowCm.setActiveNetworkInfo(info)
-        shadowCm.setDefaultNetworkActive(true)
+        val callbacks = registeredCallbacks().toList()
+        assertEquals("observe() must register exactly one callback", 1, callbacks.size)
 
-        assertTrue("monitor should be online once the default network is available", monitor.isConnected)
-        assertEquals(listOf(true), events)
+        val network = ShadowNetwork.newInstance(1)
+        callbacks.forEach { it.onAvailable(network) }
 
-        // The network goes away.
-        shadowCm.setDefaultNetworkActive(false)
+        assertTrue("monitor should be online once onAvailable fires", monitor.isConnected)
+        assertEquals("observer should be told the device is online", listOf(true), events)
 
-        assertFalse("monitor should be offline once the default network is lost", monitor.isConnected)
-        assertEquals(listOf(true, false), events)
+        callbacks.forEach { it.onLost(network) }
+
+        assertFalse("monitor should be offline once onLost fires", monitor.isConnected)
+        assertEquals("observer should be told the device went offline", listOf(true, false), events)
+
+        monitor.stopObserving()
     }
 
     @Test
-    fun observeReplacesPreviousCallbackOnRepeatCalls() {
-        val firstEvents = mutableListOf<Boolean>()
-        val secondEvents = mutableListOf<Boolean>()
+    fun observeCalledTwiceReplacesPreviousCallback() {
+        val monitor = NetworkMonitor(context)
 
-        monitor.observe { firstEvents.add(it) }
-        monitor.observe { secondEvents.add(it) }
+        monitor.observe { }
+        assertEquals(1, registeredCallbacks().size)
 
-        val info = ShadowNetworkInfo.newInstance(
-            null,
-            ConnectivityManager.TYPE_WIFI,
-            TelephonyManager.NETWORK_TYPE_LTE,
-            true,
-            NetworkInfo.State.CONNECTED
+        monitor.observe { }
+        // The previous callback must be unregistered before the new one is
+        // registered, otherwise activity recreation leaks registrations.
+        assertEquals(
+            "repeated observe() must not leak ConnectivityManager callbacks",
+            1,
+            registeredCallbacks().size
         )
-        shadowCm.setActiveNetworkInfo(info)
-        shadowCm.setDefaultNetworkActive(true)
 
-        // Only the most recently registered callback should be notified
-        // (observe unregisters the previous callback before registering).
-        assertEquals(listOf<Boolean>(), firstEvents)
-        assertEquals(listOf(true), secondEvents)
+        monitor.stopObserving()
+        assertTrue(
+            "stopObserving() must unregister the callback",
+            registeredCallbacks().isEmpty()
+        )
+    }
+
+    @Test
+    fun stopObservingWithoutObserveIsNoOp() {
+        val monitor = NetworkMonitor(context)
+
+        monitor.stopObserving()
+        monitor.stopObserving()
+
+        assertTrue(registeredCallbacks().isEmpty())
     }
 }

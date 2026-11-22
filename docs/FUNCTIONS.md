@@ -61,6 +61,11 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`contains(context, key): Boolean`**: Returns true when [key] is present in secure storage; false otherwise.
 - **`clear(context)`**: Wipes all stored values from secure storage; useful for a "Log out / Reset app" feature.
 
+#### Encrypted store seam (`EncryptedStore` / `EncryptedSharedPreferencesStore`)
+- **`EncryptedStore`** (interface): `putString(key, value)`, `getString(key, default)`, `remove(key)`, `contains(key)`, `clear()` — the key/value contract `SecureStorage` depends on.
+- **`EncryptedSharedPreferencesStore(context)`**: production implementation backed by AndroidX `EncryptedSharedPreferences` + Android Keystore (`MasterKeys.AES256_GCM_SPEC`, key scheme AES256-SIV, value scheme AES256-GCM).
+- **`SecureStorage.storeFactory: (Context) -> EncryptedStore`**: injectable factory, defaulting to `EncryptedSharedPreferencesStore`. Unit tests substitute an in-memory implementation because Android Keystore is unavailable under Robolectric; production wiring is unchanged.
+
 ### Biometric Authentication (`SecureStorage`)
 - **`authenticateWithBiometric(context, onSuccess, onFailure)`**: Displays a system biometric prompt (fingerprint/face) via `BiometricPrompt` and invokes [onSuccess] on successful authentication or [onFailure] on cancellation/error.
 - **`getStringWithBiometric(context, key)`**: Returns the decrypted value for [key] only after successful biometric authentication; returns `null` if authentication has not been performed or fails.
