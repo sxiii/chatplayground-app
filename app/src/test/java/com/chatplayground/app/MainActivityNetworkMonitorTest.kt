@@ -40,7 +40,7 @@ class MainActivityNetworkMonitorTest {
             }
         }
         activity.webView = recorder
-        shadowOf(recorder).loadUrl("file:///android_asset/offline.html")
+        recorder.loadUrl("file:///android_asset/offline.html")
         assertEquals(
             "WebView must start on the offline fallback page",
             "file:///android_asset/offline.html",
