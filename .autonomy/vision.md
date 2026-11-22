@@ -55,6 +55,12 @@ while keeping the main content in a WebView.
 14. **[LOW] Docs section numbering collides**: `docs/FUNCTIONS.md` has two `## 4.` headings (`4. WebView UI & Loading` at line 53 and `4. Code Formatting Enforcement (CI)` at line 102), so cross-references ("§4") are ambiguous — the ktlint section is also the one whose claims are unimplemented (item 2). Acceptance: renumber the formatting section to 5 and make the `§4` references in `vision.md`/`AUTONOMY` notes unambiguous.
 15. **[LOW] `README.md` is three lines**: it does not say the project can only be built by GitHub workers, where CI status/artifacts live, or how to run the unit tests. Acceptance: document the GitHub-native build requirement, the workflow name, the artifact names, and the Robolectric SDK pin.
 
+16. **[MEDIUM] Verify JaCoCo report before upload**: `.github/workflows/build.yml` runs `Upload JaCoCo Report` (line 104) before `Verify JaCoCo Report Present` (line 111), so a missing report would be uploaded anyway and only caught afterward. Acceptance: reorder so verification runs before upload and fails fast when `app/build/reports/jacoco/jacocoTestReport.xml` is absent.
+
+17. **[LOW] Duplicate `Upload JUnit Test Results` step**: `.github/workflows/build.yml:119` is a `run:` step that only copies XMLs and duplicates `Collect JUnit Test Results` (line 66). Acceptance: rename to `Collect JUnit Test Results (post-failure)` or drop the duplicate.
+
+18. **[LOW] `README.md` is three lines**: it does not say the project can only be built by GitHub workers, where CI status/artifacts live, or how to run the unit tests. Acceptance: document the GitHub-native build requirement, the workflow name, the artifact names, and the Robolectric SDK pin.
+
 ## Completed (2026-11-22, Custom Tabs cycle)
 - **MEDIUM: WebView Custom Tabs for external links**: added `LinkRouter`
   (`isInAppUrl` / `isExternalWebUrl` / `isExternalScheme`, `java.net.URI` based) and
