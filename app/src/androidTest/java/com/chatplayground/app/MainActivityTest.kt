@@ -1,6 +1,5 @@
 package com.chatplayground.app
 
-import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
