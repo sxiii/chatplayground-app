@@ -195,10 +195,11 @@ class MainActivityTest {
 
     @Test
     fun webViewSavesAndRestoresNavigationState() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java)
-            .create()
-            .start()
-            .resume()
+        val controller =
+            Robolectric.buildActivity(MainActivity::class.java)
+                .create()
+                .start()
+                .resume()
         val activity = controller.get()
         val webView = activity.getWebView()
 
@@ -208,11 +209,12 @@ class MainActivityTest {
         val bundle = android.os.Bundle()
         controller.saveInstanceState(bundle).pause().stop().destroy()
 
-        val newController = Robolectric.buildActivity(MainActivity::class.java)
-            .create(bundle)
-            .start()
-            .restoreInstanceState(bundle)
-            .resume()
+        val newController =
+            Robolectric.buildActivity(MainActivity::class.java)
+                .create(bundle)
+                .start()
+                .restoreInstanceState(bundle)
+                .resume()
         val newActivity = newController.get()
         val newWebView = newActivity.getWebView()
 
@@ -226,10 +228,11 @@ class MainActivityTest {
 
     @Test
     fun backPressNavigatesWebViewHistoryInsteadOfFinishingActivity() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java)
-            .create()
-            .start()
-            .resume()
+        val controller =
+            Robolectric.buildActivity(MainActivity::class.java)
+                .create()
+                .start()
+                .resume()
         val activity = controller.get()
         val webView = activity.getWebView()
         val shadowWebView = shadowOf(webView)
@@ -257,10 +260,11 @@ class MainActivityTest {
 
     @Test
     fun backPressFinishesActivityWhenWebViewHasNoHistory() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java)
-            .create()
-            .start()
-            .resume()
+        val controller =
+            Robolectric.buildActivity(MainActivity::class.java)
+                .create()
+                .start()
+                .resume()
         val activity = controller.get()
         val webView = activity.getWebView()
         val shadowWebView = shadowOf(webView)
