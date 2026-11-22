@@ -71,6 +71,7 @@ tasks.register('jacocoTestReport', org.gradle.testing.jacoco.tasks.JacocoReport)
         xml.required = true
         html.required = true
         csv.required = false
+        xml.destination file("${buildDir}/reports/jacoco/jacocoTestReport.xml")
     }
 }
 
