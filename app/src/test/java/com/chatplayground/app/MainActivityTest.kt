@@ -1,5 +1,6 @@
 package com.chatplayground.app
 
+import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebViewClient
 import com.chatplayground.app.utils.UrlProvider
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.Shadows.ShadowLog
 
 @RunWith(RobolectricTestRunner::class)
 class MainActivityTest {
@@ -191,6 +193,22 @@ class MainActivityTest {
             handled ?: false,
         )
         assertTrue("Scripted navigation must not launch a Custom Tab", opened.isEmpty())
+    }
+
+    @Test
+    fun handleUrlLogsDebugForUnsupportedUrls() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val captured = mutableListOf<String>()
+        ShadowLog.tagStream = { tag, msg, level, throwable -> captured.add(msg) }
+        try {
+            assertTrue("handleUrl must consume the unsupported URL", activity.handleUrl(""))
+            assertTrue(
+                "handleUrl should log an unsupported URL at debug level",
+                captured.any { it.contains("Unsupported URL") },
+            )
+        } finally {
+            ShadowLog.tagStream = null
+        }
     }
 
     @Test

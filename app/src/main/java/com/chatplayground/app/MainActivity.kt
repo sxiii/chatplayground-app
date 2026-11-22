@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
@@ -312,6 +313,10 @@ class MainActivity : AppCompatActivity() {
                 // No app can handle the scheme; swallow so the WebView does not crash.
             }
         }
+
+        // Blank or malformed URLs match no rule — log at debug level so
+        // unsupported schemes are diagnosable instead of silently dropped.
+        Log.d("MainActivity", "Unsupported URL dropped: $url")
         return true
     }
 
