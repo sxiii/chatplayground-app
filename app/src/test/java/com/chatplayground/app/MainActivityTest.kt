@@ -76,12 +76,12 @@ class MainActivityTest {
         assertEquals("ChatPlayground - Home", activity.title)
     }
 
-    private fun requestFor(url: String): WebResourceRequest {
+    private fun requestFor(url: String, hasGesture: Boolean = false): WebResourceRequest {
         return object : WebResourceRequest {
             override fun getUrl(): android.net.Uri = android.net.Uri.parse(url)
             override fun isForMainFrame(): Boolean = true
             override fun isRedirect(): Boolean = false
-            override fun hasGesture(): Boolean = false
+            override fun hasGesture(): Boolean = hasGesture
             override fun getMethod(): String = "GET"
             override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
         }
@@ -120,7 +120,7 @@ class MainActivityTest {
 
         val handled = webView.webViewClient?.shouldOverrideUrlLoading(
             webView,
-            requestFor("https://github.com/sxiii/chatplayground-app")
+            requestFor("https://github.com/sxiii/chatplayground-app", hasGesture = true)
         )
 
         assertTrue("Off-domain links must be intercepted by the app", handled ?: false)
@@ -145,6 +145,41 @@ class MainActivityTest {
 
         assertFalse("In-app links must stay in the WebView", handled ?: false)
         assertTrue("In-app links must not open a Custom Tab", opened.isEmpty())
+    }
+
+    @Test
+    fun inAppLinkClickedByUserStaysInWebView() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val opened = mutableListOf<android.net.Uri>()
+        activity.externalLinkLauncher = { opened.add(it) }
+        val webView = activity.getWebView()
+
+        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
+            webView,
+            requestFor("https://chatplayground.ai/pricing", hasGesture = true)
+        )
+
+        assertFalse("In-app links must stay in the WebView", handled ?: false)
+        assertTrue("In-app links must not open a Custom Tab", opened.isEmpty())
+    }
+
+    @Test
+    fun offDomainRedirectWithoutUserGestureStaysInWebView() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val opened = mutableListOf<android.net.Uri>()
+        activity.externalLinkLauncher = { opened.add(it) }
+        val webView = activity.getWebView()
+
+        val handled = webView.webViewClient?.shouldOverrideUrlLoading(
+            webView,
+            requestFor("https://accounts.google.com/o/oauth2/auth", hasGesture = false)
+        )
+
+        assertFalse(
+            "Scripted/redirect navigation (e.g. OAuth) must stay in the WebView",
+            handled ?: false
+        )
+        assertTrue("Scripted navigation must not launch a Custom Tab", opened.isEmpty())
     }
 
     @Test

@@ -52,8 +52,15 @@ This document describes the core build, CI/CD, and application runtime functions
 - **Offline Fallback**: Overrides `onReceivedError` to load a local `offline.html` asset when a network error occurs, avoiding the default browser error page.
 - **External Browser**: Provides a menu option to open the current WebView URL in the system's default browser via `Intent.ACTION_VIEW`.
 - **Safe Link Interception**: Overrides `shouldOverrideUrlLoading` to intercept non-HTTP/HTTPS schemes (e.g., `mailto:`, `tel:`, `sms:`), preventing them from loading in the WebView and instead launching the appropriate external application via an `ACTION_VIEW` Intent. Returns `false` for HTTP/HTTPS to allow normal navigation.
-- **Custom Tabs for External Links**: Off-domain `http`/`https` links clicked within the WebView are intercepted and opened using `androidx.browser.customtabs.CustomTabsIntent`, providing a secure, trusted browser chrome for external sites, payments, and OAuth flows while keeping the user within the app context.
+- **Custom Tabs for External Links**: User-initiated off-domain `http`/`https` links clicked within the WebView are intercepted and opened using `androidx.browser.customtabs.CustomTabsIntent`, providing a secure, trusted browser chrome for external sites, payments, and OAuth exits while keeping the user within the app context. Scripted or redirect navigations (sign-in redirects, form posts) stay inside the WebView so in-app sessions keep working; if no Custom Tabs provider is installed the link falls back to a plain `ACTION_VIEW` browser Intent.
 - **Cache Management**: Provides a menu option to clear both the WebView's internal cache and the application's offline response cache.
+
+### Link Routing (`LinkRouter`)
+- **`isInAppUrl(url: String?): Boolean`**: true when `url` parses as an `http`/`https` URL whose host is `chatplayground.ai` or `www.chatplayground.ai` (case-insensitive; look-alike hosts and subdomains are rejected). Parsed with `java.net.URI`, so the policy is plain-JVM testable.
+- **`isExternalWebUrl(url: String?): Boolean`**: true for any other `http`/`https` URL — these are handed to a Custom Tab.
+- **`isExternalScheme(url: String?): Boolean`**: true for non-web schemes (`mailto:`, `tel:`, `sms:`) that the system must resolve; blank or malformed URLs are rejected by all three predicates.
+- **`MainActivity.handleUrl(url: String): Boolean`**: applies the policy — in-app URLs return `false` (the WebView loads them), external web URLs go to `externalLinkLauncher` and return `true`, external schemes go through `ACTION_VIEW` and return `true`.
+- **`MainActivity.externalLinkLauncher: (Uri) -> Unit`**: injectable seam defaulting to a `CustomTabsIntent` launch (with `ACTION_VIEW` fallback); tests substitute a recorder to assert routing without a browser installed.
 
 ### Secure Storage (`SecureStorage`)
 - **`putString(context, key, value)`**: Encrypts and persists a string value under [key] using EncryptedSharedPreferences (AES-256-GCM master key).

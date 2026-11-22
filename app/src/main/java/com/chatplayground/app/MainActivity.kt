@@ -14,8 +14,10 @@ import android.widget.Toast
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.browser.customtabs.CustomTabsIntent
 import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.DeepLinkResolver
+import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.UrlProvider
 
 class MainActivity : AppCompatActivity() {
@@ -50,17 +52,12 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: android.webkit.WebResourceRequest): Boolean {
                 val url = request.url.toString()
-                if (url.startsWith("http://") || url.startsWith("https://")) {
-                    return false
-                }
-
-                try {
-                    val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
-                    startActivity(intent)
-                } catch (e: Exception) {
-                    // Fail silently if no app can handle the scheme
-                }
-                return true
+                // Non-web schemes are always delegated to the system.
+                if (LinkRouter.isExternalScheme(url)) return handleUrl(url)
+                // Keep script/redirect navigations (OAuth, form posts) inside the
+                // WebView; only user-initiated off-domain links leave the app.
+                if (!request.hasGesture()) return false
+                return handleUrl(url)
             }
 
             override fun onReceivedError(
@@ -194,6 +191,47 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         webView.restoreState(savedInstanceState)
     }
+
+    /**
+     * Routes a WebView navigation. Returns `true` when the app consumed the URL
+     * (Custom Tab or external app) and the WebView must not load it, `false`
+     * when the WebView should navigate normally.
+     */
+    internal fun handleUrl(url: String): Boolean {
+        if (LinkRouter.isInAppUrl(url)) return false
+
+        if (LinkRouter.isExternalWebUrl(url)) {
+            externalLinkLauncher(Uri.parse(url))
+            return true
+        }
+
+        if (LinkRouter.isExternalScheme(url)) {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            } catch (e: Exception) {
+                // No app can handle the scheme; swallow so the WebView does not crash.
+            }
+        }
+        return true
+    }
+
+    /** Opens [uri] in a Custom Tab, falling back to a plain browser Intent. */
+    private fun launchInCustomTab(uri: Uri) {
+        try {
+            CustomTabsIntent.Builder()
+                .setShowTitle(true)
+                .build()
+                .launchUrl(this, uri)
+        } catch (e: Exception) {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, uri))
+            } catch (ignored: Exception) {
+                Toast.makeText(this, "No app can open this link", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    internal var externalLinkLauncher: (Uri) -> Unit = { launchInCustomTab(it) }
 
     private fun openInExternalBrowser(url: String?) {
         url?.let {
