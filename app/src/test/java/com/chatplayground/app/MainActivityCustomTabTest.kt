@@ -46,7 +46,7 @@ class MainActivityCustomTabTest {
             launched.size,
         )
         assertEquals(uri, launched[0].second)
-        assertNotNull("Custom Tab intent must carry a package", launched[0].first.intent.package)
+        assertNotNull("Custom Tab intent must carry a package", launched[0].first.intent.`package`)
     }
 
     @Test
