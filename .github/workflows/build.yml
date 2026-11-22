@@ -67,7 +67,7 @@ jobs:
       - name: Collect JUnit Test Results
         run: |
           mkdir -p junit-results
-          find app/build/test-results -name '*.xml' -print -exec cp {} junit-results/ \\; || true
+          find app/build/test-results -name '*.xml' -exec cp -t junit-results/ {} + 2>/dev/null || true
           if [ -z "$(ls -A junit-results)" ]; then
             echo "(no JUnit XML results produced)"
           else
