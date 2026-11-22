@@ -121,6 +121,11 @@ jobs:
           set -o pipefail
           ./gradlew lint --stacktrace --console=plain
 
+      - name: Run ktlintCheck
+        run: |
+          set -o pipefail
+          ./gradlew ktlintCheck --stacktrace --console=plain
+
       - name: Unit Test Diagnostics
         if: failure()
         run: |
