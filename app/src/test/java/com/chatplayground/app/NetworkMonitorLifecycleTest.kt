@@ -3,7 +3,6 @@ package com.chatplayground.app
 import android.content.Context
 import android.net.ConnectivityManager
 import androidx.test.core.app.ApplicationProvider
-import org.junit.Assert.assertDoesNotThrow
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -14,7 +13,7 @@ class NetworkMonitorLifecycleTest {
     fun testStopObservingDoesNotThrow() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val monitor = NetworkMonitor(context)
-        // No exception should be thrown even if no observer registered
-        assertDoesNotThrow { monitor.stopObserving() }
+        // No exception should be thrown even if no observer registered.
+        monitor.stopObserving()
     }
 }

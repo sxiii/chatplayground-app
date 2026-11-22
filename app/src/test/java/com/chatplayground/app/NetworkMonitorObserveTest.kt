@@ -89,7 +89,7 @@ class NetworkMonitorObserveTest {
 
         // Only the most recently registered callback should be notified
         // (observe unregisters the previous callback before registering).
-        assertEquals(emptyList(), firstEvents)
+        assertEquals(listOf<Boolean>(), firstEvents)
         assertEquals(listOf(true), secondEvents)
     }
 }

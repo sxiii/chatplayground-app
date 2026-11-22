@@ -28,7 +28,7 @@ class CacheClearerTest {
         CacheClearer.clearAll(context, webView)
 
         assertFalse(cacheManager.getCachedResponse(url) != null)
-        assertTrue(shadowOf(webView).isClearCacheCalled)
+        assertTrue(shadowOf(webView).wasClearCacheCalled())
     }
 
     @Test

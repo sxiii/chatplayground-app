@@ -60,7 +60,6 @@ jobs:
           ./gradlew assembleDebug --stacktrace --console=plain
 
       - name: Run Unit Tests
-        continue-on-error: true
         run: |
           ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain
 

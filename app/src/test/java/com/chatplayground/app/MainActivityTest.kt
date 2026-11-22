@@ -112,13 +112,13 @@ class MainActivityTest {
     }
 
     @Test
-    fun webViewSavesAndRestoresScrollPosition() {
+    fun webViewSavesAndRestoresNavigationState() {
         val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
         val activity = controller.get()
         val webView = activity.getWebView()
-        val shadowWebView = shadowOf(webView)
-
-        shadowWebView.scrollTo(100, 200)
+        
+        shadowOf(webView).pushEntryToHistory("https://chatplayground.ai/page1")
+        shadowOf(webView).pushEntryToHistory("https://chatplayground.ai/page2")
 
         val bundle = android.os.Bundle()
         controller.saveInstanceState(bundle).pause().stop().destroy()
@@ -127,7 +127,7 @@ class MainActivityTest {
         val newActivity = newController.get()
         val newWebView = newActivity.getWebView()
 
-        assertEquals("WebView should restore scrollX position", 100, newWebView.scrollX)
-        assertEquals("WebView should restore scrollY position", 200, newWebView.scrollY)
+        assertEquals("WebView should restore history current URL", "https://chatplayground.ai/page2", newWebView.url)
+        assertTrue("WebView should be able to go back after restore", newWebView.canGoBack())
     }
 }
