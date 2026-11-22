@@ -1,6 +1,5 @@
 package com.chatplayground.app
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -22,8 +21,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.browser.customtabs.CustomTabsService
-import androidx.browser.customtabs.CustomTabsServiceConnection
 import androidx.core.content.ContextCompat
 import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.DeepLinkResolver
@@ -408,8 +405,7 @@ class MainActivity : AppCompatActivity() {
     internal var isCustomTabsBound: Boolean = false
 
     /** Resolves the default Custom Tabs provider package from the package manager. */
-    private fun resolveCustomTabsPackage(): String? =
-        CustomTabsClient.getPackageName(this, null)
+    private fun resolveCustomTabsPackage(): String? = CustomTabsClient.getPackageName(this, null)
 
     private fun openInExternalBrowser(url: String?) {
         url?.let {
