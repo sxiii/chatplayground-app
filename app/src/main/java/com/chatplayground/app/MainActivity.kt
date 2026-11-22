@@ -56,6 +56,11 @@ class MainActivity : AppCompatActivity() {
         // exposes its renderer or page state to an attached debugger.
         WebViewDebugging.configure(BuildConfig.DEBUG)
 
+        // Resolve the default Custom Tabs provider package so external links
+        // can be stamped onto a warm Custom Tab intent (device only; null under
+        // Robolectric where no browser provider is registered).
+        customTabsPackage = resolveCustomTabsPackage()
+
         // System Back walks the WebView history first, like a browser: only the
         // last Back press leaves the app. Without this, one tap on Back closes
         // the activity and discards the in-app navigation stack.
@@ -405,48 +410,6 @@ class MainActivity : AppCompatActivity() {
     /** Resolves the default Custom Tabs provider package from the package manager. */
     private fun resolveCustomTabsPackage(): String? =
         CustomTabsClient.getPackageName(this, null)
-
-    override fun onStart() {
-        super.onStart()
-        // Bind to the default Custom Tabs provider once so the first external link
-        // opens on a warm connection; released in onStop. Bind failures are silent —
-        // the launch path simply falls back to a cold CustomTabsIntent.Builder.
-        val packageName = resolveCustomTabsPackage()
-        if (packageName != null) {
-            customTabsPackage = packageName
-            if (CustomTabsClient.bindCustomTabsService(this, packageName, customTabsServiceConnection)) {
-                return
-            }
-        }
-        customTabsPackage = resolveCustomTabsPackage()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        // Release the warm client so we don't hold the provider connection past
-        // the activity's life. Only unbind if we actually bound successfully.
-        if (isCustomTabsBound) {
-            unbindService(customTabsServiceConnection)
-            isCustomTabsBound = false
-        }
-        customTabsClient = null
-        customTabsPackage = null
-    }
-
-    private val customTabsServiceConnection = object : CustomTabsServiceConnection {
-        override fun onCustomTabsServiceConnected(name: ComponentName, client: CustomTabsClient) {
-            customTabsPackage = name.packageName
-            customTabsClient = client
-            client.warmup(0)
-            isCustomTabsBound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            customTabsPackage = null
-            customTabsClient = null
-            isCustomTabsBound = false
-        }
-    }
 
     private fun openInExternalBrowser(url: String?) {
         url?.let {

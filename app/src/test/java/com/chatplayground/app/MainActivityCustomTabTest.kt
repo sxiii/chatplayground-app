@@ -27,6 +27,11 @@ class MainActivityCustomTabTest {
     fun externalLinkLauncherLaunchesCustomTabIntent() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
 
+        // Stamp a known provider package onto the injectable seam so the launched
+        // Custom Tab intent carries it (under Robolectric no real provider exists,
+        // so resolveCustomTabsPackage yields null — we drive the seam directly).
+        activity.customTabsPackage = "com.android.chrome"
+
         val launched = mutableListOf<Pair<CustomTabsIntent, Uri>>()
         activity.launchCustomTabsIntent = { intent, uri ->
             launched.add(Pair(intent, uri))
