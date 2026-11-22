@@ -1,11 +1,9 @@
 package com.chatplayground.app
 
-import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -22,7 +20,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivityCustomTabTest {
-
     @Test
     fun externalLinkLauncherLaunchesCustomTabIntent() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()

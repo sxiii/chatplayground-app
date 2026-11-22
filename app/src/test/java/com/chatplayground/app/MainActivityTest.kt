@@ -1,6 +1,5 @@
 package com.chatplayground.app
 
-import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebViewClient
 import com.chatplayground.app.utils.UrlProvider
