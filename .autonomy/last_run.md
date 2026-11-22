@@ -1,26 +1,29 @@
-# Last Run (2026-11-22 07:16 CET)
+# Last Run (2026-11-22 07:52 CET)
 
 ## Baseline
-- Prior head `0fc15a6`; CI run `44991452282` (WebView settings cycle) green.
-- GitHub status page (api/v2/incidents/unresolved): no open incidents.
+- Prior head `627fec5`; CI run `44994130617` (WebView teardown cycle) green.
+- GitHub status page: no open incidents; `gh auth status` confirmed as `sxiii`.
 - Working tree clean at cycle start; no unfinished work from the previous cycle.
 
 ## Cycle Outcome
-Delivered **WebView lifecycle teardown** (`.autonomy/vision.md` #9, MEDIUM), test-first, verified entirely on GitHub workers:
+Delivered **WebView loading-indicator lifecycle hooks** (`.autonomy/vision.md` #10, MEDIUM), test-first, verified entirely on GitHub workers:
 
-1. **Docs first** (`25fbf25`): `docs/FUNCTIONS.md` documents `MainActivity.onDestroy` as the single teardown point — stops `NetworkMonitor`, detaches the WebView from its parent `FrameLayout` (`(webView.parent as? ViewGroup)?.removeView(webView)`), then calls `webView.destroy()`. Android does not release a WebView together with its activity; an un-destroyed instance keeps the activity context and renderer binding alive past the activity's life. Detaching first is the documented order: a WebView destroyed while still attached is removed on the next layout pass, which can touch an already-freed renderer. `vision.md` re-ranked with this cycle's scope.
-2. **RED** (`ca39cad`, run `44993168233` — failed as designed): new `MainActivityTeardownTest` (`app/src/test/java/com/chatplayground/app/MainActivityTeardownTest.kt`) — two cases: `ShadowWebView.wasDestroyCalled()` is true after `pause().stop().destroy()` and `webView.parent` is cleared after tear-down. Build failed because `onDestroy` did not call `destroy()`.
-3. **GREEN** (`7b42860`, run `44993627992` — success):
-   - `MainActivity.onDestroy` now detaches then destroys the WebView before `super.onDestroy()`.
-   - CI run `44993627992`: every step success — Build Debug APK, Run Unit Tests, Check Unit Test Results, Verify Robolectric SDK Consistency, Verify Dependencies, Run Lint, Build Release APK, Assert APK Artifacts Exist, Upload APK Artifacts.
+1. **Docs first** (implicit — `docs/FUNCTIONS.md` §4 already describes the hooks; acceptance required reconciling docs with implementation after adding them): `WebViewClient.onPageStarted` sets indicator `VISIBLE`, `onPageFinished` and `onReceivedError` set it `GONE`.
+
+2. **RED** (`1bebe8a`, run `44995811409` — failed as designed): new test cases in `MainActivityLoadingIndicatorTest.kt` — `loadingIndicatorIsShownOnPageStarted`, `loadingIndicatorIsHiddenOnPageFinished`, `loadingIndicatorIsHiddenOnReceivedError`. Build failed because `MainActivity` did not override these callbacks.
+
+3. **GREEN** (`9c2f96e`, run `44996139052` — success):
+   - `MainActivity`'s `WebViewClient` now overrides `onPageStarted` (indicator `VISIBLE`), `onPageFinished` (indicator `GONE`), and `onReceivedError` (indicator `GONE`). Aborted loads no longer leave the indicator spinning forever.
+   - CI run `44996139052`: success — full build + all tests green on GitHub workers.
 
 ## Evidence
-- `git log` head `7b42860`; pushed to `origin/main` (docs `25fbf25`, RED `ca39cad`, GREEN `7b42860`).
-- CI run `44993627992`: success — full build + all tests green on GitHub workers.
+- `git log` head `9c2f96e`; pushed to `origin/main` (RED `1bebe8a`, GREEN `9c2f96e`).
+- CI run `44996139052`: success — full build + all tests green on GitHub workers.
+- `vision.md` item 10 marked DONE with RED/GREEN run ids.
 
 ## Next Action
-1. **[MEDIUM] Loading indicator can spin forever, and docs describe hooks that do not exist**: the indicator is driven only by `WebChromeClient.onProgressChanged`; an aborted load never reports 100. `docs/FUNCTIONS.md` §4 claims `onPageStarted`/`onPageFinished` hooks that do not exist. Acceptance: hide the indicator in `onPageFinished` and in the error path, reconcile §4 with real callbacks.
+1. **[MEDIUM] No WebView debugging in debug builds**: `WebView.setWebContentsDebuggingEnabled` is never called, so `chrome://inspect` cannot attach to debug builds. Acceptance: enable it only when `BuildConfig.DEBUG` is true, pinned by a test of the wrapper function.
 2. **[MEDIUM] JaCoCo report disabled** — enable `xml`/`html` and upload `app/build/reports/jacoco/**`.
 3. **[MEDIUM] ktlint enforcement gap** — `docs/FUNCTIONS.md` §4 claims `org.jmailen.gradle.kotlinter` 4.3.0 + a CI `ktlintCheck`; neither exists. Acceptance: implement or delete §4.
 4. **[LOW] README.md** — document the GitHub-native build requirement and where CI status/artifacts live.
-5. Additional ranked suggestions recorded in `.autonomy/vision.md` (items 12–15): sub-resource errors loading the offline page, NetworkMonitor callback off the UI thread, docs section-number collision, README documentation.
+5. Additional ranked suggestions recorded in `.autonomy/vision.md` (items 11–15): WebView debugging, section-number collision, README documentation, sub-resource errors loading the offline page, NetworkMonitor callback off the UI thread.
