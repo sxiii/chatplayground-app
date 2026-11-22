@@ -6,21 +6,22 @@ import android.webkit.WebView
 object WebViewDebugging {
 
     /**
-     * When [debugBuild] is `true`, calls `WebView.setWebContentsDebuggingEnabled(true)` so a
-     * developer can attach DevTools via `chrome://inspect`. When it is `false` (release),
-     * nothing happens — the release build never exposes its renderer or page state.
-     *
-     * Idempotent: safe to call repeatedly; later calls override earlier ones.
-     *
-     * @param apply injectable seam defaulting to the real static call. Tests substitute a
-     * recorder to assert the wrapper's decision because Robolectric's `ShadowWebView` implements
+     * Injectable seam: production calls the real static API, tests substitute a recorder to
+     * assert the decision — Robolectric's `ShadowWebView` implements
      * `setWebContentsDebuggingEnabled` as a no-op with no readable state.
      */
-    fun configure(debugBuild: Boolean, apply: (Boolean) -> Unit = ::setDebuggingEnabled) {
-        if (debugBuild) apply(true)
+    internal var applyDebuggingEnabled: (Boolean) -> Unit = { enabled ->
+        WebView.setWebContentsDebuggingEnabled(enabled)
     }
 
-    private fun setDebuggingEnabled(enabled: Boolean) {
-        WebView.setWebContentsDebuggingEnabled(enabled)
+    /**
+     * When [debugBuild] is `true`, enables WebView remote debugging so a developer can attach
+     * DevTools via `chrome://inspect`. When it is `false` (release), nothing happens — the
+     * release build never exposes its renderer or page state to an attached debugger.
+     *
+     * Idempotent: safe to call repeatedly; later calls override earlier ones.
+     */
+    fun configure(debugBuild: Boolean) {
+        if (debugBuild) applyDebuggingEnabled(true)
     }
 }
