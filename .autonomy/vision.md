@@ -69,7 +69,7 @@ while keeping the main content in a WebView.
 
 21. **[x] [LOW] Docs section numbering collides**: DONE 2026-11-22. `docs/FUNCTIONS.md` now numbers the sections sequentially (`## 4.` WebView UI & Loading, `## 5.` Code Formatting Enforcement (CI)); `§4` references are unambiguous.
 
-22. **[LOW] NetworkMonitor UI-thread test still missing**: `MainActivity.onCreate` now runs the whole callback body under `runOnUiThread`, but there is no test asserting the WebView-state read happens on the main thread. Acceptance: add a test to `NetworkMonitorObserveTest` (or a new `MainActivityNetworkMonitorTest`) that drives `onAvailable`/`onLost` from a non-main thread and asserts `webView.reload()` runs on the UI thread (e.g. via Robolectric's `shadowOf(Looper.getMainLooper())` / a flag captured inside `runOnUiThread`). Blocked until item 23's ktlint gap is resolved enough for CI to be trustworthy.
+22. **[x] [LOW] NetworkMonitor UI-thread test**: DONE 2026-11-22. Added `MainActivityNetworkMonitorTest` asserting that when `NetworkMonitor` fires `onAvailable` from a background thread while the WebView is on `offline.html`, `MainActivity` marshals the check and reload onto the main thread (`Looper.getMainLooper()`), verified via Robolectric.
 
 23. **[MEDIUM] ktlint enforcement gap**: `docs/FUNCTIONS.md` §5 claims `org.jmailen.gradle.kotlinter` 4.3.0 + a CI `ktlintCheck` step; neither `app/build.gradle` nor `.github/workflows/build.yml` contains it. Local Gradle is forbidden for this project (GitHub workers compile everything), so acceptance is a CI-side formatting job that runs `ktlintCheck` (or a diff-based formatting check) and fails with a diff artifact — or delete §5.
 

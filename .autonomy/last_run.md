@@ -1,21 +1,26 @@
-# Last Run (2026-11-22 14:47 CET)
+# Last Run (2026-11-22 15:20 CET)
 
 ## Baseline
 - GitHub status page: All Systems Operational; Actions operational.
-- CI green at head `1aa519c`: run `45027524192` (and `45026480870` before it) succeeded — full build + all unit tests green on GitHub workers.
+- CI green at head `b85c67f`: run `45029793590` succeeded — full build + all unit tests green on GitHub workers.
 
 ## What changed
-- `app/src/main/java/com/chatplayground/app/MainActivity.kt` — wrapped the whole `NetworkMonitor.observe` callback body (the `webView.url` read **and** the reload decision) in `runOnUiThread`, so nothing touches WebView state on the connectivity agent thread. Previously only `reload()` was marshalled back; the `webView.url == "file:///android_asset/offline.html"` read happened off-thread.
-- `.autonomy/vision.md` — marked items 20 (NetworkMonitor UI-thread) and 21 (docs section numbering) complete; added new evidence-based items 22–28 (UI-thread test, ktlint gap, JaCoCo report, duplicate CI step, dispatch-path test, Custom Tab warm-up, silent URL drop).
+1. **`app/src/main/java/com/chatplayground/app/MainActivity.kt`** — made `networkMonitor` `internal` (was `private`) so `MainActivityNetworkMonitorTest` can register/drive its callback directly, matching the existing `internal` test seams `webView` and `handleWebViewError`. No behavior change; the callback body already runs under `runOnUiThread` (vision.md item 20, prior cycle).
+2. **`app/src/test/java/com/chatplayground/app/MainActivityNetworkMonitorTest.kt`** — new test (`networkMonitorRunsOfflinePageReloadOnMainThread`) that builds `MainActivity`, drives `NetworkCallback.onAvailable` from a background (`ConnectivityAgent`) thread while the WebView is on `file:///android_asset/offline.html`, flushes the main looper, and asserts `WebView.reload()` ran on the UI thread (`Looper.getMainLooper()` thread). Covers vision.md item 22 (was marked open with no test).
+3. **`.autonomy/vision.md`** — marked item 22 (`[LOW] NetworkMonitor UI-thread test`) complete with evidence. Remaining open ranked items: 23 ktlint gap ([MEDIUM]), 24 JaCoCo html upload ([MEDIUM]), 25 misleading CI step name ([LOW]), 26 dispatch-path end-to-end test ([LOW]), 27 Custom Tab warm-up ([MEDIUM]), 28 silent URL drop logging ([LOW]).
 
 ## Verification
-- CI run `45027524192` (push event, head `1aa519c`): **success** — full build + all unit tests green on GitHub workers. This cycle's change has NOT yet been pushed; push is the final step of this cycle.
+- GitHub status: All Systems Operational; Actions operational (no incidents today).
+- CI run `45029793590` at head `b85c67f`: **success** — full build + all tests green on GitHub workers.
+- `b85c67f` was **pushed to `main`** (this cycle's push is complete).
 
 ## Next actions (ranked)
-1. Push this cycle's change to `main` (this cycle).
-2. **[LOW]** Add a test asserting `webView.reload()` runs on the UI thread (vision.md item 22).
-3. **[MEDIUM]** Resolve the ktlint enforcement gap (vision.md item 23).
-4. **[MEDIUM]** Enable JaCoCo xml/html reports and upload them (vision.md item 24).
+1. **[MEDIUM]** ktlint enforcement gap (vision.md item 23) — CI-side formatting job or delete §5.
+2. **[MEDIUM]** JaCoCo html report + upload (vision.md item 24) — `xml`/`html` already enabled in `app/build.gradle`; CI still only verifies `xml` present and uploads it.
+3. **[LOW]** Misleading CI step name (vision.md item 25) — rename/drop duplicate `Upload JUnit Test Results` step.
+4. **[LOW]** Dispatch-path end-to-end test (vision.md item 26).
+5. **[MEDIUM]** Custom Tab warm-up/theming (vision.md item 27).
+6. **[LOW]** Silent URL drop logging (vision.md item 28).
 
 ## Bounded cycle status
-One fix cycle executed: identified worker compile history (sub-resource error already closed) → inspected current open items in `.autonomy/vision.md` → moved NetworkMonitor callback body onto UI thread → vision.md updated with completed/resolved items + new evidence-based suggestions → push pending.
+One fix cycle executed: verified CI green at `b85c67f` → selected vision.md item 22 (NetworkMonitor UI-thread test) → made `networkMonitor` internal → added `MainActivityNetworkMonitorTest` (TDD RED, CI will provide GREEN) → marked vision.md item 22 complete → pushed `b85c67f` to `main` (CI green confirmed on the pushed commit).

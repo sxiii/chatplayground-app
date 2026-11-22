@@ -28,7 +28,7 @@ import com.chatplayground.app.utils.WebViewDebugging
 class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView
     internal val loadRetryPolicy = WebViewLoadRetryPolicy(maxRetries = 3)
-    private lateinit var networkMonitor: NetworkMonitor
+    internal lateinit var networkMonitor: NetworkMonitor
 
     fun getWebView(): WebView = webView
 
