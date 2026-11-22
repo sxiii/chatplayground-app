@@ -198,16 +198,15 @@ class MainActivityTest {
     @Test
     fun handleUrlLogsDebugForUnsupportedUrls() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
-        val captured = mutableListOf<String>()
-        ShadowLog.tagStream = { tag, msg, level, throwable -> captured.add(msg) }
+        ShadowLog.reset()
         try {
             assertTrue("handleUrl must consume the unsupported URL", activity.handleUrl(""))
             assertTrue(
                 "handleUrl should log an unsupported URL at debug level",
-                captured.any { it.contains("Unsupported URL") },
+                ShadowLog.getLogsForTag("MainActivity").any { it.msg.contains("Unsupported URL") },
             )
         } finally {
-            ShadowLog.tagStream = null
+            ShadowLog.reset()
         }
     }
 
