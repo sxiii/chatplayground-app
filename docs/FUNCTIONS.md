@@ -63,6 +63,13 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`authenticateWithBiometric(context, onSuccess, onFailure)`**: Displays a system biometric prompt (fingerprint/face) via `BiometricPrompt` and invokes [onSuccess] on successful authentication or [onFailure] on cancellation/error.
 - **`getStringWithBiometric(context, key)`**: Returns the decrypted value for [key] only after successful biometric authentication; returns `null` if authentication has not been performed or fails.
 
+### Deep Links (`DeepLinkResolver` + `AndroidManifest.xml`)
+- **`resolve(url: String?): String?`**: Maps an incoming `Intent` data URL onto the canonical in-app WebView URL, or returns `null` when the URL is not a ChatPlayground link. Rules: `http`/`https` URLs on `chatplayground.ai` or `www.chatplayground.ai` are accepted (scheme normalised to `https`, `www.` dropped, path/query/fragment preserved); the custom scheme `chatplayground://<host>/<path>` maps to `https://chatplayground.ai/<path>`; `null`, blank, look-alike hosts (e.g. `chatplayground.ai.evil.com`) and unknown schemes are rejected.
+- **`isDeepLink(url: String?): Boolean`**: Convenience predicate — `resolve(url) != null`.
+- **Intent filters** (declared on `MainActivity`, `launchMode="singleTop"`): `VIEW` for `https://chatplayground.ai/...` and `https://www.chatplayground.ai/...` with `autoVerify="true"` (App Links; a hosted `assetlinks.json` on the domain is required for silent verification), plus a `VIEW` filter for the custom `chatplayground://` scheme. Both filters declare `BROWSABLE` + `DEFAULT`.
+- **`MainActivity.onCreate`**: Loads the deep-linked URL when the launch `Intent` carries supported data, otherwise falls back to `UrlProvider.getChatPlaygroundUrl()`.
+- **`MainActivity.onNewIntent(intent)`**: When the already-running activity receives a new deep link, loads that URL into the existing WebView instead of starting a second activity.
+
 ## 4. Code Formatting Enforcement (CI)
 
 ### ktlint (`org.jmailen.gradle.kotlinter`)
