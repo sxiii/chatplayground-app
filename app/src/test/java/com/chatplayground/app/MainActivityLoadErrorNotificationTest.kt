@@ -26,7 +26,14 @@ class MainActivityLoadErrorNotificationTest {
         )
 
         val latestToast = ShadowToast.getLatestToast()
-        assertEquals("Should show a toast on network error", Toast.LENGTH_SHORT, latestToast.duration)
-        assertEquals("Network error occurred. Showing offline page.", ShadowToast.getTextOfLatestToast())
+        assertEquals(
+            "Should show a toast on network error",
+            Toast.LENGTH_SHORT,
+            latestToast.duration,
+        )
+        assertEquals(
+            "Network error occurred. Showing offline page.",
+            ShadowToast.getTextOfLatestToast(),
+        )
     }
 }

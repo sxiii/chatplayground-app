@@ -126,7 +126,12 @@ class MainActivityLoadingIndicatorTest {
         val client = webView.webViewClient
         assertNotNull(client)
 
-        client!!.onReceivedError(webView, android.webkit.WebViewClient.ERROR_HOST_LOOKUP, "Error", "https://chatplayground.ai")
+        client!!.onReceivedError(
+            webView,
+            android.webkit.WebViewClient.ERROR_HOST_LOOKUP,
+            "Error",
+            "https://chatplayground.ai",
+        )
         assertEquals(View.GONE, progress.visibility)
     }
 }

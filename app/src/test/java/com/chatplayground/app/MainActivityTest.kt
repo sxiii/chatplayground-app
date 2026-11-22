@@ -195,7 +195,10 @@ class MainActivityTest {
 
     @Test
     fun webViewSavesAndRestoresNavigationState() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
+        val controller = Robolectric.buildActivity(MainActivity::class.java)
+            .create()
+            .start()
+            .resume()
         val activity = controller.get()
         val webView = activity.getWebView()
 
@@ -205,17 +208,28 @@ class MainActivityTest {
         val bundle = android.os.Bundle()
         controller.saveInstanceState(bundle).pause().stop().destroy()
 
-        val newController = Robolectric.buildActivity(MainActivity::class.java).create(bundle).start().restoreInstanceState(bundle).resume()
+        val newController = Robolectric.buildActivity(MainActivity::class.java)
+            .create(bundle)
+            .start()
+            .restoreInstanceState(bundle)
+            .resume()
         val newActivity = newController.get()
         val newWebView = newActivity.getWebView()
 
-        assertEquals("WebView should restore history current URL", "https://chatplayground.ai/page2", newWebView.url)
+        assertEquals(
+            "WebView should restore history current URL",
+            "https://chatplayground.ai/page2",
+            newWebView.url,
+        )
         assertTrue("WebView should be able to go back after restore", newWebView.canGoBack())
     }
 
     @Test
     fun backPressNavigatesWebViewHistoryInsteadOfFinishingActivity() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
+        val controller = Robolectric.buildActivity(MainActivity::class.java)
+            .create()
+            .start()
+            .resume()
         val activity = controller.get()
         val webView = activity.getWebView()
         val shadowWebView = shadowOf(webView)
@@ -243,7 +257,10 @@ class MainActivityTest {
 
     @Test
     fun backPressFinishesActivityWhenWebViewHasNoHistory() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
+        val controller = Robolectric.buildActivity(MainActivity::class.java)
+            .create()
+            .start()
+            .resume()
         val activity = controller.get()
         val webView = activity.getWebView()
         val shadowWebView = shadowOf(webView)
@@ -252,7 +269,11 @@ class MainActivityTest {
 
         activity.onBackPressedDispatcher.onBackPressed()
 
-        assertEquals("Back must not navigate when there is no history", 0, shadowWebView.goBackInvocations)
+        assertEquals(
+            "Back must not navigate when there is no history",
+            0,
+            shadowWebView.goBackInvocations,
+        )
         assertTrue(
             "The activity must finish when the WebView has no back entry",
             activity.isFinishing,

@@ -69,7 +69,8 @@ class MainActivityNetworkMonitorTest {
 
         assertTrue("reload() must have been invoked", reloadedOn.isNotEmpty())
         assertTrue(
-            "reload() must run on the UI thread ($mainThreadName), not the connectivity agent thread",
+            "reload() must run on the UI thread ($mainThreadName), not the connectivity " +
+                "agent thread",
             reloadedOn.any { it == mainThreadName },
         )
     }

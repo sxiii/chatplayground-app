@@ -72,8 +72,14 @@ class WebViewConfiguratorTest {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val settings = activity.getWebView().settings
 
-        assertTrue("MainActivity must configure the WebView before loading", settings.javaScriptEnabled)
-        assertTrue("MainActivity must configure DOM storage before loading", settings.domStorageEnabled)
+        assertTrue(
+            "MainActivity must configure the WebView before loading",
+            settings.javaScriptEnabled,
+        )
+        assertTrue(
+            "MainActivity must configure DOM storage before loading",
+            settings.domStorageEnabled,
+        )
         assertEquals(
             "MainActivity must apply the mixed-content policy",
             WebSettings.MIXED_CONTENT_NEVER_ALLOW,

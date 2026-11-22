@@ -16,7 +16,10 @@ class ManifestPermissionTest {
         val packageManager = context.packageManager
         val packageName = context.packageName
 
-        val packageInfo = packageManager.getPackageInfo(packageName, android.content.pm.PackageManager.GET_PERMISSIONS)
+        val packageInfo = packageManager.getPackageInfo(
+            packageName,
+            android.content.pm.PackageManager.GET_PERMISSIONS,
+        )
         val requestedPermissions = packageInfo.requestedPermissions ?: emptyArray()
 
         assertTrue(

@@ -39,7 +39,10 @@ class MainActivitySubResourceErrorTest {
             shadowOf(webView).lastLoadedUrl,
         )
         // No toast must be shown for sub-resource failures.
-        assertNull("No toast should be shown for a sub-resource error", ShadowToast.getLatestToast())
+        assertNull(
+            "No toast should be shown for a sub-resource error",
+            ShadowToast.getLatestToast(),
+        )
     }
 
     @Test
@@ -56,7 +59,14 @@ class MainActivitySubResourceErrorTest {
             shadowOf(webView).lastLoadedUrl,
         )
         val latestToast = ShadowToast.getLatestToast()
-        assertEquals("Should show a toast on main-frame network error", Toast.LENGTH_SHORT, latestToast!!.duration)
-        assertEquals("Network error occurred. Showing offline page.", ShadowToast.getTextOfLatestToast())
+        assertEquals(
+            "Should show a toast on main-frame network error",
+            Toast.LENGTH_SHORT,
+            latestToast!!.duration,
+        )
+        assertEquals(
+            "Network error occurred. Showing offline page.",
+            ShadowToast.getTextOfLatestToast(),
+        )
     }
 }
