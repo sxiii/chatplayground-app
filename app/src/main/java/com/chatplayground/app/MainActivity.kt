@@ -123,6 +123,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        // An Android WebView does not die with its activity: unless destroy() is called it
+        // keeps the activity context and its renderer binding alive past the activity's life.
+        // Detach first (a WebView destroyed while still attached is removed on the next
+        // layout pass, which can touch an already-freed renderer), then destroy.
+        if (::webView.isInitialized) {
+            (webView.parent as? android.view.ViewGroup)?.removeView(webView)
+            webView.destroy()
+        }
         super.onDestroy()
         if (::networkMonitor.isInitialized) {
             networkMonitor.stopObserving()
