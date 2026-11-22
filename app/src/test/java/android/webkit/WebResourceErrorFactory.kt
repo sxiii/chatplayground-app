@@ -13,8 +13,12 @@ class TestWebResourceError(
     private val description: String,
 ) : WebResourceError() {
     override fun getErrorCode(): Int = errorCode
+
     override fun getDescription(): CharSequence = description
 }
 
-fun webResourceError(errorCode: Int, description: String): WebResourceError =
+fun webResourceError(
+    errorCode: Int,
+    description: String,
+): WebResourceError =
     TestWebResourceError(errorCode, description)

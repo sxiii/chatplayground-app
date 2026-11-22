@@ -1,7 +1,7 @@
 package com.chatplayground.app
 
-import android.webkit.WebViewClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebViewClient
 import android.webkit.webResourceError
 import android.widget.Toast
 import org.junit.Assert.assertEquals
