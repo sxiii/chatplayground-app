@@ -69,6 +69,10 @@ This document describes the core build, CI/CD, and application runtime functions
 - **Mixed content never allowed** (`mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW`): an `https://chatplayground.ai` page must not pull `http://` sub-resources, which would otherwise be silently blocked or downgraded depending on platform defaults. The policy is set explicitly rather than inherited.
 - **Local file and `content://` access disabled** (`allowFileAccess = false`, `allowContentAccess = false`): the wrapper never renders user-supplied local files. Bundled assets stay reachable at `file:///android_asset/...` (the offline fallback page), because `allowFileAccess` does not gate the asset and resource loaders.
 
+### WebView Remote Debugging (`WebViewDebugging`)
+- **`WebViewDebugging.configure(debugBuild: Boolean)`**: Enables WebView remote debugging (`chrome://inspect` / DevTools over adb) **only** for debug builds. When `debugBuild` is `true` it calls `WebView.setWebContentsDebuggingEnabled(true)`; when it is `false` it does nothing, so a release build never exposes its renderer or page state to an attached debugger. Called from `MainActivity.onCreate` with `BuildConfig.DEBUG` as the single source of truth for the build type.
+- **`WebViewDebugging.applyDebuggingEnabled: (Boolean) -> Unit`**: injectable seam defaulting to the real static call. Tests substitute a recorder to assert the wrapper's decision and the `MainActivity` wiring, because Robolectric's `ShadowWebView` implements `setWebContentsDebuggingEnabled` as a no-op with no readable state.
+
 ### Link Routing (`LinkRouter`)
 - **`isInAppUrl(url: String?): Boolean`**: true when `url` parses as an `http`/`https` URL whose host is `chatplayground.ai` or `www.chatplayground.ai` (case-insensitive; look-alike hosts and subdomains are rejected). Parsed with `java.net.URI`, so the policy is plain-JVM testable.
 - **`isExternalWebUrl(url: String?): Boolean`**: true for any other `http`/`https` URL — these are handed to a Custom Tab.
