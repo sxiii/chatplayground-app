@@ -402,38 +402,21 @@ class MainActivity : AppCompatActivity() {
     /** True while the Custom Tabs service connection is bound (set in `onStart`). */
     internal var isCustomTabsBound: Boolean = false
 
-    private val customTabsServiceConnection = object : CustomTabsServiceConnection {
-        override fun onCustomTabsServiceConnected(name: ComponentName, client: CustomTabsClient) {
-            customTabsPackage = name.packageName
-            customTabsClient = client
-            client.warmup(0)
-            isCustomTabsBound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            customTabsPackage = null
-            customTabsClient = null
-            isCustomTabsBound = false
-        }
-    }
-
     /** Resolves the default Custom Tabs provider package from the package manager. */
-    private fun resolveCustomTabsPackage(): String? {
-        val pm = packageManager
-        val intent = Intent(CustomTabsService.CUSTOM_TABS_CONNECTION)
-        return pm.queryIntentServices(intent, 0).firstOrNull()?.serviceInfo?.packageName
-    }
+    private fun resolveCustomTabsPackage(): String? =
+        CustomTabsClient.getPackageName(this, null)
 
     override fun onStart() {
         super.onStart()
         // Bind to the default Custom Tabs provider once so the first external link
         // opens on a warm connection; released in onStop. Bind failures are silent —
         // the launch path simply falls back to a cold CustomTabsIntent.Builder.
-        val intent = Intent(CustomTabsService.CUSTOM_TABS_CONNECTION).apply {
-            resolveCustomTabsPackage()?.let { setPackage(it) }
-        }
-        if (bindService(intent, customTabsServiceConnection, Context.BIND_AUTO_CREATE)) {
-            return
+        val packageName = resolveCustomTabsPackage()
+        if (packageName != null) {
+            customTabsPackage = packageName
+            if (CustomTabsClient.bindCustomTabsService(this, packageName, customTabsServiceConnection)) {
+                return
+            }
         }
         customTabsPackage = resolveCustomTabsPackage()
     }
@@ -448,6 +431,21 @@ class MainActivity : AppCompatActivity() {
         }
         customTabsClient = null
         customTabsPackage = null
+    }
+
+    private val customTabsServiceConnection = object : CustomTabsServiceConnection {
+        override fun onCustomTabsServiceConnected(name: ComponentName, client: CustomTabsClient) {
+            customTabsPackage = name.packageName
+            customTabsClient = client
+            client.warmup(0)
+            isCustomTabsBound = true
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            customTabsPackage = null
+            customTabsClient = null
+            isCustomTabsBound = false
+        }
     }
 
     private fun openInExternalBrowser(url: String?) {
