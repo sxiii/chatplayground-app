@@ -101,13 +101,6 @@ jobs:
           ls -R app/build | head -n 20
           echo "------------------------"
 
-      - name: Upload JaCoCo Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: app/build/reports/jacoco/**
-
       - name: Verify JaCoCo Report Present
         run: |
           if [ ! -f app/build/reports/jacoco/jacocoTestReport.xml ]; then
@@ -116,17 +109,12 @@ jobs:
           fi
           echo "JaCoCo XML report present."
 
-      - name: Upload JUnit Test Results
+      - name: Upload JaCoCo Report
         if: always()
-        run: |
-          # Collect per-test XML results so failures are inspectable without admin log access.
-          mkdir -p junit-results
-          find app/build/test-results -name '*.xml' -print -exec cp {} junit-results/ \; || true
-          if [ -z "$(ls -A junit-results)" ]; then
-            echo "(no JUnit XML results produced)"
-          else
-            echo "JUnit XML results:"; ls -la junit-results
-          fi
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: app/build/reports/jacoco/**
 
       - name: Run Lint
         run: |

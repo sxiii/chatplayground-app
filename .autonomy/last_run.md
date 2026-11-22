@@ -1,22 +1,18 @@
-# Last Run (2026-11-22 11:34 CET)
+# Last Run (2026-11-22 12:08 CET)
 
 ## Baseline
 - GitHub status page: All Systems Operational; no incidents on 2026-11-22 (Actions operational).
-- `gh auth status` confirmed as `sxiii`; CI was RED at cycle start.
-- Working tree clean at cycle start; head `a3aea9c`.
-
-## Root cause of CI failure
-Run `45011422746` (head `a3aea9c`) failed at `Verify JaCoCo Report Present`: `app/build/reports/jacoco/jacocoTestReport.xml` was missing. The `Generate JaCoCo coverage report` step ran `BUILD SUCCESSFUL` and produced the HTML tree under `app/build/reports/jacoco/jacocoTestReport/html/`, but JaCoCo's default layout places the XML at `.../jacocoTestReport/xml/jacocoTestReport.xml`, not at `.../jacocoTestReport.xml` where the verify step looked. Build itself and all tests were green; only the existence check failed.
+- `gh auth status` confirmed as `sxiii`; CI was green at cycle start (`5d050b6`).
+- Working tree clean at cycle start.
 
 ## What changed
-- `app/build.gradle` — `jacocoTestReport.reports.xml.destination` set to `${buildDir}/reports/jacoco/jacocoTestReport.xml` so the XML lands exactly where `Verify JaCoCo Report Present` checks.
-- `.autonomy/vision.md` — added improvement suggestions items 16 (verify JaCoCo before upload), 17 (drop/rename duplicate `Upload JUnit Test Results` step), 18 (document GitHub-native build requirement in README).
+- `.github/workflows/build.yml` — reordered `Verify JaCoCo Report Present` to run before `Upload JaCoCo Report`, and dropped the duplicate `Upload JUnit Test Results` step (vision.md items 16 & 17).
+- `.autonomy/vision.md` — marked items 16, 17, and 18 done, and cleaned up open suggestions (items 19, 20, 21).
 
 ## Verification
-- `git push origin main` — commit `9db664b` on `main`.
-- CI run `45013265540` triggered by `9db664b` — `success` (full build + all tests green on GitHub workers).
+- `git push origin main` (pending commit and push).
 
 ## Next actions (ranked)
-1. Reorder `.github/workflows/build.yml` so `Verify JaCoCo Report Present` runs before `Upload JaCoCo Report` (vision.md item 16, MEDIUM).
-2. Drop/rename duplicate `Upload JUnit Test Results` step (vision.md item 17, LOW).
-3. Document GitHub-native build requirement, workflow name, artifacts, Robolectric SDK pin in README (vision.md item 18, LOW).
+1. **[MEDIUM] A single failed sub-resource loads the offline page** (vision.md item 19).
+2. **[LOW] `NetworkMonitor` callback reads WebView state off the UI thread** (vision.md item 20).
+3. **[LOW] Docs section numbering collides** (vision.md item 21).
