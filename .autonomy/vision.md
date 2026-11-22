@@ -26,13 +26,14 @@ while keeping the main content in a WebView.
 - [x] **Fix night mode color resources**: Added missing `surface` and `background` colors to base `values/colors.xml` for proper night mode fallback.
 
 ## Next Improvement Suggestions (2026-11-22)
-1. **[HIGH] Unit-test failures do not fail CI**: the `Run Unit Tests` step in `.github/workflows/build.yml` still carries `continue-on-error: true`, so a red test suite leaves the build green. Acceptance: the step blocks on failure, and a `junit-results/*.xml` scan fails the build when any `failures`/`errors` attribute is non-zero. Do this before adding more tests, otherwise regression coverage is decorative.
-2. **[MEDIUM] ktlint enforcement is documented but absent**: `docs/FUNCTIONS.md` §4 claims `org.jmailen.gradle.kotlinter` 4.3.0 is applied and a CI `ktlintCheck` step blocks the pipeline; neither exists in `app/build.gradle` or `.github/workflows/build.yml`. Acceptance: either implement it (with formatting fixed first, in a dedicated cycle) or correct the docs. Prefer correcting the docs in the same cycle that implements it.
-3. **[MEDIUM] WebView Custom Tabs for external links**: route off-domain `http(s)` links through `androidx.browser` CustomTabsIntent so store/payment flows keep a trusted chrome and the back stack returns to the app.
-4. **[MEDIUM] CI JaCoCo artifacts**: the `jacocoTestReport` task disables every report (`xml/html/csv.required = false`) while CI uploads `app/build/jacoco/*.exec`; AGP 8 writes coverage to `app/build/outputs/unit_test_coverage/`. Acceptance: one report format enabled and the upload path matches where AGP actually writes `.exec`/`coverage.ec`.
-5. **[LOW] Lint baseline for pre-existing warnings**: add `app/lint-baseline.xml` via `android { lint { baseline = file("lint-baseline.xml") } }` so new lint warnings are attributable.
+
+1. **[MEDIUM] ktlint enforcement is documented but absent**: `docs/FUNCTIONS.md` §4 claims `org.jmailen.gradle.kotlinter` 4.3.0 is applied and a CI `ktlintCheck` step blocks the pipeline; neither exists in `app/build.gradle` or `.github/workflows/build.yml`. Acceptance: either implement it (with formatting fixed first, in a dedicated cycle) or correct the docs. Prefer correcting the docs in the same cycle that implements it.
+2. **[MEDIUM] WebView Custom Tabs for external links**: route off-domain `http(s)` links through `androidx.browser` CustomTabsIntent so store/payment flows keep a trusted chrome and the back stack returns to the app.
+3. **[MEDIUM] CI JaCoCo artifacts**: the `jacocoTestReport` task disables every report (`xml/html/csv.required = false`) while CI uploads `app/build/jacoco/*.exec`; AGP 8 writes coverage to `app/build/outputs/unit_test_coverage/`. Acceptance: one report format enabled and the upload path matches where AGP actually writes `.exec`/`coverage.ec`.
+4. **[LOW] Lint baseline for pre-existing warnings**: add `app/lint-baseline.xml` via `android { lint { baseline = file("lint-baseline.xml") } }` so new lint warnings are attributable.
 
 ## Completed (2026-11-22)
+- **HIGH: Unit-test failures now fail CI**: Removed `continue-on-error: true` from the `Run Unit Tests` step in `.github/workflows/build.yml`, added a `Collect JUnit Test Results` step that copies `app/build/test-results/**/*.xml` into `junit-results/`, and a `Check Unit Test Results` step (`ci_check_tests.py`) that fails the pipeline when any `<testsuite>` reports non-zero `failures`/`errors` or when no JUnit reports exist. Documented in `docs/FUNCTIONS.md` §1.
 - Deep Link Integration: `DeepLinkResolver`, `https`/`www` App Link filters + `chatplayground://` scheme filter, `singleTop` re-delivery via `onNewIntent`, covered by `DeepLinkResolverTest`, `ManifestDeepLinkTest` and `MainActivityDeepLinkTest`.
 
 ## Suggestions carried over from 2026-11-21

@@ -64,6 +64,19 @@ jobs:
         run: |
           ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain
 
+      - name: Collect JUnit Test Results
+        run: |
+          mkdir -p junit-results
+          find app/build/test-results -name '*.xml' -print -exec cp {} junit-results/ \\; || true
+          if [ -z "$(ls -A junit-results)" ]; then
+            echo "(no JUnit XML results produced)"
+          else
+            echo "JUnit XML results:"; ls -la junit-results
+          fi
+
+      - name: Check Unit Test Results
+        run: python3 ci_check_tests.py
+
       - name: Verify Dependencies
         run: |
           ./gradlew androidDependencies --stacktrace --console=plain

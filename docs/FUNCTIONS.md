@@ -13,12 +13,14 @@ This document describes the core build, CI/CD, and application runtime functions
   3. **Set up Android SDK:** Provisions the Android command-line tools, license acceptance, and `ANDROID_HOME` / `ANDROID_SDK_ROOT` / PATH via a SHA-pinned `android-actions/setup-android` action, declaring the required components through its `packages` input (`platform-tools`, `platforms;android-34`, `build-tools;34.0.0`) with `cmdline-tools-version: latest`.
   4. **Grant Gradle Wrapper Execution Permission:** Ensures `gradlew` is executable (`chmod +x gradlew`).
   5. **Build Debug APK:** Compiles and assembles the debug build via `./gradlew assembleDebug --stacktrace --console=plain`.
-  6. **Run Unit Tests:** Executes the JVM unit-test suite via `./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain`.
-  7. **Verify Dependencies:** Runs `./gradlew androidDependencies` to check resolution.
-  8. **Generate JaCoCo Report:** Attempts to generate code coverage via `./gradlew jacocoTestReport`.
-  9. **Run Lint:** Executes `./gradlew lint` and fails if any warnings are found in `lint-results.html`.
-  10. **Build Release APK:** Assembles the (unsigned) release build via `./gradlew assembleRelease --stacktrace --console=plain`.
-  11. **Upload Artifacts:** Uploads the compiled APK outputs and JaCoCo execution data using `actions/upload-artifact@v4`.
+  6. **Run Unit Tests:** Executes the JVM unit-test suite via `./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain`. The step no longer swallows failures — any non-zero exit blocks the pipeline.
+  7. **Collect JUnit Test Results:** Copies `app/build/test-results/**/*.xml` into `junit-results/` so per-suite failures are inspectable without admin log access.
+  8. **Check Unit Test Results:** Scans `junit-results/*.xml` via `ci_check_tests.py` and fails the pipeline when any `<testsuite>` reports non-zero `failures` or `errors`, or when no JUnit reports exist at all.
+  9. **Verify Dependencies:** Runs `./gradlew androidDependencies` to check resolution.
+  10. **Generate JaCoCo Report:** Attempts to generate code coverage via `./gradlew jacocoTestReport`.
+  11. **Run Lint:** Executes `./gradlew lint` and fails if any warnings are found in `lint-results.html`.
+  12. **Build Release APK:** Assembles the (unsigned) release build via `./gradlew assembleRelease --stacktrace --console=plain`.
+  13. **Upload Artifacts:** Uploads the compiled APK outputs and JaCoCo execution data using `actions/upload-artifact@v4`.
 
 ### `gradle.properties` (build configuration)
 - **`android.useAndroidX=true`** — required because the app depends exclusively on AndroidX artifacts while AGP 8.2.0 defaults this flag to `false`. Without it, a clean CI runner fails configuration before any task runs.
