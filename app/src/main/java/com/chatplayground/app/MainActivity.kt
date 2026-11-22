@@ -20,6 +20,7 @@ import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.UrlProvider
+import com.chatplayground.app.utils.WebViewConfigurator
 
 class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView
@@ -35,6 +36,11 @@ class MainActivity : AppCompatActivity() {
 
         webView = findViewById(R.id.webview)
         val progressBar = findViewById<ProgressBar>(R.id.loading_progress)
+
+        // Apply the app-wide WebView settings policy before any page loads:
+        // JavaScript + DOM storage (the ChatPlayground SPA needs both),
+        // mixed content never allowed, local file/content access disabled.
+        WebViewConfigurator.configure(webView)
 
         // System Back walks the WebView history first, like a browser: only the
         // last Back press leaves the app. Without this, one tap on Back closes
