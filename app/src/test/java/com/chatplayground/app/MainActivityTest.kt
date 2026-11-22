@@ -199,4 +199,50 @@ class MainActivityTest {
         assertEquals("WebView should restore history current URL", "https://chatplayground.ai/page2", newWebView.url)
         assertTrue("WebView should be able to go back after restore", newWebView.canGoBack())
     }
+
+    @Test
+    fun backPressNavigatesWebViewHistoryInsteadOfFinishingActivity() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
+        val activity = controller.get()
+        val webView = activity.getWebView()
+        val shadowWebView = shadowOf(webView)
+        shadowWebView.pushEntryToHistory("https://chatplayground.ai/")
+        shadowWebView.pushEntryToHistory("https://chatplayground.ai/pricing")
+        assertTrue("Precondition: the WebView must have a back entry", webView.canGoBack())
+
+        activity.onBackPressedDispatcher.onBackPressed()
+
+        assertEquals(
+            "Back must navigate the WebView history instead of closing the activity",
+            1,
+            shadowWebView.goBackInvocations
+        )
+        assertEquals(
+            "Back must return the WebView to the previous page",
+            "https://chatplayground.ai/",
+            webView.url
+        )
+        assertFalse(
+            "The activity must stay open while WebView history remains",
+            activity.isFinishing
+        )
+    }
+
+    @Test
+    fun backPressFinishesActivityWhenWebViewHasNoHistory() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).create().start().resume()
+        val activity = controller.get()
+        val webView = activity.getWebView()
+        val shadowWebView = shadowOf(webView)
+        shadowWebView.pushEntryToHistory("https://chatplayground.ai/")
+        assertFalse("Precondition: a single history entry is not a back entry", webView.canGoBack())
+
+        activity.onBackPressedDispatcher.onBackPressed()
+
+        assertEquals("Back must not navigate when there is no history", 0, shadowWebView.goBackInvocations)
+        assertTrue(
+            "The activity must finish when the WebView has no back entry",
+            activity.isFinishing
+        )
+    }
 }
