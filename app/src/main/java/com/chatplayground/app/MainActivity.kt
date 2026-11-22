@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 handleWebViewError(view ?: return, code, isMainFrame)
             }
 
-            private fun handleWebViewError(view: WebView, code: Int, isMainFrame: Boolean) {
+            internal fun handleWebViewError(view: WebView, code: Int, isMainFrame: Boolean) {
                 // A failed sub-resource (an image, analytics beacon, iframe, …) must
                 // not replace the whole page with the offline fallback and must not
                 // show a network-error toast. Only main-frame navigations fall back.
