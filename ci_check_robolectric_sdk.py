@@ -10,7 +10,7 @@ classes inherited Robolectric's default SDK while others pinned 26 or 30.
 This check fails the build when:
   * the properties file is missing, or
   * its ``sdk`` key is not a single pinned value equal to the expected SDK, or
-  * any test source under ``app/src/test/java`` pins an SDK via ``@Config``.
+  * any test source under ``app/src`` pins an SDK via ``@Config``.
 
 Exit codes: 0 = consistent, 1 = violation (message on stdout).
 """
@@ -23,7 +23,7 @@ import sys
 
 EXPECTED_SDK = "26"
 PROPERTIES = pathlib.Path("app/src/test/resources/robolectric.properties")
-TEST_SOURCES = pathlib.Path("app/src/test/java")
+TEST_SOURCES = pathlib.Path("app/src")
 
 CONFIG_SDK_RE = re.compile(r"@Config\s*\(")
 

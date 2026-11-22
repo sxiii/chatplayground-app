@@ -46,7 +46,7 @@ while keeping the main content in a WebView.
 
 12. **[x] [MEDIUM] `WebViewLoadRetryPolicy` retry budget**: DONE 2026-11-22. `WebViewLoadRetryPolicy(maxRetries = 3)` governs retry-with-backoff on network errors, capped at `maxRetries` reloads with exponential backoff, sub-frame failures never retried. Added `MainActivityRetryBudgetTest` asserting exactly one retry-budget unit per failed load (`shouldRetry` consumes; `recordRetry` is not called again by `MainActivity.onReceivedError`). The wiring had a real double-count: `shouldRetry(true)` advanced the counter and `recordRetry()` advanced it again, so a `maxRetries = 3` policy gave up after two real retries. Removed the redundant `recordRetry()` call so `shouldRetry()` is the single increment point. RED run `45003263226` failed as designed (`expected 1, actual 2`); GREEN run `45003682180` success — full build + all 103 tests green on GitHub workers.
 
-13. **[LOW] `ci_check_robolectric_sdk.py` scans only `app/src/test/java`**: new test source sets (e.g. `androidTest`) added later wouldn't be checked for per-class `@Config` SDK pins that silently override `robolectric.properties`. Acceptance: broaden the scan to `app/src` and update `docs/FUNCTIONS.md` §1 accordingly.
+13. **[x] [LOW] `ci_check_robolectric_sdk.py` scans only `app/src/test/java`**: DONE 2026-11-22. Broadened the scan to `app/src` in full (both `test` and `androidTest` source sets), removed the stray `@Config(sdk = [34])` pin on `app/src/androidTest/java/.../MainActivityTest.kt`, and updated `docs/FUNCTIONS.md` §1 to describe the broader scope. Guard now detects instrumentation-test SDK overrides too.
 
 ## Next Improvement Suggestions (2026-11-22, after the teardown cycle)
 

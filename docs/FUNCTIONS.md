@@ -24,7 +24,7 @@ This document describes the core build, CI/CD, and application runtime functions
 
 ### `robolectric.properties` + `ci_check_robolectric_sdk.py` (test SDK guard)
 - **`app/src/test/resources/robolectric.properties`** — the single source of truth for the Android SDK that Robolectric emulates in unit tests (`sdk=26`). Robolectric 4.18 cannot instantiate `WebView` at API 34 (`NoClassDefFoundError`), and Android Keystore is unavailable under Robolectric, so 26 is the pinned, verified baseline for every suite.
-- **`ci_check_robolectric_sdk.py`** — guard run in CI after `Check Unit Test Results` (and usable locally). It fails the build when the properties file is missing, when its `sdk` value is not exactly `26`, or when any test source under `app/src/test/java` still pins an SDK through `@Config(sdk = …)` / `@Config(minSdk = …)` / `@Config(maxSdk = …)`. Per-class pins silently override the properties file and are what let a Robolectric upgrade reintroduce the API-level test failures fixed on 2026-11-22.
+- **`ci_check_robolectric_sdk.py`** — guard run in CI after `Check Unit Test Results` (and usable locally). It fails the build when the properties file is missing, when its `sdk` value is not exactly `26`, or when any test source under `app/src` still pins an SDK through `@Config(sdk = …)` / `@Config(minSdk = …)` / `@Config(maxSdk = …)`. The scan now covers `app/src` in full (both `test` and `androidTest` source sets) so a later-added instrumentation test cannot silently override the pinned SDK.
 - **Adding a test:** no annotation needed — inherit `sdk=26` from the properties file. If a case genuinely needs another API level, change the properties file (one place) rather than adding a class-level override, and update this section.
 
 ### `app/build.gradle` (module build configuration)
@@ -106,7 +106,7 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`MainActivity.onCreate`**: Loads the deep-linked URL when the launch `Intent` carries supported data, otherwise falls back to `UrlProvider.getChatPlaygroundUrl()`.
 - **`MainActivity.onNewIntent(intent)`**: When the already-running activity receives a new deep link, loads that URL into the existing WebView instead of starting a second activity.
 
-## 4. Code Formatting Enforcement (CI)
+## 5. Code Formatting Enforcement (CI)
 
 ### ktlint (`org.jmailen.gradle.kotlinter`)
 - **Plugin**: `org.jmailen.gradle.kotlinter` version `4.3.0`, applied to the `app` module.
