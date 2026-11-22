@@ -1,7 +1,6 @@
 package com.chatplayground.app
 
 import android.webkit.WebViewClient
-import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.webResourceError
 import android.widget.Toast
@@ -79,7 +78,7 @@ class MainActivitySubResourceErrorTest {
         ShadowToast.reset()
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        val client = webView.webViewClient ?: return
+        val client = webView.webViewClient
 
         val error = webResourceError(WebViewClient.ERROR_HOST_LOOKUP, "Failed to resolve host")
         client.onReceivedError(
@@ -101,7 +100,7 @@ class MainActivitySubResourceErrorTest {
         ShadowToast.reset()
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        val client = webView.webViewClient ?: return
+        val client = webView.webViewClient
 
         val error = webResourceError(WebViewClient.ERROR_HOST_LOOKUP, "Failed to resolve host")
         client.onReceivedError(
@@ -124,10 +123,15 @@ class MainActivitySubResourceErrorTest {
     ): WebResourceRequest {
         return object : WebResourceRequest {
             override fun getUrl(): android.net.Uri = android.net.Uri.parse(url)
+
             override fun isForMainFrame(): Boolean = isMainFrame
+
             override fun isRedirect(): Boolean = false
+
             override fun hasGesture(): Boolean = false
+
             override fun getMethod(): String = "GET"
+
             override fun getRequestHeaders(): MutableMap<String, String> = mutableMapOf()
         }
     }
