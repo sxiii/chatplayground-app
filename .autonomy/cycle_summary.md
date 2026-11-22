@@ -74,3 +74,47 @@ Project policy forbids a local Java/Gradle harness, so RED/GREEN were verified w
 
 ## Next Action
 Wait for CI run `44982364135` to finish; if green, take the ktlint item next.
+
+---
+
+# Autonomous Development Cycle Summary (2026-11-22, Back-button history navigation)
+
+## Baseline check
+`git log` head `541e3c8`; GitHub Actions runs `44982364135`, `44982565509`, `44982708419`
+all success. GitHub status page: no unresolved incidents. CI was green before this cycle.
+
+## Task selection
+`.autonomy/vision.md` #7 (MEDIUM, WebView back-button history navigation) — measurable UX
+defect: the system Back button finished `MainActivity` on the first press, discarding the
+in-WebView navigation stack. #2 (ktlint) was ranked above it but deferred: its formatting
+pass can only be produced by Gradle, and this project forbids local Java/Gradle harnesses,
+so it needs a CI-side design (formatting job + diff artifact) before it can land honestly.
+Recorded that reasoning in `autonomy/vision.md`.
+
+## TDD in a CI-only build environment
+Policy forbids a local Java/Gradle harness, so RED/GREEN were observed on GitHub workers:
+
+| Step | Commit | CI run | Result |
+|---|---|---|---|
+| docs first | `ecb95da` | (with RED) | `docs/FUNCTIONS.md` §4 documents the required Back semantics |
+| RED (tests only) | `4265871` | `44987520776` | **failure** — `backPressNavigatesWebViewHistoryInsteadOfFinishingActivity` at `MainActivityTest.kt:215` (`goBackInvocations` expected 1, was 0); 88 tests, 1 failed |
+| GREEN (implementation) | `76ec46f` | `44987959751` | **success** — all steps green, all suites passed |
+
+The second spec (`backPressFinishesActivityWhenWebViewHasNoHistory`) passed at RED because
+it pins pre-existing behaviour that the implementation must preserve — that is intentional.
+
+## Diff review
+- New behaviour: `MainActivity.onCreate` registers an `OnBackPressedCallback`: `goBack()`
+  while `webView.canGoBack()`, else `isEnabled = false` + re-dispatch so the activity finishes.
+- Changed: `MainActivityTest.kt` (+2 cases, uses Robolectric `ShadowWebView.goBackInvocations`
+  and `pushEntryToHistory`), `docs/FUNCTIONS.md`, `autonomy/vision.md`.
+- No test weakened, no unrelated churn, no credential or workflow changes.
+
+## Verification
+CI run `44987959751`: `Build Debug APK`, `Run Unit Tests`, `Check Unit Test Results`,
+`Verify Robolectric SDK Consistency`, `Run Lint`, `Build Release APK`, `Assert APK Artifacts
+Exist`, `Upload APK Artifacts` — all success.
+
+## Next Action
+Take #2 in `.autonomy/vision.md` — Mixed Content / HTTPS enforcement (`MIXED_CONTENT_NEVER_ALLOW`
++ unit test), then #4 JaCoCo `xml`/`html` reports. The ktlint item needs a design decision.
