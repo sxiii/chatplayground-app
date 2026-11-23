@@ -81,5 +81,7 @@ while keeping the main content in a WebView.
 - [x] **[HIGH] Fix ktlint multiline expression wrapping errors in MainActivity.kt theme selection** — DONE 2026-11-23. Corrected formatting of `applySavedTheme` and `showThemeSelectionDialog` to comply with `standard:multiline-expression-wrapping`.
 - [ ] **[LOW] Improve Test Resilience**: Add caching/retry logic for transient network failures during Robolectric dependency fetching in CI.
 - [ ] **[LOW] Add Gesture Navigation for WebView Back/Forward** — Implement swipe gestures to navigate WebView's history stack.
-- [ ] **[MEDIUM] Implement WebView Cookie Management Settings** — Allow users to view and clear cookies managed by `CookieManager`.
-- [ ] **[LOW] Add Dynamic Shortcut Support** — Add launcher shortcuts (App Shortcuts) for quick actions such as clearing cache or toggling theme.
+- [x] [MEDIUM] Implement WebView Cookie Management Settings — Allow users to view and clear cookies managed by CookieManager. (Covered by MainActivityCookieTest)
+- [ ] [LOW] Add Dynamic Shortcut Support — Add launcher shortcuts (App Shortcuts) for quick actions such as clearing cache or toggling theme.
+- [ ] [MEDIUM] Implement WebView Ad Blocker / Content Filter using shouldInterceptRequest
+- [ ] [LOW] Add Biometric Authentication lock for secure app access on startup

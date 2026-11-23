@@ -280,6 +280,10 @@ class MainActivity : AppCompatActivity() {
                 showThemeSelectionDialog()
                 true
             }
+            R.id.action_manage_cookies -> {
+                showCookieManagementDialog()
+                true
+            }
             R.id.action_about -> {
                 androidx.appcompat.app.AlertDialog.Builder(this)
                     .setTitle("About")
@@ -335,6 +339,24 @@ class MainActivity : AppCompatActivity() {
                 recreate()
             }
             .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun showCookieManagementDialog() {
+        val cookieManager = android.webkit.CookieManager.getInstance()
+        val hasCookies = cookieManager.hasCookies()
+        val message = if (hasCookies) "Cookies exist in storage." else "No cookies currently stored."
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Manage Cookies")
+            .setMessage(message)
+            .setPositiveButton("Clear All Cookies") { dialog, _ ->
+                cookieManager.removeAllCookies(null)
+                cookieManager.flush()
+                Toast.makeText(this, "All cookies cleared", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Close") { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
