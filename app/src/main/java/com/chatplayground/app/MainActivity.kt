@@ -2,7 +2,10 @@ package com.chatplayground.app
 
 import android.content.Context
 import android.content.Intent
+import android.app.DownloadManager
 import android.net.Uri
+import android.os.Environment
+import android.webkit.URLUtil
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -179,6 +182,20 @@ class MainActivity : AppCompatActivity() {
                 ?: UrlProvider.getChatPlaygroundUrl()
         lastTargetUrl = startUrl
         webView.loadUrl(startUrl)
+
+        webView.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
+            val request = DownloadManager.Request(Uri.parse(url))
+            request.setMimeType(mimeType)
+            request.addRequestHeader("User-Agent", userAgent)
+            request.setDescription("Downloading file...")
+            request.setTitle(URLUtil.guessFileName(url, contentDisposition, mimeType))
+            request.allowScanningByMediaScanner()
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimeType))
+            val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            dm.enqueue(request)
+            Toast.makeText(this, "Downloading file...", Toast.LENGTH_SHORT).show()
+        }
 
         networkMonitor = NetworkMonitor(this)
         networkMonitor.observe { isConnected ->
