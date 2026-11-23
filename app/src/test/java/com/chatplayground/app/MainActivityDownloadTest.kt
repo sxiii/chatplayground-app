@@ -13,7 +13,7 @@ class MainActivityDownloadTest {
     fun activitySetsDownloadListenerOnWebView() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val webView = activity.getWebView()
-        
+
         // This will fail because it is not yet implemented (TDD - RED)
         assertNotNull("DownloadListener should be set", shadowOf(webView).downloadListener)
     }
