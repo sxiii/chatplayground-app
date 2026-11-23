@@ -65,6 +65,7 @@ class MainActivityOfflineRecoveryTest {
         val recorder =
             object : WebView(activity) {
                 var lastLoadedUrl: String? = null
+
                 override fun loadUrl(url: String) {
                     lastLoadedUrl = url
                     super.loadUrl(url)
