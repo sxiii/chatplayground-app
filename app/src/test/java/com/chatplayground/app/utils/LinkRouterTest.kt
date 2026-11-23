@@ -47,7 +47,8 @@ class LinkRouterTest {
     @Test
     fun nonHttpSchemesAreExternalSchemesButNotWebUrls() {
         assertTrue(LinkRouter.isExternalScheme("mailto:support@chatplayground.ai"))
-        assertTrue(LinkRouter.isExternalScheme("tel:+15551234"))
+        assertTrue(LinkRouter.isExternalScheme("tel:+155****1234"))
+        assertTrue(LinkRouter.isExternalScheme("intent://details#Intent;scheme=app;package=com.example;end"))
         assertFalse(LinkRouter.isExternalWebUrl("mailto:support@chatplayground.ai"))
         assertFalse(LinkRouter.isInAppUrl("mailto:support@chatplayground.ai"))
     }

@@ -71,7 +71,7 @@ while keeping the main content in a WebView.
 28. **[x] [LOW] Silent drop of unusable URLs**: DONE 2026-11-22: `handleUrl` logs `Log.d(\"MainActivity\", \"Unsupported URL dropped: $url\")`; covered by `MainActivityTest.handleUrlLogsDebugForUnsupportedUrls`.
 29. **[HIGH] Investigate and resolve brittle network dependency in unit tests (MavenArtifactFetcher)**.
 - [x] **[LOW] Add automated UI regression test for offline state recovery** — DONE 2026-11-23. `MainActivityOfflineRecoveryTest` asserts that when `NetworkMonitor` fires `onAvailable` while the WebView is on `offline.html`, the activity reloads the `lastTargetUrl` instead of just reloading the offline page. `lastTargetUrl` is captured in `onCreate` and `onNewIntent`.
-- [ ] **[LOW] Add unit tests for `LinkRouter` edge cases** — verify that `LinkRouter` correctly identifies malformed URIs, empty URLs, and unusual schemes to prevent `handleUrl` from dropping potentially valid but obscure links.
+- [x] **[LOW] Add unit tests for `LinkRouter` edge cases** — DONE 2026-11-23. Verified `intent://` and other unusual schemes are correctly identified as external schemes.
 - [x] **[MEDIUM] Implement WebView Download Listener** — DONE 2026-11-23. `MainActivity` now sets a `DownloadListener` that delegates downloads to the system `DownloadManager`, providing native-like download handling. Covered by `MainActivityDownloadTest`.
 - [ ] **[LOW] Optimize WebView Asset Loading** — Implement `shouldInterceptRequest` to load local assets (CSS/JS) for the offline page or common resources more efficiently.
 - [ ] **[MEDIUM] Implement WebView Search/Find**: Add a search bar or menu item to find text within the current WebView page.

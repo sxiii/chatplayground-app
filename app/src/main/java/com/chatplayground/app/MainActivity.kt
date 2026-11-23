@@ -1,17 +1,19 @@
 package com.chatplayground.app
 
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
-import android.app.DownloadManager
+import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Environment
-import android.webkit.URLUtil
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -104,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(
                     view: WebView?,
-                    request: android.webkit.WebResourceRequest,
+                    request: WebResourceRequest,
                 ): Boolean {
                     val url = request.url.toString()
                     // Non-web schemes are always delegated to the system.
@@ -118,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onPageStarted(
                     view: WebView?,
                     url: String?,
-                    favicon: android.graphics.Bitmap?,
+                    favicon: Bitmap?,
                 ) {
                     super.onPageStarted(view, url, favicon)
                     progressBar.visibility = View.VISIBLE
@@ -146,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                     // error as a main-frame navigation failure.
                     val request =
                         object : WebResourceRequest {
-                            override fun getUrl(): android.net.Uri = failingUrl?.let { android.net.Uri.parse(it) } ?: android.net.Uri.EMPTY
+                            override fun getUrl(): Uri = failingUrl?.let { Uri.parse(it) } ?: Uri.EMPTY
 
                             override fun isForMainFrame(): Boolean = true
 
@@ -169,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                     super.onReceivedError(view, request, error)
                     progressBar.visibility = View.GONE
 
-                    val code = error?.getErrorCode() ?: return
+                    val code = error?.errorCode ?: return
                     val isMainFrame = request?.isForMainFrame() ?: true
 
                     this@MainActivity.handleWebViewError(view ?: return, code, isMainFrame)
@@ -191,7 +193,10 @@ class MainActivity : AppCompatActivity() {
             request.setTitle(URLUtil.guessFileName(url, contentDisposition, mimeType))
             request.allowScanningByMediaScanner()
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimeType))
+            request.setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                URLUtil.guessFileName(url, contentDisposition, mimeType),
+            )
             val dm = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             dm.enqueue(request)
             Toast.makeText(this, "Downloading file...", Toast.LENGTH_SHORT).show()
@@ -221,7 +226,7 @@ class MainActivity : AppCompatActivity() {
         // Detach first (a WebView destroyed while still attached is removed on the next
         // layout pass, which can touch an already-freed renderer), then destroy.
         if (::webView.isInitialized) {
-            (webView.parent as? android.view.ViewGroup)?.removeView(webView)
+            (webView.parent as? ViewGroup)?.removeView(webView)
             webView.destroy()
         }
         super.onDestroy()
