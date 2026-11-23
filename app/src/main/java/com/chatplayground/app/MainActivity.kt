@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView
     internal val loadRetryPolicy = WebViewLoadRetryPolicy(maxRetries = 3)
     internal lateinit var networkMonitor: NetworkMonitor
+    internal var lastTargetUrl: String = ""
 
     fun getWebView(): WebView = webView
 
@@ -176,6 +177,7 @@ class MainActivity : AppCompatActivity() {
         val startUrl =
             DeepLinkResolver.resolve(intent?.data?.toString())
                 ?: UrlProvider.getChatPlaygroundUrl()
+        lastTargetUrl = startUrl
         webView.loadUrl(startUrl)
 
         networkMonitor = NetworkMonitor(this)
@@ -186,7 +188,11 @@ class MainActivity : AppCompatActivity() {
             // the reload() call. Otherwise webView.url is read off-thread.
             runOnUiThread {
                 if (isConnected && webView.url == "file:///android_asset/offline.html") {
-                    webView.reload()
+                    if (lastTargetUrl.isNotEmpty()) {
+                        webView.loadUrl(lastTargetUrl)
+                    } else {
+                        webView.reload()
+                    }
                 }
             }
         }
@@ -218,6 +224,7 @@ class MainActivity : AppCompatActivity() {
         val deepLinkUrl = DeepLinkResolver.resolve(intent.data?.toString()) ?: return
         if (!::webView.isInitialized) return
         loadRetryPolicy.reset()
+        lastTargetUrl = deepLinkUrl
         webView.loadUrl(deepLinkUrl)
     }
 
@@ -397,9 +404,6 @@ class MainActivity : AppCompatActivity() {
 
     /** Package of the default Custom Tabs provider, resolved at runtime. */
     internal var customTabsPackage: String? = null
-
-    /** The warm Custom Tabs client bound in `onStart`; released in `onStop`. */
-    internal var customTabsClient: CustomTabsClient? = null
 
     /** True while the Custom Tabs service connection is bound (set in `onStart`). */
     internal var isCustomTabsBound: Boolean = false
