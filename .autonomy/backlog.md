@@ -15,6 +15,6 @@
 
 ## Low Priority
 - [x] Implement push notifications.
-- [ ] Add Network Monitoring & Auto-reconnect handling.
+- [x] Add Network Monitoring & Auto-reconnect handling.
 - [x] **[MEDIUM]** Implement Offline Fallback Page for WebView network errors.
 - [x] Implement Dark Mode support.
