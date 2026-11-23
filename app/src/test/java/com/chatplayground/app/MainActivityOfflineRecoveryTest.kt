@@ -58,4 +58,21 @@ class MainActivityOfflineRecoveryTest {
         // Verify it reloads the targetUrl, not offline.html
         assertEquals("Should reload the target URL", targetUrl, recorder.lastLoadedUrl)
     }
+
+    @Test
+    fun handleWebViewErrorLoadsOfflinePageOnHostLookup() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val recorder =
+            object : WebView(activity) {
+                var lastLoadedUrl: String? = null
+                override fun loadUrl(url: String) {
+                    lastLoadedUrl = url
+                    super.loadUrl(url)
+                }
+            }
+        activity.webView = recorder
+
+        activity.handleWebViewError(recorder, android.webkit.WebViewClient.ERROR_HOST_LOOKUP, true)
+        assertEquals("file:///android_asset/offline.html", recorder.lastLoadedUrl)
+    }
 }
