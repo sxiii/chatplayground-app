@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.os.Looper
 import android.webkit.WebView
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -25,17 +24,18 @@ class MainActivityOfflineRecoveryTest {
         val recorder =
             object : WebView(activity) {
                 var lastLoadedUrl: String? = null
+
                 override fun loadUrl(url: String) {
                     lastLoadedUrl = url
                     super.loadUrl(url)
                 }
             }
         activity.webView = recorder
-        
+
         activity.lastTargetUrl = targetUrl
         // Simulate original load
         recorder.loadUrl(targetUrl)
-        
+
         // Simulate failure load
         recorder.loadUrl("file:///android_asset/offline.html")
         assertEquals("file:///android_asset/offline.html", recorder.url)

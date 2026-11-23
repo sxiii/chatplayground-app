@@ -37,6 +37,7 @@ class MainActivityNetworkMonitorTest {
                 override fun reload() {
                     reloadedOn.add(Thread.currentThread().name)
                 }
+
                 override fun loadUrl(url: String) {
                     reloadedOn.add(Thread.currentThread().name)
                     super.loadUrl(url)
