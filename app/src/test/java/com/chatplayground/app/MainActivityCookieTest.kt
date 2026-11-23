@@ -14,7 +14,8 @@ class MainActivityCookieTest {
     fun cookieManagementMenuItemShowsDialog() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().resume().get()
         
-        val menu = shadowOf(activity).optionsMenu
+        val menu = org.robolectric.fakes.RoboMenu(activity)
+        activity.onCreateOptionsMenu(menu)
         val item = menu.findItem(R.id.action_manage_cookies)
         assertNotNull("Manage cookies menu item should exist", item)
         
