@@ -75,4 +75,6 @@ while keeping the main content in a WebView.
 - [x] **[MEDIUM] Implement WebView Download Listener** — DONE 2026-11-23. `MainActivity` now sets a `DownloadListener` that delegates downloads to the system `DownloadManager`, providing native-like download handling. Covered by `MainActivityDownloadTest`.
 - [ ] **[LOW] Optimize WebView Asset Loading** — Implement `shouldInterceptRequest` to load local assets (CSS/JS) for the offline page or common resources more efficiently.
 - [ ] **[MEDIUM] Implement WebView Search/Find**: Add a search bar or menu item to find text within the current WebView page.
-- [ ] **[LOW] Add "About" dialog**: Show app version, license info, and a link to the GitHub repository.
+- [x] **[LOW] Add "About" dialog** — DONE 2026-11-23. Show app version, license info, and a link to the GitHub repository. Covered by `MainActivityTest.aboutMenuItemShowsAboutDialog`.
+- [ ] **[LOW] Add Theme Customization Preference**: Allow users to toggle between Light, Dark, and System default themes inside app settings.
+- [ ] **[LOW] Improve Test Resilience**: Add caching/retry logic for transient network failures during Robolectric dependency fetching in CI.

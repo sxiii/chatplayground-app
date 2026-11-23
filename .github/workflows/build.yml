@@ -61,7 +61,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain
+          ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain --no-parallel
 
       - name: Collect JUnit Test Results
         run: |
