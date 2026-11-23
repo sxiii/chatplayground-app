@@ -32,6 +32,7 @@ class MainActivityOfflineRecoveryTest {
             }
         activity.webView = recorder
         
+        activity.lastTargetUrl = targetUrl
         // Simulate original load
         recorder.loadUrl(targetUrl)
         

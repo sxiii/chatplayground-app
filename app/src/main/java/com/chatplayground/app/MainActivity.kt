@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity() {
             // choosing whether to reload) must run on the UI thread, not just
             // the reload() call. Otherwise webView.url is read off-thread.
             runOnUiThread {
-                if (isConnected && webView.url == "file:///android_asset/offline.html") {
+                if (isConnected && webView.url?.contains("offline.html") == true) {
                     if (lastTargetUrl.isNotEmpty()) {
                         webView.loadUrl(lastTargetUrl)
                     } else {
