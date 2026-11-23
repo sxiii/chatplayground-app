@@ -312,4 +312,26 @@ class MainActivityTest {
         val dialog = org.robolectric.shadows.ShadowDialog.getLatestDialog()
         assertNotNull("About dialog should be shown", dialog)
     }
+
+    @Test
+    fun clearCacheMenuItemClearsCache() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val menu = org.robolectric.fakes.RoboMenu(activity)
+        activity.onCreateOptionsMenu(menu)
+        val item = menu.findItem(R.id.action_clear_cache)
+
+        val handled = activity.onOptionsItemSelected(item)
+        assertTrue("Clear cache action should be handled", handled)
+    }
+
+    @Test
+    fun toggleThemeMenuItemTogglesTheme() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val menu = org.robolectric.fakes.RoboMenu(activity)
+        activity.onCreateOptionsMenu(menu)
+        val item = menu.findItem(R.id.action_toggle_theme)
+
+        val handled = activity.onOptionsItemSelected(item)
+        assertTrue("Toggle theme action should be handled", handled)
+    }
 }

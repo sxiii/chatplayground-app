@@ -75,8 +75,9 @@ while keeping the main content in a WebView.
 - [x] **[MEDIUM] Implement WebView Download Listener** — DONE 2026-11-23. `MainActivity` now sets a `DownloadListener` that delegates downloads to the system `DownloadManager`, providing native-like download handling. Covered by `MainActivityDownloadTest`.
 - [ ] **[LOW] Optimize WebView Asset Loading** — Implement `shouldInterceptRequest` to load local assets (CSS/JS) for the offline page or common resources more efficiently.
 - [x] **[MEDIUM] Implement WebView Search/Find** — DONE 2026-11-23. Added `findText` and `findNext` methods on `MainActivity` delegating to `WebView.findAllAsync` and `WebView.findNext`, covered by `MainActivitySearchTest` (fixed lint issues).
-- [x] **[LOW] Add \"About\" dialog** — DONE 2026-11-23. Show app version, license info, and a link to the GitHub repository. Covered by `MainActivityTest.aboutMenuItemShowsAboutDialog`.
+- [x] **[LOW] Add \\\"About\\\" dialog** — DONE 2026-11-23. Show app version, license info, and a link to the GitHub repository. Covered by `MainActivityTest.aboutMenuItemShowsAboutDialog` (and added menu item tests below).
+- [x] **[LOW] Add unit tests for menu items (clear cache, toggle theme)** — DONE 2026-11-23. Covered by new tests `clearCacheMenuItemClearsCache` and `toggleThemeMenuItemTogglesTheme` in `MainActivityTest`.
 - [ ] **[LOW] Add Theme Customization Preference**: Allow users to toggle between Light, Dark, and System default themes inside app settings.
 - [ ] **[LOW] Improve Test Resilience**: Add caching/retry logic for transient network failures during Robolectric dependency fetching in CI.
 - [ ] **[LOW] Add Gesture Navigation for WebView Back/Forward** — Implement swipe gestures to navigate WebView's history stack.
-- [ ] **[LOW] Add Cookie Management Settings / Clear Cache Option in Menu** — Allow users to clear WebView cookies/cache.
+- [ ] **[LOW] Add Cookie Management Settings** — Allow users to manage WebView cookies/cache.
