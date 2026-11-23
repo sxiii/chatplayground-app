@@ -447,4 +447,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    internal fun findText(query: String) {
+        webView.findAllAsync(query)
+    }
+
+    internal fun findNext() {
+        webView.findNext(true)
+    }
 }
