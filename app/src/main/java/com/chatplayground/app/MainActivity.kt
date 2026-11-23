@@ -294,13 +294,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun applySavedTheme() {
         val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
-        val mode = if (prefs.contains("theme_mode")) {
-            prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        } else if (prefs.contains("dark_mode")) {
-            if (prefs.getBoolean("dark_mode", false)) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        } else {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
+        val mode =
+            if (prefs.contains("theme_mode")) {
+                prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            } else if (prefs.contains("dark_mode")) {
+                if (prefs.getBoolean("dark_mode", false)) {
+                    AppCompatDelegate.MODE_NIGHT_YES
+                } else {
+                    AppCompatDelegate.MODE_NIGHT_NO
+                }
+            } else {
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
         AppCompatDelegate.setDefaultNightMode(mode)
     }
 
@@ -308,20 +313,22 @@ class MainActivity : AppCompatActivity() {
         val items = arrayOf("System Default", "Light", "Dark")
         val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
         val currentMode = AppCompatDelegate.getDefaultNightMode()
-        val checkedItem = when (currentMode) {
-            AppCompatDelegate.MODE_NIGHT_NO -> 1
-            AppCompatDelegate.MODE_NIGHT_YES -> 2
-            else -> 0
-        }
+        val checkedItem =
+            when (currentMode) {
+                AppCompatDelegate.MODE_NIGHT_NO -> 1
+                AppCompatDelegate.MODE_NIGHT_YES -> 2
+                else -> 0
+            }
 
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle("Select Theme")
             .setSingleChoiceItems(items, checkedItem) { dialog, which ->
-                val newMode = when (which) {
-                    1 -> AppCompatDelegate.MODE_NIGHT_NO
-                    2 -> AppCompatDelegate.MODE_NIGHT_YES
-                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                }
+                val newMode =
+                    when (which) {
+                        1 -> AppCompatDelegate.MODE_NIGHT_NO
+                        2 -> AppCompatDelegate.MODE_NIGHT_YES
+                        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    }
                 prefs.edit().putInt("theme_mode", newMode).apply()
                 AppCompatDelegate.setDefaultNightMode(newMode)
                 dialog.dismiss()

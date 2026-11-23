@@ -78,6 +78,8 @@ while keeping the main content in a WebView.
 - [x] **[LOW] Add \\\"About\\\" dialog** — DONE 2026-11-23. Show app version, license info, and a link to the GitHub repository. Covered by `MainActivityTest.aboutMenuItemShowsAboutDialog` (and added menu item tests below).
 - [x] **[LOW] Add unit tests for menu items (clear cache, toggle theme)** — DONE 2026-11-23. Covered by new tests `clearCacheMenuItemClearsCache` and `toggleThemeMenuItemTogglesTheme` in `MainActivityTest`.
 - [x] **[LOW] Add Theme Customization Preference** — DONE 2026-11-23. Allow users to switch between Light, Dark, and System default themes via an interactive selection dialog in settings, persisting mode in SharedPreferences (`theme_prefs`) and applying via `AppCompatDelegate.setDefaultNightMode()`. Covered by `MainActivityTest.themeSelectionDialogShowsOptions`.
+- [x] **[HIGH] Fix ktlint multiline expression wrapping errors in MainActivity.kt theme selection** — DONE 2026-11-23. Corrected formatting of `applySavedTheme` and `showThemeSelectionDialog` to comply with `standard:multiline-expression-wrapping`.
 - [ ] **[LOW] Improve Test Resilience**: Add caching/retry logic for transient network failures during Robolectric dependency fetching in CI.
 - [ ] **[LOW] Add Gesture Navigation for WebView Back/Forward** — Implement swipe gestures to navigate WebView's history stack.
-- [ ] **[LOW] Add Cookie Management Settings** — Allow users to manage WebView cookies/cache.
+- [ ] **[MEDIUM] Implement WebView Cookie Management Settings** — Allow users to view and clear cookies managed by `CookieManager`.
+- [ ] **[LOW] Add Dynamic Shortcut Support** — Add launcher shortcuts (App Shortcuts) for quick actions such as clearing cache or toggling theme.
