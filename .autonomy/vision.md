@@ -77,7 +77,7 @@ while keeping the main content in a WebView.
 - [x] **[MEDIUM] Implement WebView Search/Find** — DONE 2026-11-23. Added `findText` and `findNext` methods on `MainActivity` delegating to `WebView.findAllAsync` and `WebView.findNext`, covered by `MainActivitySearchTest` (fixed lint issues).
 - [x] **[LOW] Add \\\"About\\\" dialog** — DONE 2026-11-23. Show app version, license info, and a link to the GitHub repository. Covered by `MainActivityTest.aboutMenuItemShowsAboutDialog` (and added menu item tests below).
 - [x] **[LOW] Add unit tests for menu items (clear cache, toggle theme)** — DONE 2026-11-23. Covered by new tests `clearCacheMenuItemClearsCache` and `toggleThemeMenuItemTogglesTheme` in `MainActivityTest`.
-- [ ] **[LOW] Add Theme Customization Preference**: Allow users to toggle between Light, Dark, and System default themes inside app settings.
+- [x] **[LOW] Add Theme Customization Preference** — DONE 2026-11-23. Allow users to switch between Light, Dark, and System default themes via an interactive selection dialog in settings, persisting mode in SharedPreferences (`theme_prefs`) and applying via `AppCompatDelegate.setDefaultNightMode()`. Covered by `MainActivityTest.themeSelectionDialogShowsOptions`.
 - [ ] **[LOW] Improve Test Resilience**: Add caching/retry logic for transient network failures during Robolectric dependency fetching in CI.
 - [ ] **[LOW] Add Gesture Navigation for WebView Back/Forward** — Implement swipe gestures to navigate WebView's history stack.
 - [ ] **[LOW] Add Cookie Management Settings** — Allow users to manage WebView cookies/cache.

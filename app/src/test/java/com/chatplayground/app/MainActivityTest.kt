@@ -325,7 +325,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun toggleThemeMenuItemTogglesTheme() {
+    fun themeSelectionDialogShowsOptions() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val menu = org.robolectric.fakes.RoboMenu(activity)
         activity.onCreateOptionsMenu(menu)
@@ -333,5 +333,8 @@ class MainActivityTest {
 
         val handled = activity.onOptionsItemSelected(item)
         assertTrue("Toggle theme action should be handled", handled)
+
+        val dialog = org.robolectric.shadows.ShadowDialog.getLatestDialog()
+        assertNotNull("Theme selection dialog should be shown", dialog)
     }
 }

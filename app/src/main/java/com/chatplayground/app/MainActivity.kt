@@ -277,7 +277,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_toggle_theme -> {
-                toggleTheme()
+                showThemeSelectionDialog()
                 true
             }
             R.id.action_about -> {
@@ -294,32 +294,41 @@ class MainActivity : AppCompatActivity() {
 
     private fun applySavedTheme() {
         val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
-        val isDarkMode = prefs.getBoolean("dark_mode", false)
-        AppCompatDelegate.setDefaultNightMode(
-            if (isDarkMode) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            },
-        )
+        val mode = if (prefs.contains("theme_mode")) {
+            prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        } else if (prefs.contains("dark_mode")) {
+            if (prefs.getBoolean("dark_mode", false)) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        } else {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        AppCompatDelegate.setDefaultNightMode(mode)
     }
 
-    private fun toggleTheme() {
-        val current = AppCompatDelegate.getDefaultNightMode()
-        val newMode =
-            if (current == AppCompatDelegate.MODE_NIGHT_YES) {
-                AppCompatDelegate.MODE_NIGHT_NO
-            } else {
-                AppCompatDelegate.MODE_NIGHT_YES
-            }
-        AppCompatDelegate.setDefaultNightMode(newMode)
-
-        // Save preference
+    private fun showThemeSelectionDialog() {
+        val items = arrayOf("System Default", "Light", "Dark")
         val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putBoolean("dark_mode", newMode == AppCompatDelegate.MODE_NIGHT_YES).apply()
+        val currentMode = AppCompatDelegate.getDefaultNightMode()
+        val checkedItem = when (currentMode) {
+            AppCompatDelegate.MODE_NIGHT_NO -> 1
+            AppCompatDelegate.MODE_NIGHT_YES -> 2
+            else -> 0
+        }
 
-        // Recreate activity to apply theme
-        recreate()
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Select Theme")
+            .setSingleChoiceItems(items, checkedItem) { dialog, which ->
+                val newMode = when (which) {
+                    1 -> AppCompatDelegate.MODE_NIGHT_NO
+                    2 -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
+                prefs.edit().putInt("theme_mode", newMode).apply()
+                AppCompatDelegate.setDefaultNightMode(newMode)
+                dialog.dismiss()
+                recreate()
+            }
+            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
