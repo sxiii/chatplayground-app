@@ -299,4 +299,17 @@ class MainActivityTest {
             activity.isFinishing,
         )
     }
+
+    @Test
+    fun aboutMenuItemShowsAboutDialog() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val menu = org.robolectric.fakes.RoboMenu(activity)
+        activity.onCreateOptionsMenu(menu)
+        val item = menu.findItem(R.id.action_about)
+
+        activity.onOptionsItemSelected(item)
+
+        val dialog = org.robolectric.shadows.ShadowDialog.getLatestDialog()
+        assertNotNull("About dialog should be shown", dialog)
+    }
 }

@@ -16,3 +16,4 @@
 ## Improvement Suggestions (2026-11-23)
 - **[HIGH] Fix unit test failures**: Fixed `MainActivityNetworkMonitorTest` and `MainActivityOfflineRecoveryTest`. Updated `MainActivity` to be more robust for URL comparison in `NetworkMonitor`.
 - **[MED] Cache Management**: Allow users to clear app cache/cookies from the settings menu to save space and resolve stuck states.
+- **[LOW] Add unit test for Cache Clearing**: Create test for `CacheManager` to ensure `clearCache()` removes files.

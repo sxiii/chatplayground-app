@@ -280,6 +280,14 @@ class MainActivity : AppCompatActivity() {
                 toggleTheme()
                 true
             }
+            R.id.action_about -> {
+                androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("About")
+                    .setMessage("ChatPlayground Android App\nVersion 1.0")
+                    .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                    .show()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
