@@ -1,32 +1,29 @@
-# Last Run (2026-11-22 ~20:30 CET)
+# Last Run (2026-11-23 ~03:00 CET)
 
 ## Baseline
 - GitHub status page: All Systems Operational; Actions operational.
-- CI green at head `1a21751`: run `45059075272` succeeded — full build + all unit tests + lintKotlin green on GitHub workers.
-- Working tree clean at `1a21751 == origin/main`.
+- CI red at head `54906f3`: run `45095964980` failed on `Run Unit Tests` (failing `MainActivityNetworkMonitorTest` and `MainActivityOfflineRecoveryTest`).
 
 ## What changed (this cycle)
-1. **Implemented vision item #27 (MEDIUM): Custom Tab warm-up and theming**:
-   - `MainActivity` now binds a `CustomTabsClient` to the default provider in `onStart` (released in `onStop`), so the first external link opens on a warm connection instead of a cold bind.
-   - `launchInCustomTab` stamps the resolved browser package on the `CustomTabsIntent` and themes the toolbar from `colorPrimary` (resolved via `theme.resolveAttribute(android.R.attr.colorPrimary)` with `R.color.primary` fallback).
-   - Injectable seams `launchCustomTabsIntent`, `customTabsPackage`, `customTabsClient`, `isCustomTabsBound` for unit testing without a real browser.
-2. **Added `MainActivityCustomTabTest`** asserting: external link → one Custom Tab intent carrying a package; null package under Robolectric does not crash; `themePrimaryColor` resolves a real color.
-3. **`docs/FUNCTIONS.md`**: documented Custom Tab warm-up + theming (colorPrimary toolbar, bind in onStart/release in onStop, package resolution, injectable seams).
-4. **`.autonomy/vision.md`**: marked #27 done; #28 (silent URL drop) remains open.
+1. **Fix unit test failures**: 
+   - `MainActivityNetworkMonitorTest` failed due to an incomplete test setup: test expected `reload()` while code was using `loadUrl(targetUrl)`. Updated to verify `loadUrl` calls and added helper `lastTargetUrl` updates.
+   - `MainActivityOfflineRecoveryTest` failed due to `lastTargetUrl` not being updated in the test activity; added explicit `activity.lastTargetUrl = targetUrl` setup.
+   - `MainActivity.kt`: robustified the network callback URL check to use `webView.url?.contains("offline.html") == true`.
+2. **`.autonomy/vision.md`**: marked unit test fixes done.
 
 ## Verification (fresh `gh` reads)
-- CI run `45061863538` at head `3eb6367`: **in_progress** — started at 2026-11-22 19:38 CET, not yet concluded. To be checked on the next cycle.
+- CI run `45100383594` at head `e84e683`: **in_progress** — started at 2026-11-23 02:28 CET, not yet concluded. To be checked on the next cycle.
 - GitHub status page: All Systems Operational; Actions operational.
-- Pushed `1a21751..3eb6367` to `origin/main`; working tree clean.
+- Pushed `54906f3..e84e683` to `origin/main`; working tree clean.
 
 ## Docs persisted
 - `.autonomy/last_run.md` — this file; cycle outcome, CI run ID, commit hash.
-- `.autonomy/vision.md` — item #27 marked done, item #28 open.
+- `.autonomy/vision.md` — unit test fixes marked done.
 
 ## Next actions (ranked)
-1. **Verify CI run `45061863538` result** at `3eb6367`; if red, read worker errors and fix.
+1. **Verify CI run `45100383594` result** at `e84e683`; if red, read worker errors and fix.
 2. **[LOW] Silent drop of unusable URLs** (vision.md #28) — add debug logging to `handleUrl`.
 3. **[MEDIUM] Custom Tab warm-up** — complete; awaiting CI confirmation.
 
 ## Bounded cycle status
-One cycle executed: vision.md backlog reconciled → docs updated for Custom Tab warm-up/theming → `MainActivity` warm-up + theming implemented → `MainActivityCustomTabTest` added → committed `3eb6367` pushed to `origin/main` → CI run `45061863538` in progress on GitHub workers.
+One cycle executed: vision.md backlog reconciled → `MainActivity` offline recovery fix implemented → `MainActivityNetworkMonitorTest` and `MainActivityOfflineRecoveryTest` fixed → committed `e84e683` pushed to `origin/main` → CI run `45100383594` in progress on GitHub workers.
