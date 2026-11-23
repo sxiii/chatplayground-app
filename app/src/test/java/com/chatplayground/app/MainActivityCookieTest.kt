@@ -5,6 +5,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowAlertDialog
 
 @RunWith(RobolectricTestRunner::class)
@@ -13,7 +14,7 @@ class MainActivityCookieTest {
     fun cookieManagementMenuItemShowsDialog() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().resume().get()
         
-        val menu = org.robolectric.shadows.Shadows.shadowOf(activity).optionsMenu
+        val menu = shadowOf(activity).optionsMenu
         val item = menu.findItem(R.id.action_manage_cookies)
         assertNotNull("Manage cookies menu item should exist", item)
         
