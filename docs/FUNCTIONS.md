@@ -122,7 +122,14 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`./gradlew :app:lintKotlin`**: Verifies Kotlin source formatting for `src/main` and `src/test` source sets (`ignoreTestSourceSet = false`, no experimental rules). Runs as a dedicated CI step after `Run Lint`; failure blocks the pipeline.
 - **`./gradlew :app:formatKotlin`**: Auto-fixes formatting violations locally before pushing.
 
-## 6. Navigation Retry Policy (`NavigationRetryPolicy`)
+## 6. WebView Asset Interception (`AssetRequestHandler`)
+
+- **`AssetRequestHandler.assetPathFor(url: String): String?`**: Pure-JVM, zero-Android-dependency helper that maps a WebView request URL to a bundled asset path. Returns the asset path (relative to `assets/`) when the URL is `file:///android_asset/<path>` **and** `<path>` is on the allowed list (`offline.html` and any future whitelisted CSS/JS assets); returns `null` for `http`/`https` URLs, blank/malformed URLs, and any path not on the allowed list (path-traversal segments such as `..` never match because only exact allowed names are accepted). Lives in `app/src/main/java/com/chatplayground/app/utils/AssetRequestHandler.kt` and is unit-testable with plain JUnit (no Robolectric, no `@Config`, no shadow plumbing).
+- **`AssetRequestHandler.shouldIntercept(url: String): Boolean`**: Convenience predicate — `assetPathFor(url) != null`.
+- **`MainActivity.shouldInterceptRequest(view, request)`**: `MainActivity`'s `WebViewClient` overrides `shouldInterceptRequest(WebView, WebResourceRequest)` (minSdk 24, the non-deprecated overload) plus the deprecated `shouldInterceptRequest(WebView, String)` for compatibility. When `AssetRequestHandler.assetPathFor(url)` returns a path, it opens the asset via `assets.open(path)`, selects a MIME type by extension (`text/css`, `application/javascript`, `text/html`, `image/png`, else `*/*`), and returns a `WebResourceResponse` serving the bundled bytes; otherwise returns `null` so the WebView handles the request normally (network fetch or the standard asset/resource loaders). Failed `assets.open()` (missing asset) returns `null` rather than crashing.
+- **Purpose**: bundled assets (the offline fallback page and any common CSS/JS) are served from the APK instead of a network round-trip, and unknown/remote URLs are never intercepted — they load from the network as usual.
+
+## 7. Navigation Retry Policy (`NavigationRetryPolicy`)
 
 - **`NavigationRetryPolicy(maxRetries: Int = 3, baseDelayMs: Long = 1000)`**: Plain-JVM, zero-Android-dependency retry budget for WebView load failures. Lives in `app/src/main/java/com/chatplayground/app/utils/NavigationRetryPolicy.kt` and is unit-testable with plain JUnit (no Robolectric, no `@Config`, no shadow plumbing).
 - **`shouldRetry(isMainFrame: Boolean): Boolean`**: Returns `true` only for main-frame failures (`isMainFrame == true`) and only while the retry count is below `maxRetries`. Each `true` answer consumes one budget unit (increments the count). Sub-frame failures never retry, preventing retry storms from embedded iframes/ad networks.

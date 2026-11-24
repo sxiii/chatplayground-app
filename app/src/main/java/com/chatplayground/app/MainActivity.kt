@@ -129,6 +129,22 @@ class MainActivity : AppCompatActivity() {
                     return handleUrl(url)
                 }
 
+                override fun shouldInterceptRequest(
+                    view: WebView?,
+                    request: WebResourceRequest,
+                ): android.webkit.WebResourceResponse? {
+                    val url = request.url.toString()
+                    return this@MainActivity.shouldInterceptRequest(view ?: return null, url)
+                }
+
+                @Suppress("DEPRECATION")
+                override fun shouldInterceptRequest(
+                    view: WebView?,
+                    url: String?,
+                ): android.webkit.WebResourceResponse? {
+                    return this@MainActivity.shouldInterceptRequest(view ?: return null, url ?: return null)
+                }
+
                 override fun onPageStarted(
                     view: WebView?,
                     url: String?,
@@ -457,6 +473,50 @@ class MainActivity : AppCompatActivity() {
                 // permanently failing page and let it retry without limit,
                 // defeating maxRetries.
             }
+        }
+    }
+
+    /**
+     * Serves a bundled asset (the offline fallback page and any other
+     * whitelisted asset) straight from the APK instead of letting the WebView
+     * go through its normal asset/resource loader.
+     *
+     * Returns `null` for every URL that is not a whitelisted bundled asset —
+     * remote URLs and unknown asset names keep loading normally.
+     */
+    @Suppress("DEPRECATION")
+    internal fun shouldInterceptRequest(
+        view: WebView?,
+        url: String?,
+    ): android.webkit.WebResourceResponse? {
+        val assetPath = AssetRequestHandler.assetPathFor(url) ?: return null
+        return try {
+            val inputStream = assets.open(assetPath)
+            android.webkit.WebResourceResponse(
+                mimeTypeFor(assetPath),
+                "UTF-8",
+                inputStream,
+            )
+        } catch (e: java.io.IOException) {
+            // The asset is whitelisted but missing from the APK — fall back to
+            // the WebView's normal loading path rather than crashing.
+            Log.w("MainActivity", "Failed to open bundled asset: $assetPath", e)
+            null
+        }
+    }
+
+    /** Selects the MIME type for a bundled asset by its file extension. */
+    private fun mimeTypeFor(assetPath: String): String {
+        return when (assetPath.substringAfterLast('.', "").lowercase()) {
+            "html", "htm" -> "text/html"
+            "css" -> "text/css"
+            "js" -> "application/javascript"
+            "json" -> "application/json"
+            "png" -> "image/png"
+            "jpg", "jpeg" -> "image/jpeg"
+            "svg" -> "image/svg+xml"
+            "ico" -> "image/x-icon"
+            else -> "*/*"
         }
     }
 
