@@ -1,10 +1,12 @@
-# Cycle Summary — 2026-11-23
+# Cycle Summary — 2026-11-24
 
 ## Actions Taken
-1. **Compilation Bug Fix**: Fixed compilation error in `MainActivityCookieTest.kt` caused by incorrect Robolectric Shadow import. Corrected to `org.robolectric.Shadows.shadowOf`.
-2. **Vision & Backlog Updates**: Updated `.autonomy/vision.md` with cookie test fix status and added new improvement tasks (Ad Blocker, Biometric Auth).
-3. **CI/CD Prep**: Committed fixes and pushed to `main` branch to trigger GitHub Actions for re-verification.
+1. **CI Lint Fix**: Removed genuinely unused `android.os.Build` import from `NetworkMonitorObserveTest.kt` — CI build `45313985123` green.
+2. **Item 48 Complete — Captive-portal test coverage**: Added `NetworkMonitorCaptivePortalTest.kt` with two Robolectric tests verified against the pinned 4.18 shadow sources. CI build `45317366041` green (all tests, lint, ktlint).
+3. **Vision Update**: Marked Item 48 DONE with full traceability; added three new improvement suggestions (Items 51–53) covering stale `isConnected`, missing `onUnavailable`, and CI log readability.
 
 ## Next Steps
-- Monitor GitHub Actions CI build `45175981312` (or subsequent) for successful compilation and unit test execution.
-- Proceed with next cycle's features (Ad Blocker, etc.).
+- Item 49: CI guard against non-canonical `autonomy/` directories.
+- Item 51: `NetworkMonitor.isConnected` stale on `onCapabilitiesChanged` (captive portal capability loss without network loss).
+- Item 52: `onUnavailable` handling in `observe()`.
+- Item 53: Mirror ktlint/lint errors to job summary for non-admin readers.
