@@ -7,7 +7,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /**
  * Behavioural tests for [NetworkMonitor].
@@ -18,7 +17,6 @@ import org.robolectric.annotation.Config
  * simulation belong in a later iteration.
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [26])
 class NetworkMonitorTest {
     private fun context(): Context = ApplicationProvider.getApplicationContext()
 
