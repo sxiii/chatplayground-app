@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.DataClearer
 import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.LinkRouter
@@ -292,11 +291,6 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_external_browser -> {
                 openInExternalBrowser(webView.url)
-                true
-            }
-            R.id.action_clear_cache -> {
-                CacheClearer.clearAll(this, webView)
-                Toast.makeText(this, "Cache cleared", Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.action_clear_all_data -> {

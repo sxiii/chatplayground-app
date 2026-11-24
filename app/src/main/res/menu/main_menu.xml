@@ -5,10 +5,7 @@
         android:id="@+id/action_external_browser"
         android:title="Open in Browser"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_clear_cache"
-        android:title="Clear Cache"
-        app:showAsAction="never" />
+    
     <item
         android:id="@+id/action_clear_all_data"
         android:title="Clear All Data"
