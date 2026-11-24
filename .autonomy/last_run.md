@@ -1,31 +1,28 @@
-# Last Run (2026-11-24 ~10:22 CET)
+# Last Run (2026-11-24 ~11:10 CET)
 
 ## Baseline
-- CI runs `45359097526` (`702401f`) and `45359285941` (`bcf91ee`) both **failed** on ktlint `[standard:final-newline]`:
-  - `app/src/test/java/com/chatplayground/app/NetworkMonitorTest.kt`
-  - `app/src/test/java/com/chatplayground/app/NetworkMonitorCaptivePortalTest.kt`
-- Failure was in `:app:lintKotlinTest` only — compilation and unit tests ran before it, so item 50's merge is not implicated.
-- Working tree held the two newline fixes unstaged; everything else clean at `bcf91ee`.
+- CI run `45367615559` (push `cc02e2c`) **completed / success** — `build` job green, `:app:lintKotlinTest` passes, release-tag job green.
+- Working tree clean at `cc02e2c`.
 
 ## What changed (this cycle)
-1. **Fixed the ktlint final-newline regression** by appending the missing byte to both test files. Verified with a byte-level scan of every `.kt` under `app/src`: zero files remain without a trailing newline.
-2. **Added a fast style guard** — `scripts/check_kotlin_style.py` (stdlib only, no Java/Gradle) checks every `.kt` file for final newline, trailing whitespace, and tab indentation; `--fix` rewrites offenders.
-   - Wired into `.github/workflows/build.yml` as step *Check Kotlin Style (Final Newlines)*, next to the other cheap python guards, before any Gradle work — this class of failure now fails in seconds instead of ~5 minutes.
-   - Local run: `check_kotlin_style: OK (50 file(s) checked)`.
+1. **Vision item 59 DONE — extracted `NavigationRetryPolicy` from `WebViewLoadRetryPolicy`.**
+   - New `app/src/main/java/com/chatplayground/app/utils/NavigationRetryPolicy.kt` — pure-JVM retry budget for WebView load failures, zero Android dependencies (`Handler`/`Looper` removed). Governs `shouldRetry(isMainFrame)`, `recordRetry()`, `reset()`, `retryCountValue`, `backoffDelayMs()` (exponential backoff `baseDelayMs * 2^retryCount`). Sub-frame failures never retry.
+   - `MainActivity.navigationRetryPolicy = NavigationRetryPolicy(maxRetries = 3)`; `onPageFinished`/`onNewIntent` call `reset()`, `onReceivedError` calls `shouldRetry(true)` then `scheduleRetryWithBackoff { view.reload() }`.
+   - Removed `WebViewLoadRetryPolicy.kt` and its two Robolectric test classes (`WebViewLoadRetryPolicyTest`, `WebViewLoadRetryPolicyHighLevelTest`).
+   - `MainActivityRetryBudgetTest` / `MainActivityRetryBudgetResetTest` re-pointed from `loadRetryPolicy` to `navigationRetryPolicy`; doc comments updated.
+   - Docs: added section 6 "Navigation Retry Policy" to `docs/FUNCTIONS.md`.
+   - Verified: no stale references to `WebViewLoadRetryPolicy`/`loadRetryPolicy` remain in code or CI; ktlint guard `scripts/check_kotlin_style.py` passes on the whole tree.
 
-## Rationale
-`[standard:final-newline]` has now broken CI four times (`55aaef8`, `d9c85fe`, `7f77f19`, this cycle). A one-second pre-check naming the offending file is cheaper than a five-minute worker round-trip per occurrence.
+2. **Documentation**: `docs/FUNCTIONS.md` section 6 describes the new policy prior to implementation (per project convention).
 
-## Previous cycle outcome (context)
-- Vision item 50 DONE in `702401f`: `NetworkMonitorTest` merged into one truth-table file (`reportsOfflineWhenNoActiveNetwork`, `reportsOfflineWhenActiveNetworkHasNoCapabilities`, `reportsOnlineWhenActiveNetworkIsValidated` + lifecycle tests); `NetworkMonitorLoadErrorTest` deleted; `NetworkMonitorCaptivePortalTest` slimmed to the captive-portal case.
+## Verification (planned)
+- CI run for this push is pending — must confirm green via `gh run list`. Local Gradle cannot run here (no JDK), so the GitHub worker is the compiler. If the run fails on compilation/test, `gh run view --log-failed` and fix.
+- `scripts/check_kotlin_style.py` runs locally: OK (50 files) on the previous cycle; re-run if any new `..kt` file is touched.
 
-## Verification
-- Local: `python3 scripts/check_kotlin_style.py` → OK (50 files).
-- CI: this push triggers a fresh worker run; result pending.
+## Persisted state
+- `.autonomy/vision.md`: item 59 marked DONE.
 
 ## Next actions (ranked)
-1. Confirm the run for this push is green (`gh run list --repo sxiii/chatplayground-app --limit 3`). If ktlint fires again, `gh run view --log-failed`.
-2. Vision item 39: Robolectric dependency fetch resilience (caching/retry).
-3. Vision item 42: dynamic launcher shortcuts.
-4. Vision item 43: ad blocker / content filter via `shouldInterceptRequest`.
-5. Vision item 44: biometric app lock.
+1. Confirm the CI run for this push is green. If compilation or tests fail, `gh run view --log-failed` and fix on main.
+2. Then take open items: 39 (Robolectric fetch resilience), 42 (dynamic shortcuts), 43 (ad blocker), 57 (CI-check self-tests), 58 (androidTest compile gate).
+3. `ci_check_tests.py` re-run needed after deleting two Robolectric test classes (test count changed) — confirmed by CI.

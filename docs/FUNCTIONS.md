@@ -120,3 +120,13 @@ This document describes the core build, CI/CD, and application runtime functions
 - **Plugin**: `org.jmailen.kotlinter` version `4.3.0`, applied to the `app` module.
 - **`./gradlew :app:lintKotlin`**: Verifies Kotlin source formatting for `src/main` and `src/test` source sets (`ignoreTestSourceSet = false`, no experimental rules). Runs as a dedicated CI step after `Run Lint`; failure blocks the pipeline.
 - **`./gradlew :app:formatKotlin`**: Auto-fixes formatting violations locally before pushing.
+
+## 6. Navigation Retry Policy (`NavigationRetryPolicy`)
+
+- **`NavigationRetryPolicy(maxRetries: Int = 3, baseDelayMs: Long = 1000)`**: Plain-JVM, zero-Android-dependency retry budget for WebView load failures. Lives in `app/src/main/java/com/chatplayground/app/utils/NavigationRetryPolicy.kt` and is unit-testable with plain JUnit (no Robolectric, no `@Config`, no shadow plumbing).
+- **`shouldRetry(isMainFrame: Boolean): Boolean`**: Returns `true` only for main-frame failures (`isMainFrame == true`) and only while the retry count is below `maxRetries`. Each `true` answer consumes one budget unit (increments the count). Sub-frame failures never retry, preventing retry storms from embedded iframes/ad networks.
+- **`retryCountValue: Int` / `retryCount(): Int`**: Number of retries already attempted.
+- **`recordRetry()`**: Records that a retry was consumed (advances the count even if the retry itself fails).
+- **`reset()`**: Resets the retry counter to zero, e.g. after a page commits successfully.
+- **`backoffDelayMs(): Long`**: Exponential backoff delay for the next retry: `baseDelayMs * 2^retryCount`, delivered in milliseconds.
+- **`MainActivity.navigationRetryPolicy: NavigationRetryPolicy`**: `MainActivity` holds an instance (default `maxRetries = 3`) and delegates all retry-budget decisions to it — `onPageFinished` and `onNewIntent` call `reset()`, and `onReceivedError` calls `shouldRetry(true)` then schedules the reload via a main-thread `Handler` using `backoffDelayMs()`. The old `WebViewLoadRetryPolicy` (which coupled the budget to Android `Handler`/`Looper`) is removed; scheduling now lives in `MainActivity`.

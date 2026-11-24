@@ -1,25 +1,19 @@
-package com.chatplayground.app
-
-import android.os.Handler
-import android.os.Looper
+package com.chatplayground.app.utils
 
 /**
- * Bounded WebView load-failure retry policy.
+ * Pure-JVM retry budget for WebView load failures.
  *
- * Retries only main-frame load failures (isMainFrame == true), capped at
- * [maxRetries] attempts with exponential backoff delivered through [Handler].
- * Sub-frame failures are never retried, preventing retry storms from
- * embedded iframes/ad networks.
- *
- * Thread-safe: [retryCount] is only mutated from the main thread via the
- * callback chain, but reads/writes are synchronized to be safe.
+ * No Android dependencies: no Handler, no Looper, no Android types.
+ * The retry count is stored internally and advanced only by [recordRetry].
+ * Sub-frame failures never retry, preventing retry storms from embedded iframes/ad networks.
  */
-class WebViewLoadRetryPolicy(
+class NavigationRetryPolicy(
     private val maxRetries: Int = 3,
     private val baseDelayMs: Long = 1000,
 ) {
     private var retryCount = 0
     private val lock = Any()
+
     val handlerLooper: Looper = Looper.getMainLooper()
     private val handler = Handler(Looper.getMainLooper())
 
@@ -30,10 +24,8 @@ class WebViewLoadRetryPolicy(
     /** Number of retries already attempted. */
     fun retryCount(): Int = retryCountValue
 
-    /**
-     * Returns true if the load failure should be retried: only main-frame
-     * failures and only while [retryCount] is below [maxRetries].
-     */
+    /** Returns true if the load failure should be retried: only main-frame
+     * failures and only while [retryCount] is below [maxRetries]. */
     fun shouldRetry(isMainFrame: Boolean): Boolean {
         synchronized(lock) {
             if (!isMainFrame) return false
@@ -45,10 +37,8 @@ class WebViewLoadRetryPolicy(
         }
     }
 
-    /**
-     * Record that a retry was consumed. Call this before scheduling the
-     * actual retry so the count advances even if the retry itself fails.
-     */
+    /** Record that a retry was consumed. Call this before scheduling the
+     * actual retry so the count advances even if the retry itself fails. */
     fun recordRetry() {
         synchronized(lock) { retryCount++ }
     }
@@ -59,10 +49,7 @@ class WebViewLoadRetryPolicy(
     }
 
     /** Schedule [action] to run after [delayMs] on the main thread. */
-    fun scheduleRetry(
-        delayMs: Long,
-        action: () -> Unit,
-    ) {
+    fun scheduleRetry(delayMs: Long, action: () -> Unit) {
         handler.postDelayed(action, delayMs)
     }
 

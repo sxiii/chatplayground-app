@@ -11,8 +11,8 @@ import org.robolectric.RobolectricTestRunner
  * Regression guard for the retry-budget contract at the `MainActivity` wiring
  * layer.
  *
- * `WebViewLoadRetryPolicy.shouldRetry()` both decides *and* records a retry
- * attempt (see `WebViewLoadRetryPolicyTest`). `MainActivity.onReceivedError`
+ * `NavigationRetryPolicy.shouldRetry()` both decides *and* records a retry
+ * attempt (see `NavigationRetryPolicyTest`). `MainActivity.onReceivedError`
  * used to call `recordRetry()` as well, so every failed load consumed two
  * budget units and doubled the exponential-backoff exponent — a
  * `maxRetries = 3` policy gave up after only two real retries.
@@ -36,7 +36,7 @@ class MainActivityRetryBudgetTest {
         assertEquals(
             "One failed load must consume exactly one retry-budget unit",
             1,
-            activity.loadRetryPolicy.retryCountValue,
+            activity.navigationRetryPolicy.retryCountValue,
         )
     }
 }

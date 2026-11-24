@@ -12,7 +12,7 @@ import org.robolectric.RobolectricTestRunner
 /**
  * Regression guard for the retry budget's lifetime.
  *
- * `WebViewLoadRetryPolicy` is documented as a *bounded* policy ("capped at
+ * `NavigationRetryPolicy` is documented as a *bounded* policy ("capped at
  * maxRetries") whose `reset()` runs "e.g. after a successful load". Neither
  * half held at the [MainActivity] wiring layer:
  *
@@ -66,7 +66,7 @@ class MainActivityRetryBudgetResetTest {
         assertEquals(
             "three failures must consume the whole budget",
             3,
-            activity.loadRetryPolicy.retryCountValue,
+            activity.navigationRetryPolicy.retryCountValue,
         )
 
         // Give-up must not re-arm the policy: an unbounded retry loop against a
@@ -76,11 +76,11 @@ class MainActivityRetryBudgetResetTest {
         assertEquals(
             "further failures must not restart the budget",
             3,
-            activity.loadRetryPolicy.retryCountValue,
+            activity.navigationRetryPolicy.retryCountValue,
         )
         assertFalse(
             "an exhausted policy must keep refusing retries",
-            activity.loadRetryPolicy.shouldRetry(true),
+            activity.navigationRetryPolicy.shouldRetry(true),
         )
     }
 
@@ -98,11 +98,11 @@ class MainActivityRetryBudgetResetTest {
         assertEquals(
             "finishing a failed navigation must not restore the budget",
             3,
-            activity.loadRetryPolicy.retryCountValue,
+            activity.navigationRetryPolicy.retryCountValue,
         )
         assertFalse(
             "a failed navigation must not re-enable retries",
-            activity.loadRetryPolicy.shouldRetry(true),
+            activity.navigationRetryPolicy.shouldRetry(true),
         )
     }
 
@@ -112,7 +112,7 @@ class MainActivityRetryBudgetResetTest {
         repeat(3) { failLoad(activity) }
         assertFalse(
             "the budget must be exhausted before the reset is observed",
-            activity.loadRetryPolicy.shouldRetry(true),
+            activity.navigationRetryPolicy.shouldRetry(true),
         )
 
         // A navigation that starts and finishes with no error is a commit.
@@ -122,11 +122,11 @@ class MainActivityRetryBudgetResetTest {
         assertEquals(
             "a committed page load must restore the retry budget",
             0,
-            activity.loadRetryPolicy.retryCountValue,
+            activity.navigationRetryPolicy.retryCountValue,
         )
         assertTrue(
             "a later failure must be retryable again once a page has loaded",
-            activity.loadRetryPolicy.shouldRetry(true),
+            activity.navigationRetryPolicy.shouldRetry(true),
         )
     }
 }

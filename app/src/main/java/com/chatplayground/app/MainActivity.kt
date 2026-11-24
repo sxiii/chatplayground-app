@@ -30,13 +30,14 @@ import androidx.core.content.ContextCompat
 import com.chatplayground.app.utils.CacheClearer
 import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.LinkRouter
+import com.chatplayground.app.utils.NavigationRetryPolicy
 import com.chatplayground.app.utils.UrlProvider
 import com.chatplayground.app.utils.WebViewConfigurator
 import com.chatplayground.app.utils.WebViewDebugging
 
 class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView
-    internal val loadRetryPolicy = WebViewLoadRetryPolicy(maxRetries = 3)
+    internal val navigationRetryPolicy = NavigationRetryPolicy(maxRetries = 3)
     internal lateinit var networkMonitor: NetworkMonitor
     internal var lastTargetUrl: String = ""
 
@@ -148,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                     // that failed (after onReceivedError), so reset
                     // unconditionally would re-arm a permanently failing page.
                     if (!currentLoadFailed) {
-                        loadRetryPolicy.reset()
+                        navigationRetryPolicy.reset()
                     }
                 }
 
@@ -263,7 +264,7 @@ class MainActivity : AppCompatActivity() {
         setIntent(intent)
         val deepLinkUrl = DeepLinkResolver.resolve(intent.data?.toString()) ?: return
         if (!::webView.isInitialized) return
-        loadRetryPolicy.reset()
+        navigationRetryPolicy.reset()
         lastTargetUrl = deepLinkUrl
         webView.loadUrl(deepLinkUrl)
     }
@@ -443,8 +444,8 @@ class MainActivity : AppCompatActivity() {
                 view.loadUrl("file:///android_asset/offline.html")
             }
             else -> {
-                if (loadRetryPolicy.shouldRetry(true)) {
-                    loadRetryPolicy.scheduleRetryWithBackoff {
+                if (navigationRetryPolicy.shouldRetry(true)) {
+                    navigationRetryPolicy.scheduleRetryWithBackoff {
                         view.reload()
                     }
                 }

@@ -1,13 +1,15 @@
-# Cycle Summary — 2026-11-24 (10:22 run)
+# Cycle Summary — 2026-11-24 (11:10 run)
 
 ## Actions Taken
-1. **Recovered the failing CI baseline first.** Runs `45359097526` (`702401f`) and `45359285941` (`bcf91ee`) both failed on `[standard:final-newline]` in `NetworkMonitorTest.kt` and `NetworkMonitorCaptivePortalTest.kt`. Appended the missing newlines; a byte-level scan confirms no `.kt` file under `app/src` lacks a trailing newline now.
-2. **Vision item 56 DONE — permanent guard against that failure class.** Added `scripts/check_kotlin_style.py` (stdlib, no Java/Gradle, ~1s; final newline + trailing whitespace + tab indentation, `--fix` mode) and wired it into `.github/workflows/build.yml` as *Check Kotlin Style (Final Newlines)* before any Gradle step. Local run: `OK (50 file(s) checked)`.
-3. **Added vision items 57–59** (guard self-tests, androidTest never built, extract `NavigationRetryPolicy` from `MainActivity`).
+1. **Vision item 59 DONE — extracted `NavigationRetryPolicy` (pure JVM, no Android deps).**
+   - `app/src/main/java/com/chatplayground/app/utils/NavigationRetryPolicy.kt`: `shouldRetry(isMainFrame)`, `recordRetry()`, `reset()`, `retryCountValue`, `backoffDelayMs()`. Sub-frame failures never retry.
+   - `MainActivity.navigationRetryPolicy` delegates; old `WebViewLoadRetryPolicy.kt` + 2 Robolectric test classes removed; `MainActivityRetryBudgetTest`/`MainActivityRetryBudgetResetTest` re-pointed.
+   - `docs/FUNCTIONS.md` section 6 added (functions described before implementation).
+2. **Verification state**: CI green on previous push (`cc02e2c`, run `45367615559`); this cycle's push pending.
 
 ## Rationale
-The final-newline rule has now failed CI four times; each occurrence costs a five-minute worker round-trip. A one-second pre-Gradle check that names the offending file removes the whole class.
+The retry-budget logic was coupled to Android `Handler`/`Looper`, so it could only be exercised under Robolectric. Extracting it to a plain-JVM class lets retry rules be unit-tested with no `@Config`/shadow setup, matching item 59's acceptance criteria.
 
 ## Next Steps
-1. Confirm the CI run for this push is green; if ktlint fires again, `gh run view --log-failed`.
-2. Then take open items: 39 (Robolectric fetch resilience), 42 (dynamic shortcuts), 43 (ad blocker), 59 (NavigationRetryPolicy extraction).
+1. Push to main and confirm CI green.
+2. Then open items: 39, 42, 43, 57, 58.
