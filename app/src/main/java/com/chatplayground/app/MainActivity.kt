@@ -40,6 +40,14 @@ class MainActivity : AppCompatActivity() {
     internal lateinit var networkMonitor: NetworkMonitor
     internal var lastTargetUrl: String = ""
 
+    /**
+     * True when the current main-frame navigation ended in an error. The
+     * platform delivers `onPageFinished` for failed navigations too, so the
+     * retry budget may only be restored when no error was reported for the
+     * attempt that just finished.
+     */
+    private var currentLoadFailed: Boolean = false
+
     fun getWebView(): WebView = webView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +131,9 @@ class MainActivity : AppCompatActivity() {
                     favicon: Bitmap?,
                 ) {
                     super.onPageStarted(view, url, favicon)
+                    // A new navigation starts with no error recorded yet; the
+                    // flag is set again below if this attempt fails.
+                    currentLoadFailed = false
                     progressBar.visibility = View.VISIBLE
                 }
 
@@ -132,10 +143,13 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     super.onPageFinished(view, url)
                     progressBar.visibility = View.GONE
-                    // A committed load ends the retry episode: give the next
-                    // navigation a fresh budget instead of letting a spent one
-                    // leak across unrelated page loads.
-                    loadRetryPolicy.reset()
+                    // Only a committed load ends the retry episode. The
+                    // platform also delivers onPageFinished for a navigation
+                    // that failed (after onReceivedError), so reset
+                    // unconditionally would re-arm a permanently failing page.
+                    if (!currentLoadFailed) {
+                        loadRetryPolicy.reset()
+                    }
                 }
 
                 @Suppress("DEPRECATION")
@@ -415,6 +429,10 @@ class MainActivity : AppCompatActivity() {
     ) {
         if (!isMainFrame) return
 
+        // Remember that this navigation failed so onPageFinished — which the
+        // platform also sends for failed loads — does not restore the budget.
+        currentLoadFailed = true
+
         when (code) {
             WebViewClient.ERROR_HOST_LOOKUP,
             WebViewClient.ERROR_CONNECT,
@@ -429,9 +447,11 @@ class MainActivity : AppCompatActivity() {
                     loadRetryPolicy.scheduleRetryWithBackoff {
                         view.reload()
                     }
-                } else {
-                    loadRetryPolicy.reset()
                 }
+                // A spent budget stays spent until a page commits
+                // (onPageFinished resets it). Resetting here would re-arm a
+                // permanently failing page and let it retry without limit,
+                // defeating maxRetries.
             }
         }
     }
