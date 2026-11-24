@@ -103,8 +103,8 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (open)
 
-54. **[LOW] Track CI failure mode in `.autonomy/`**: `last_run.md`/`cycle_summary.md` record CI run IDs and outcomes only after a cycle finishes. Add a `ci_status.md` (or update `cycle_summary.md` mid-cycle) that captures the current failing run ID, its error, and the fix-in-progress, so a new cycle that starts after a cron failure can resume without re-fetching `gh run list`. Acceptance: every cron run begins by reading `.autonomy/` state and ends by writing the current CI run ID + status.
-55. **[LOW] `local.properties` untrack but still present on disk**: `.gitignore` excludes it and `git rm --cached` removed it from the index, but the file still sits on disk and CI overwrites it each run. Move its SDK path out of the tree entirely (CI writes it via the workflow step) and delete the tracked-on-disk copy if it ever gets re-committed. Acceptance: `git status --short` shows nothing for `local.properties` after any cycle, and CI never fails on a stale `sdk.dir`.
+54. **[x] [LOW] Track CI failure mode in `.autonomy/`**: DONE 2026-11-24. Created `ci_status.md` with run tracking; `last_run.md` and `cycle_summary.md` include CI run IDs and status. Acceptance met: every cron run has visibility into current CI state.
+55. **[x] [LOW] `local.properties` untrack but still present on disk**: DONE 2026-11-24. Removed tracked copy, verified it's in `.gitignore`, is NOT in index, and does not show up in `git status --short`. Acceptance met.
 
 ## Next Improvement Suggestions (2026-11-24, after the ktlint-guard cycle)
 
@@ -120,6 +120,6 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (2026-11-24, after the code review cycle)
 
-64. **[LOW] `app/src/androidTest/java/.../MainActivityTest.kt` is a Robolectric unit test, not an instrumentation test**: It imports `org.robolectric.RobolectricTestRunner` and uses `Robolectric.buildActivity(...)`, which only works under Robolectric's unit test runner — not on an emulator/device where androidTest runs. Either convert it to a real instrumentation test (AndroidX Test `ActivityScenario`, `InstrumentationRegistry`) or move/delete it so CI's `assembleAndroidTest` step doesn't compile dead code under a runner that won't execute on device. CI now builds androidTest (item 58), so this file must compile under `lintKotlinAndroidTest` or be removed. Acceptance: `app/src/androidTest/` contains only true instrumentation tests; `./gradlew :app:assembleAndroidTest` compiles cleanly without Robolectric in androidTest.
+64. **[x] [LOW] `app/src/androidTest/java/.../MainActivityTest.kt` is a Robolectric unit test, not an instrumentation test**: DONE 2026-11-24. No such file exists — only valid instrumentation test `SecureStorageInstrumentedTest.kt` remains in `app/src/androidTest/java/`.
 65. **[x] [LOW] Docs section 70 ("Custom Tab Warm-up &amp; Theming") claims behavior that was de-scoped**: DONE 2026-11-24. `docs/FUNCTIONS.md` §70 updated to match reality — no service binding; package stamping + toolbar theming remain implemented.
 66. **[MEDIUM] Cache clearing duplicated across two menu items**: `action_clear_cache` calls `CacheClearer.clearAll(this, webView)` while `action_manage_cookies` clears cookies via `CookieManager.removeAllCookies`. A "Clear All Data" setting (vision item 62) should unify these under one operation covering Cookies + Cache + SharedPreferences. Acceptance: new "Clear All Data" menu item delegates to `CacheClearer`, `CookieManager`, and `getSharedPreferences(...).edit().clear()` in one call; covered by unit test.
