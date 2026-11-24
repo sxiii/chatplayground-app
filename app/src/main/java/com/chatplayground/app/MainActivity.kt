@@ -448,9 +448,9 @@ class MainActivity : AppCompatActivity() {
             }
             else -> {
                 if (navigationRetryPolicy.shouldRetry(true)) {
-                    navigationRetryPolicy.scheduleRetryWithBackoff {
+                    retryHandler.postDelayed({
                         view.reload()
-                    }
+                    }, navigationRetryPolicy.backoffDelayMs())
                 }
                 // A spent budget stays spent until a page commits
                 // (onPageFinished resets it). Resetting here would re-arm a
