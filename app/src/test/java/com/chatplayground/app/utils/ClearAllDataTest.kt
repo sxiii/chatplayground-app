@@ -14,7 +14,6 @@ import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class ClearAllDataTest {
-
     private lateinit var context: Context
     private lateinit var cacheManager: OfflineCacheManager
 
