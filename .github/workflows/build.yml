@@ -82,6 +82,9 @@ jobs:
       - name: Check Autonomy Directories
         run: python3 ci_check_autonomy_dirs.py
 
+      - name: Check Kotlin Style (Final Newlines)
+        run: python3 scripts/check_kotlin_style.py
+
       - name: Verify Dependencies
         run: |
           ./gradlew androidDependencies --stacktrace --console=plain
