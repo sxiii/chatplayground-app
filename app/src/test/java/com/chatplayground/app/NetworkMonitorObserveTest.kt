@@ -2,7 +2,6 @@ package com.chatplayground.app
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
