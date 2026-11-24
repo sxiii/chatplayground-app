@@ -32,7 +32,6 @@ import org.robolectric.shadows.ShadowNetworkInfo
  */
 @RunWith(RobolectricTestRunner::class)
 class NetworkMonitorCaptivePortalTest {
-
     private fun context(): Context = ApplicationProvider.getApplicationContext()
 
     @Suppress("DEPRECATION")
