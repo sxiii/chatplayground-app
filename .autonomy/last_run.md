@@ -12,7 +12,7 @@
    - `ShadowConnectivityManager.setActiveNetworkInfo(NetworkInfo)` publishes an active Network keyed by type.
    - `setNetworkCapabilities(Network, NetworkCapabilities)` keys capabilities by the exact Network instance returned by `getActiveNetwork()`.
    - `NetworkCapabilities.addCapability(int)` is `@HiddenApi` and must be invoked via `Shadows.shadowOf(capabilities).addCapability(...)`.
-3. **Compilation & test pass**: 32 JUnit test suites passed in CI run `45317366041`. First attempt failed compilation (missing `NetworkInfo` import, `addCapability` unresolved), second failed ktlint only (`no-empty-first-line-in-class-body`, `final-newline`), both fixed.
+3. **Compilation & test pass**: 32 JUnit test suites passed in CI run `45317045855` (lint failed on the new file); after ktlint fixes, run `45318355620` was fully green. First attempt failed compilation (missing `NetworkInfo` import, `addCapability` unresolved), second failed ktlint only (`no-empty-first-line-in-class-body`, `final-newline`), both fixed.
 4. **ktlint compliance**: Removed blank first line in class body; ensured final newline.
 
 ## Verification
