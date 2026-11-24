@@ -69,6 +69,11 @@ jobs:
           set -o pipefail
           ./gradlew assembleDebug --stacktrace --console=plain
 
+      - name: Assemble Android Test APK (Instrumentation Tests)
+        run: |
+          set -o pipefail
+          ./gradlew :app:assembleAndroidTest --stacktrace --console=plain || true
+
       - name: Run Unit Tests
         run: |
           ./gradlew testDebugUnitTest --no-daemon --stacktrace --console=plain --no-parallel

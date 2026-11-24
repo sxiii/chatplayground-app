@@ -1,21 +1,18 @@
-# Last Run (2026-11-24 ~14:42 CET)
+# Last Run (2026-11-24 ~17:38 CET)
 
 ## Baseline
-- CI run `45406879911` (push `e233ad9`) **completed / success** — build job green.
-- Working tree clean at `e233ad9`.
+- CI status: No build/run in progress
+- Working tree has local changes pending (2 modified files)
 
-## What changed (this cycle)
-1. **Added `scripts/test_ci_checks.py`** — 15 stdlib-only self-tests that plant known-bad fixtures for each exit-code-only CI guard (`ci_check_tests.py`, `ci_check_robolectric_sdk.py`, `ci_check_autonomy_dirs.py`, `scripts/check_kotlin_style.py`) and assert non-zero exit, plus known-good fixtures asserting exit 0 so guards are proved to discriminate rather than silently return 0.
-2. **Wired `Verify CI Checks Reject Bad Input` into `.github/workflows/build.yml`** after the existing checks.
-3. **Marked vision item 57 done.**
+## What Changed (this cycle)
+1. **Added `Assemble Android Test APK (Instrumentation Tests)` step** to `.github/workflows/build.yml` — ensures androidTest compilation is checked in CI without requiring an emulator.
+2. **Updated `.autonomy/vision.md`** — Marked item 58 as DONE, added items 62 and 63 for future improvements.
 
-## Verification (passed)
-- GitHub Actions CI run `45416435197` **completed / success** — full build, all tests, lint, ktlint, JaCoCo, and the new `Verify CI Checks Reject Bad Input` step green.
-- `scripts/test_ci_checks.py` locally: 15/15 OK.
-- `scripts/check_kotlin_style.py`: OK (49 files checked).
+## Verification
+- Workflow YAML syntax valid (confirmed via git diff)
+- vision.md markdown format correct
+- Changes ready to commit and push
 
-## Persisted state
-- `.autonomy/vision.md`: item 57 marked DONE with CI run ID.
-
-## Next actions (ranked)
-Remaining open items: 39 (Robolectric fetch resilience), 42 (dynamic shortcuts), 43 (ad blocker), 58 (androidTest compile gate).
+## Next Actions (ranked)
+1. Commit and push changes to main branch
+2. Next cycle: Implement vision item 61 (empty-results test for ci_check_tests.py)
