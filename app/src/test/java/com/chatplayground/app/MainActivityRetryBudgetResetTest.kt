@@ -34,8 +34,7 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivityRetryBudgetResetTest {
-    private fun newActivity(): MainActivity =
-        Robolectric.buildActivity(MainActivity::class.java).create().get()
+    private fun newActivity(): MainActivity = Robolectric.buildActivity(MainActivity::class.java).create().get()
 
     /** Feeds one non-network load failure into the activity's retry branch. */
     private fun failLoad(activity: MainActivity) {
