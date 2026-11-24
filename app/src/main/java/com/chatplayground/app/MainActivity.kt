@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import com.chatplayground.app.utils.AssetRequestHandler
 import com.chatplayground.app.utils.DataClearer
 import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.LinkRouter
