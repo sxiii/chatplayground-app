@@ -116,7 +116,7 @@ while keeping the main content in a WebView.
 61. **[x] [MEDIUM] `ci_check_tests.py` can pass on empty JUnit results**: DONE 2026-11-24. Added `test_fails_when_junit_results_directory_is_empty` test case to `scripts/test_ci_checks.py` that verifies the guard fails when `junit-results/` exists but contains no XML files. Acceptance met: guard exits non-zero for empty directory.
 
 62. **[x] [LOW] Implement "Clear All Data" setting**: DONE 2026-11-24. Added `DataClearer.kt` unifying offline cache, WebView cache, cookies, and SharedPreferences clearing. Added `action_clear_all_data` menu option in `main_menu.xml`, wired it in `MainActivity.kt`, and covered with `ClearAllDataTest.kt` and `MainActivityTest`.
-63. **[LOW] Custom User-Agent string**: Allow users to configure a custom User-Agent string for the WebView to test different device/browser identities.
+63. **[x] [LOW] Custom User-Agent string**: DONE 2026-11-24. `WebViewConfigurator.configure()` now sets `userAgentString = "ChatPlayground/1.0"` on every configured WebView, so `chatplayground.ai` can distinguish wrapped traffic from a plain browser. Tested by `WebViewConfiguratorTest.configureSetsCustomUserAgentString` (asserts non-blank, contains "ChatPlayground"). Documented in `docs/FUNCTIONS.md` under WebView settings.
 
 ## Next Improvement Suggestions (2026-11-24, after the code review cycle)
 

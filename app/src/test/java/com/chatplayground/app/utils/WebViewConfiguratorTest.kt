@@ -86,4 +86,19 @@ class WebViewConfiguratorTest {
             settings.mixedContentMode,
         )
     }
+
+    @Test
+    fun configureSetsCustomUserAgentString() {
+        val webView = WebView(RuntimeEnvironment.getApplication())
+        WebViewConfigurator.configure(webView)
+
+        assertFalse(
+            "WebView must send a custom User-Agent string identifying the app",
+            webView.settings.userAgentString.isNullOrBlank(),
+        )
+        assertTrue(
+            "User-Agent string must identify ChatPlayground",
+            webView.settings.userAgentString.contains("ChatPlayground"),
+        )
+    }
 }

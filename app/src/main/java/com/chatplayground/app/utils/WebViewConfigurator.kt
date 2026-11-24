@@ -12,14 +12,18 @@ import android.webkit.WebView
  * and before the first `loadUrl`, so no page can render under stock defaults.
  */
 object WebViewConfigurator {
+    /** The User-Agent string the WebView sends with every request. */
+    private const val USER_AGENT = "ChatPlayground/1.0"
+
     /**
      * Configures [webView] with:
      * - JavaScript enabled (required by the ChatPlayground SPA)
      * - DOM storage enabled (session/conversation state survives reloads)
      * - Mixed content never allowed (HTTPS pages never load HTTP sub-resources)
      * - Local file and content:// access disabled (never render user-supplied files;
-     bundled assets such as `file:///android_asset/offline.html` remain loadable
-     because they are served by the asset/resource loaders, not the file:// scheme)
+     *   bundled assets such as `file:///android_asset/offline.html` remain loadable
+     *   because they are served by the asset/resource loaders, not the file:// scheme)
+     * - Custom User-Agent string identifying the wrapper app
      *
      * Idempotent: safe to call repeatedly; later calls override earlier ones.
      */
@@ -30,5 +34,6 @@ object WebViewConfigurator {
         settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
         settings.allowFileAccess = false
         settings.allowContentAccess = false
+        settings.userAgentString = USER_AGENT
     }
 }
