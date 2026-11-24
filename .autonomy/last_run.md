@@ -1,23 +1,31 @@
-# Last Run (2026-11-24 ~08:20 CET)
+# Last Run (2026-11-24 ~09:14 CET)
 
 ## Baseline
-- CI run `45345077631` (HEAD `5d128d1`, retry-budget test cycle) **failed** on `Run lintKotlin`:
-  - `MainActivityRetryBudgetResetTest.kt:37` — `standard:function-signature` ("First line of body expression fits on same line as function signature").
-  - `MainActivityRetryBudgetResetTest.kt:133` — `standard:final-newline` ("File must end with a newline").
-- All earlier steps (debug APK build, unit tests, lint, Robolectric SDK guard, autonomy dir guard) were green.
+- CI run `45351561424` (HEAD `f6fd2e9`) **success** — retry-budget cycle fully closed.
+- Working tree clean at `f6fd2e9` before this cycle.
 - Canonical autonomy state: `.autonomy/`; no stray `autonomy/` dirs present.
-- `local.properties` untracked/gitignored (previous cycle's `git rm --cached` landed).
+- `local.properties` untracked/gitignored.
 
-## What changed (this cycle, commit `7f77f19`)
-1. Collapsed `newActivity()` signature + single-line body onto one line (`standard:function-signature`).
-2. Added final trailing newline (`standard:final-newline`).
-3. Pushed directly to `main` per cron job instructions.
+## What changed (this cycle, commit `702401f`)
+- **Vision item 50 DONE — merged overlapping offline NetworkMonitor tests.**
+  - `NetworkMonitorTest` rewritten as a single truth-table file naming every connectivity case:
+    - `reportsOfflineWhenNoActiveNetwork` (no active network, Robolectric default)
+    - `reportsOfflineWhenActiveNetworkHasNoCapabilities` (active network, capabilities map untouched — defensive branch)
+    - `reportsOnlineWhenActiveNetworkIsValidated` (INTERNET + VALIDATED → online)
+    - Kept `isConnectedMirrorsCheckConnectivity`, `observeThenStopObservingIsIdempotent`, `observeCalledTwiceUnregistersPreviousCallback`.
+  - `NetworkMonitorLoadErrorTest` deleted (its case absorbed into `NetworkMonitorTest`).
+  - `NetworkMonitorCaptivePortalTest` slimmed to only the captive-portal case (INTERNET without VALIDATED → offline); positive counterpart now in `NetworkMonitorTest`.
+  - No production code changed.
+- `.autonomy/vision.md` item 50 marked DONE with acceptance note.
 
 ## Verification
 - Cannot run `./gradlew` locally (no Java on this host) — verification is via GitHub workers only, per AUTONOMY.md.
-- GitHub workers triggered a new build on push `7f77f19`.
+- GitHub workers triggered build `45359097526` on push `702401f` — **queued**, not yet result-known.
 
 ## Next actions (ranked)
-1. Wait for CI on `7f77f19` — if green, the retry-budget test cycle is fully closed. If red on ktlint again, inspect `gh run view --log-failed`.
-2. Vision item 50: merge the overlapping offline tests (`NetworkMonitorTest.reportsOfflineWhenNoNetworkIsAvailable` / `NetworkMonitorLoadErrorTest`) into named cases.
-3. Confirm vision items 51–52 remain DONE (untouched this cycle).
+1. Wait for CI on `45359097526` (`gh run view 45359097526 --repo sxiii/chatplayground-app`). If green, item 50 cycle is fully closed. If red on ktlint/compile, inspect `gh run view --log-failed 45359097526`.
+2. Vision item 39: improve Robolectric dependency fetch resilience (caching/retry).
+3. Vision item 40: add gesture navigation for WebView back/forward.
+4. Vision item 42: add dynamic shortcut support.
+5. Vision item 43: ad blocker / content filter via shouldInterceptRequest.
+6. Vision item 44: biometric authentication lock.
