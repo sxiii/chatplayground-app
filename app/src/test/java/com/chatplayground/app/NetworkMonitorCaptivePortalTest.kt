@@ -6,7 +6,6 @@ import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -29,16 +28,17 @@ import org.robolectric.shadows.ShadowNetworkInfo
  * checkConnectivity() requires both NET_CAPABILITY_INTERNET and
  * NET_CAPABILITY_VALIDATED on the active network, so a captive portal
  * (internet but not validated) must report offline.
+ *
+ * The positive counterpart (INTERNET + VALIDATED reports online) lives in
+ * `NetworkMonitorTest.reportsOnlineWhenActiveNetworkIsValidated` so the whole
+ * capability truth table stays in one place.
  */
 @RunWith(RobolectricTestRunner::class)
 class NetworkMonitorCaptivePortalTest {
     private fun context(): Context = ApplicationProvider.getApplicationContext()
 
     @Suppress("DEPRECATION")
-    private fun publishWifiNetwork(
-        connectivityManager: ConnectivityManager,
-        validated: Boolean,
-    ) {
+    private fun publishWifiNetwork(connectivityManager: ConnectivityManager) {
         val shadow = shadowOf(connectivityManager)
         shadow.setActiveNetworkInfo(
             ShadowNetworkInfo.newInstance(
@@ -53,9 +53,6 @@ class NetworkMonitorCaptivePortalTest {
         val capabilities = ShadowNetworkCapabilities.newInstance()
         val shadowCapabilities = shadowOf(capabilities)
         shadowCapabilities.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        if (validated) {
-            shadowCapabilities.addCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-        }
 
         // Attach capabilities to the exact Network instance the monitor will read.
         val activeNetwork = connectivityManager.activeNetwork
@@ -67,24 +64,11 @@ class NetworkMonitorCaptivePortalTest {
     fun reportsOfflineWhenNetworkHasInternetButNotValidated() {
         val connectivityManager =
             context().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        publishWifiNetwork(connectivityManager, validated = false)
+        publishWifiNetwork(connectivityManager)
 
         val monitor = NetworkMonitor(context())
         assertFalse(
             "Internet without validation (captive portal) must report offline",
-            monitor.checkConnectivity(),
-        )
-    }
-
-    @Test
-    fun reportsOnlineWhenNetworkIsValidatedAndHasInternet() {
-        val connectivityManager =
-            context().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        publishWifiNetwork(connectivityManager, validated = true)
-
-        val monitor = NetworkMonitor(context())
-        assertTrue(
-            "Validated network with internet must report online",
             monitor.checkConnectivity(),
         )
     }
