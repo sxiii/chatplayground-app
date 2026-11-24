@@ -6,25 +6,19 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Build
 
-/**
- * Monitor网络连接状态，并提供实时回调。
- */
+/** Monitor网络连接状态，并提供实时回调。 */
 class NetworkMonitor(context: Context) {
     private val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     // 简单的连接状态存储
     @Volatile var isConnected: Boolean = checkConnectivity()
 
-    /**
-     * Checks if the device is currently online.
-     */
+    /** Checks if the device is currently online. */
     fun isOnline(): Boolean = checkConnectivity()
 
     private var callbackObj: ConnectivityManager.NetworkCallback? = null
 
-    /**
-     * Checks if the device is currently online.
-     */
+    /** Checks if the device is currently online. */
     fun checkConnectivity(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val nw = cm.activeNetwork ?: return false
@@ -38,9 +32,7 @@ class NetworkMonitor(context: Context) {
         }
     }
 
-    /**
-     * 注册一个回调以监听在线/离线转换。
-     */
+    /** Register a callback to listen for online/offline transitions. */
     fun observe(callback: (Boolean) -> Unit) {
         // Unregister any previously registered callback first so repeated
         // calls (e.g. activity recreation) do not leak ConnectivityManager
@@ -49,23 +41,45 @@ class NetworkMonitor(context: Context) {
         val callbackObj =
             object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
-                    isConnected = true
-                    callback(true)
+                    publish(true)
                 }
 
                 override fun onLost(network: Network) {
-                    isConnected = false
-                    callback(false)
+                    publish(false)
+                }
+
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities,
+                ) {
+                    // Capabilities can change while the network stays up: a captive
+                    // portal loses NET_CAPABILITY_VALIDATED without any onLost(), so
+                    // re-read live state instead of trusting the cached value.
+                    publish(checkConnectivity())
+                }
+
+                override fun onUnavailable() {
+                    // registerDefaultNetworkCallback reports onUnavailable() when no
+                    // default network can satisfy the request; without this override
+                    // the monitor would keep reporting its last known state.
+                    publish(false)
+                }
+
+                /**
+                 * Stores [connected] and notifies the observer only when the value
+                 * actually changed, so capability churn cannot spam the consumer.
+                 */
+                private fun publish(connected: Boolean) {
+                    if (isConnected == connected) return
+                    isConnected = connected
+                    callback(connected)
                 }
             }
         this.callbackObj = callbackObj
         cm.registerDefaultNetworkCallback(callbackObj)
     }
 
-    /**
-     * 注销之前注册的回调，释放 ConnectivityManager 资源。
-     * 即使没有注册过的回调也不会抛出异常。
-     */
+    /** Cancel a previous observation registration, releasing ConnectivityManager resources. */
     fun stopObserving() {
         val cb = callbackObj ?: return
         callbackObj = null

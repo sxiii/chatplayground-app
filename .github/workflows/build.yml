@@ -121,10 +121,24 @@ jobs:
           set -o pipefail
           ./gradlew lint --stacktrace --console=plain
 
+      - name: Lint Diagnostics
+        if: failure()
+        run: |
+          echo "## Lint Errors" >> "$GITHUB_STEP_SUMMARY"
+          ./gradlew lint --stacktrace --console=plain 2>&1 | grep -iE 'error:|warning:' >> "$GITHUB_STEP_SUMMARY" || true
+          echo "(see job console for full lint output)" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Run lintKotlin
         run: |
           set -o pipefail
           ./gradlew :app:lintKotlin --stacktrace --console=plain
+
+      - name: Lint Kotlin Diagnostics
+        if: failure()
+        run: |
+          echo "## Kotlin Lint Errors" >> "$GITHUB_STEP_SUMMARY"
+          ./gradlew :app:lintKotlin --stacktrace --console=plain 2>&1 | grep -iE 'error:|warning:' >> "$GITHUB_STEP_SUMMARY" || true
+          echo "(see job console for full lint output)" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Unit Test Diagnostics
         if: failure()

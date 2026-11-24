@@ -1,9 +1,9 @@
-# Gradle / local caches
+# Gradle
 .gradle/
 build/
 **/build/
 
-# Captured CI diagnostic logs (written at repo root by the workflow)
+# CI logs
 gradle_build_debug.log
 gradle_test.log
 tmp_artifacts/
@@ -12,9 +12,7 @@ tmp_artifacts/
 .idea/
 *.iml
 *.hprof
-captures/
-.cxx/
 
-# OS / misc
+# Misc
 .DS_Store
-local.properties
+.local.properties
