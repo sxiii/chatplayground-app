@@ -132,6 +132,10 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     super.onPageFinished(view, url)
                     progressBar.visibility = View.GONE
+                    // A committed load ends the retry episode: give the next
+                    // navigation a fresh budget instead of letting a spent one
+                    // leak across unrelated page loads.
+                    loadRetryPolicy.reset()
                 }
 
                 @Suppress("DEPRECATION")
