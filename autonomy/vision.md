@@ -21,4 +21,7 @@
 - **[MED] Enhance network error handling** to provide more user-friendly feedback than a simple toast.
 - **[LOW] Explore alternative local unit test runners** for better compatibility with Termux/Android SDK environment.
 - **[LOW] Improve local test environment setup documentation** for `JAVA_HOME` and `gradlew` to prevent local failures.
+- **[HIGH] Implement NetworkMonitor load error test**: Add a test for initial page load failure handling in NetworkMonitor.
+- **[MED] Add exponential backoff test for WebViewLoadRetryPolicy**: Verify backoff timing increases correctly across retries.
+- **[LOW] Add offline cache management UI**: Add a settings option to clear WebView cache and cookies.
 
