@@ -7,6 +7,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * Behavioural tests for [NetworkMonitor].
@@ -14,9 +15,10 @@ import org.robolectric.RobolectricTestRunner
  * These deliberately avoid shadow network internals: Robolectric's default
  * state has no active network, and `ConnectivityManager` callbacks are not
  * replayed by `ShadowConnectivityManager`. Tests that need real callback
- * simulation belong in a later iteration (see .autonomy/vision.md).
+ * simulation belong in a later iteration.
  */
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [26])
 class NetworkMonitorTest {
     private fun context(): Context = ApplicationProvider.getApplicationContext()
 

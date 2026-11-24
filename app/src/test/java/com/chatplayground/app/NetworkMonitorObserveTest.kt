@@ -2,6 +2,9 @@ package com.chatplayground.app
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -11,10 +14,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowNetwork
 
 /**
- * Behavioral tests for [NetworkMonitor.observe].
+ * Tests for [NetworkMonitor.observe] and network transition handling.
  *
  * Robolectric does not replay real ConnectivityManager transitions on its own,
  * but [org.robolectric.shadows.ShadowConnectivityManager] exposes the set of
@@ -22,6 +26,7 @@ import org.robolectric.shadows.ShadowNetwork
  * explicitly instead of relying on the default-network shadow to fire them.
  */
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [26])
 class NetworkMonitorObserveTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val cm: ConnectivityManager =

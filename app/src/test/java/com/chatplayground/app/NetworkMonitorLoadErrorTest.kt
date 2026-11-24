@@ -1,18 +1,18 @@
 package com.chatplayground.app
 
 import android.content.Context
+import android.net.ConnectivityManager
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.shadows.ShadowConnectivityManager
 import org.robolectric.Shadows.shadowOf
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
+import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowConnectivityManager
 
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [26])
 class NetworkMonitorLoadErrorTest {
     private fun context(): Context = ApplicationProvider.getApplicationContext()
     
