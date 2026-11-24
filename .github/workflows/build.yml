@@ -95,6 +95,9 @@ jobs:
       - name: Check Kotlin Style (Final Newlines)
         run: python3 scripts/check_kotlin_style.py
 
+      - name: Verify CI Checks Reject Bad Input
+        run: python3 scripts/test_ci_checks.py
+
       - name: Verify Dependencies
         run: |
           ./gradlew androidDependencies --stacktrace --console=plain
