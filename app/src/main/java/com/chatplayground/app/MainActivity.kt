@@ -501,9 +501,6 @@ class MainActivity : AppCompatActivity() {
     /** Package of the default Custom Tabs provider, resolved at runtime. */
     internal var customTabsPackage: String? = null
 
-    /** True while the Custom Tabs service connection is bound (set in `onStart`). */
-    internal var isCustomTabsBound: Boolean = false
-
     /** Resolves the default Custom Tabs provider package from the package manager. */
     private fun resolveCustomTabsPackage(): String? = CustomTabsClient.getPackageName(this, null)
 
