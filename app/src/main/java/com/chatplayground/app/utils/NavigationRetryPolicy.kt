@@ -14,9 +14,6 @@ class NavigationRetryPolicy(
     private var retryCount = 0
     private val lock = Any()
 
-    val handlerLooper: Looper = Looper.getMainLooper()
-    private val handler = Handler(Looper.getMainLooper())
-
     /** Number of retries already attempted. */
     val retryCountValue: Int
         get() = synchronized(lock) { retryCount }
@@ -48,14 +45,6 @@ class NavigationRetryPolicy(
         synchronized(lock) { retryCount = 0 }
     }
 
-    /** Schedule [action] to run after [delayMs] on the main thread. */
-    fun scheduleRetry(delayMs: Long, action: () -> Unit) {
-        handler.postDelayed(action, delayMs)
-    }
-
-    /** Schedule a retry with exponential backoff: baseDelayMs * 2^retryCount. */
-    fun scheduleRetryWithBackoff(action: () -> Unit) {
-        val delay = baseDelayMs * (1L shl retryCount())
-        scheduleRetry(delay, action)
-    }
+    /** Exponential backoff delay for the next retry: baseDelayMs * 2^retryCount. */
+    fun backoffDelayMs(): Long = baseDelayMs * (1L shl retryCountValue)
 }

@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
@@ -38,6 +40,7 @@ import com.chatplayground.app.utils.WebViewDebugging
 class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView
     internal val navigationRetryPolicy = NavigationRetryPolicy(maxRetries = 3)
+    private val retryHandler = Handler(Looper.getMainLooper())
     internal lateinit var networkMonitor: NetworkMonitor
     internal var lastTargetUrl: String = ""
 
