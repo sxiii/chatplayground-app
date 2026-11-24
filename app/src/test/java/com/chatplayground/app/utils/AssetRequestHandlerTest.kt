@@ -14,10 +14,14 @@ import org.junit.Test
  * here.
  */
 class AssetRequestHandlerTest {
+    private val nullUrl: String? = null
 
     @Test
     fun assetPathForReturnsNullForNullUrl() {
-        assertNull("A null URL must never be intercepted", AssetRequestHandler.assetPathFor(null))
+        assertNull(
+            "A null URL must never be intercepted",
+            AssetRequestHandler.assetPathFor(nullUrl),
+        )
     }
 
     @Test
@@ -30,7 +34,10 @@ class AssetRequestHandlerTest {
     fun assetPathForReturnsNullForRemoteUrls() {
         assertNull("https must not be intercepted", AssetRequestHandler.assetPathFor("https://chatplayground.ai"))
         assertNull("http must not be intercepted", AssetRequestHandler.assetPathFor("http://chatplayground.ai"))
-        assertNull("file on a non-android_asset host must not be intercepted", AssetRequestHandler.assetPathFor("file:///other/offline.html"))
+        assertNull(
+            "file on a non-android_asset host must not be intercepted",
+            AssetRequestHandler.assetPathFor("file:///other/offline.html"),
+        )
     }
 
     @Test
@@ -40,20 +47,38 @@ class AssetRequestHandlerTest {
 
     @Test
     fun assetPathForRejectsNonWhitelistedAssetNames() {
-        assertNull("Asset names not on the allowed list must not be intercepted", AssetRequestHandler.assetPathFor("file:///android_asset/style.css"))
-        assertNull("Asset names not on the allowed list must not be intercepted", AssetRequestHandler.assetPathFor("file:///android_asset/app.js"))
+        assertNull(
+            "Asset names not on the allowed list must not be intercepted",
+            AssetRequestHandler.assetPathFor("file:///android_asset/style.css"),
+        )
+        assertNull(
+            "Asset names not on the allowed list must not be intercepted",
+            AssetRequestHandler.assetPathFor("file:///android_asset/app.js"),
+        )
     }
 
     @Test
     fun assetPathForRejectsPathTraversal() {
-        assertNull(".. must never escape the assets directory", AssetRequestHandler.assetPathFor("file:///android_asset/../../../etc/passwd"))
-        assertNull(".. segments must not match any allowed asset", AssetRequestHandler.assetPathFor("file:///android_asset/./offline.html"))
+        assertNull(
+            ".. must never escape the assets directory",
+            AssetRequestHandler.assetPathFor("file:///android_asset/../../../etc/passwd"),
+        )
+        assertNull(
+            ".. segments must not match any allowed asset",
+            AssetRequestHandler.assetPathFor("file:///android_asset/./offline.html"),
+        )
     }
 
     @Test
     fun assetPathForRejectsSubdirectoryAssets() {
-        assertNull("Assets in subdirectories are not on the allowed list", AssetRequestHandler.assetPathFor("file:///android_asset/css/offline.html"))
-        assertNull("Nested paths are rejected", AssetRequestHandler.assetPathFor("file:///android_asset/a/b/offline.html"))
+        assertNull(
+            "Assets in subdirectories are not on the allowed list",
+            AssetRequestHandler.assetPathFor("file:///android_asset/css/offline.html"),
+        )
+        assertNull(
+            "Nested paths are rejected",
+            AssetRequestHandler.assetPathFor("file:///android_asset/a/b/offline.html"),
+        )
     }
 
     @Test
@@ -67,7 +92,7 @@ class AssetRequestHandlerTest {
         assertTrue("offline.html is interceptable", AssetRequestHandler.shouldIntercept("file:///android_asset/offline.html"))
 
         assertFalse("https is not interceptable", AssetRequestHandler.shouldIntercept("https://chatplayground.ai"))
-        assertFalse("null is not interceptable", AssetRequestHandler.shouldIntercept(null))
+        assertFalse("null is not interceptable", AssetRequestHandler.shouldIntercept(nullUrl))
         assertFalse("non-whitelisted asset is not interceptable", AssetRequestHandler.shouldIntercept("file:///android_asset/style.css"))
         assertFalse("path traversal is not interceptable", AssetRequestHandler.shouldIntercept("file:///android_asset/../../../etc/passwd"))
     }
