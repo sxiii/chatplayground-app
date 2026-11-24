@@ -30,6 +30,7 @@ import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.chatplayground.app.utils.CacheClearer
+import com.chatplayground.app.utils.DataClearer
 import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.NavigationRetryPolicy
@@ -296,6 +297,11 @@ class MainActivity : AppCompatActivity() {
             R.id.action_clear_cache -> {
                 CacheClearer.clearAll(this, webView)
                 Toast.makeText(this, "Cache cleared", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_clear_all_data -> {
+                DataClearer.clearAllData(this, webView)
+                Toast.makeText(this, "All data cleared", Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.action_toggle_theme -> {

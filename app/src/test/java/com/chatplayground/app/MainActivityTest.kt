@@ -325,6 +325,17 @@ class MainActivityTest {
     }
 
     @Test
+    fun clearAllDataMenuItemClearsAllData() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val menu = org.robolectric.fakes.RoboMenu(activity)
+        activity.onCreateOptionsMenu(menu)
+        val item = menu.findItem(R.id.action_clear_all_data)
+
+        val handled = activity.onOptionsItemSelected(item)
+        assertTrue("Clear all data action should be handled", handled)
+    }
+
+    @Test
     fun themeSelectionDialogShowsOptions() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
         val menu = org.robolectric.fakes.RoboMenu(activity)

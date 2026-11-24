@@ -115,7 +115,7 @@ while keeping the main content in a WebView.
 60. **[LOW] Pre-submit ktlint check**: `scripts/check_kotlin_style.py` catches formatting violations (empty first line in class body, missing final newline, trailing whitespace) in ~1s locally, but nothing reminds agents to run it before pushing. The `NavigationRetryPolicyTest.kt` empty-line violation survived to CI and cost a ~3-minute worker round-trip. Acceptance: every push that touches `.kt` files is preceded by a local `scripts/check_kotlin_style.py` run, recorded in `.autonomy/last_run.md`.
 61. **[x] [MEDIUM] `ci_check_tests.py` can pass on empty JUnit results**: DONE 2026-11-24. Added `test_fails_when_junit_results_directory_is_empty` test case to `scripts/test_ci_checks.py` that verifies the guard fails when `junit-results/` exists but contains no XML files. Acceptance met: guard exits non-zero for empty directory.
 
-62. **[LOW] Implement "Clear All Data" setting**: Add a menu item or settings option to clear all app data (Cookies, Cache, and SharedPreferences) in one operation.
+62. **[x] [LOW] Implement "Clear All Data" setting**: DONE 2026-11-24. Added `DataClearer.kt` unifying offline cache, WebView cache, cookies, and SharedPreferences clearing. Added `action_clear_all_data` menu option in `main_menu.xml`, wired it in `MainActivity.kt`, and covered with `ClearAllDataTest.kt` and `MainActivityTest`.
 63. **[LOW] Custom User-Agent string**: Allow users to configure a custom User-Agent string for the WebView to test different device/browser identities.
 
 ## Next Improvement Suggestions (2026-11-24, after the code review cycle)
