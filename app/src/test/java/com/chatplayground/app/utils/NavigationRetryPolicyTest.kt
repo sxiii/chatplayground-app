@@ -12,7 +12,6 @@ import org.junit.Test
  * an Android SDK. If any Android import creeps in, the build will fail here.
  */
 class NavigationRetryPolicyTest {
-
     @Test
     fun shouldRetryReturnsTrueForMainFrameWhenUnderMaxRetries() {
         val policy = NavigationRetryPolicy(maxRetries = 3)
