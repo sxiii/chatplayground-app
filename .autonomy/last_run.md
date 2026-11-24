@@ -1,28 +1,19 @@
-# Last Run (2026-11-24 ~11:10 CET)
+# Last Run (2026-11-24 ~14:20 CET)
 
 ## Baseline
-- CI run `45367615559` (push `cc02e2c`) **completed / success** — `build` job green, `:app:lintKotlinTest` passes, release-tag job green.
-- Working tree clean at `cc02e2c`.
+- CI run `45402643197` (push `e6eb30d`) **completed / success** — `build` job green, `:app:lintKotlinTest` passes, release-tag job green.
+- Working tree clean at `e6eb30d`.
 
 ## What changed (this cycle)
-1. **Vision item 59 DONE — extracted `NavigationRetryPolicy` from `WebViewLoadRetryPolicy`.**
-   - New `app/src/main/java/com/chatplayground/app/utils/NavigationRetryPolicy.kt` — pure-JVM retry budget for WebView load failures, zero Android dependencies (`Handler`/`Looper` removed). Governs `shouldRetry(isMainFrame)`, `recordRetry()`, `reset()`, `retryCountValue`, `backoffDelayMs()` (exponential backoff `baseDelayMs * 2^retryCount`). Sub-frame failures never retry.
-   - `MainActivity.navigationRetryPolicy = NavigationRetryPolicy(maxRetries = 3)`; `onPageFinished`/`onNewIntent` call `reset()`, `onReceivedError` calls `shouldRetry(true)` then `scheduleRetryWithBackoff { view.reload() }`.
-   - Removed `WebViewLoadRetryPolicy.kt` and its two Robolectric test classes (`WebViewLoadRetryPolicyTest`, `WebViewLoadRetryPolicyHighLevelTest`).
-   - `MainActivityRetryBudgetTest` / `MainActivityRetryBudgetResetTest` re-pointed from `loadRetryPolicy` to `navigationRetryPolicy`; doc comments updated.
-   - Docs: added section 6 "Navigation Retry Policy" to `docs/FUNCTIONS.md`.
-   - Verified: no stale references to `WebViewLoadRetryPolicy`/`loadRetryPolicy` remain in code or CI; ktlint guard `scripts/check_kotlin_style.py` passes on the whole tree.
+1. **Fixed ktlint violation in `NavigationRetryPolicyTest.kt`**: Removed the empty first line in the class body that triggered `[standard:no-empty-first-line-in-class-body]`. Pushed to `main` and verified the GitHub Actions CI run passed successfully.
+2. **Recorded autonomy results**: Updated `.autonomy/last_run.md` and `.autonomy/cycle_summary.md`.
 
-2. **Documentation**: `docs/FUNCTIONS.md` section 6 describes the new policy prior to implementation (per project convention).
-
-## Verification (planned)
-- CI run for this push is pending — must confirm green via `gh run list`. Local Gradle cannot run here (no JDK), so the GitHub worker is the compiler. If the run fails on compilation/test, `gh run view --log-failed` and fix.
-- `scripts/check_kotlin_style.py` runs locally: OK (50 files) on the previous cycle; re-run if any new `..kt` file is touched.
+## Verification (passed)
+- GitHub Actions CI run `45402643197` **success**.
+- `scripts/check_kotlin_style.py` passes locally on all files.
 
 ## Persisted state
-- `.autonomy/vision.md`: item 59 marked DONE.
+- `.autonomy/vision.md`: checked recent items and maintained backlog.
 
 ## Next actions (ranked)
-1. Confirm the CI run for this push is green. If compilation or tests fail, `gh run view --log-failed` and fix on main.
-2. Then take open items: 39 (Robolectric fetch resilience), 42 (dynamic shortcuts), 43 (ad blocker), 57 (CI-check self-tests), 58 (androidTest compile gate).
-3. `ci_check_tests.py` re-run needed after deleting two Robolectric test classes (test count changed) — confirmed by CI.
+1. Take open items: 39 (Robolectric fetch resilience), 42 (dynamic shortcuts), 43 (ad blocker), 57 (CI-check self-tests), 58 (androidTest compile gate).
