@@ -65,13 +65,20 @@ class CiCheckTestsGuardTest(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("No JUnit XML", result.stdout)
 
+    def test_fails_when_junit_results_directory_is_empty(self) -> None:
+        """The guard should fail when junit-results/ exists but contains no XML files."""
+        with tempfile.TemporaryDirectory() as tmp:
+            write_file(Path(tmp), "junit-results/.gitkeep", "")
+            result = run_guard(CI_CHECK_TESTS, Path(tmp))
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("No JUnit XML", result.stdout)
+
     def test_fails_when_a_suite_reports_a_failure(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             write_file(
                 Path(tmp),
                 "junit-results/TEST-Foo.xml",
-                '<testsuite name="Foo" tests="1" failures="1" errors="0">'
-                "</testsuite>",
+                '<testsuite name="Foo" tests="1" failures="1" errors="0"></testsuite>',
             )
             result = run_guard(CI_CHECK_TESTS, Path(tmp))
         self.assertNotEqual(result.returncode, 0, result.stdout)
@@ -82,8 +89,7 @@ class CiCheckTestsGuardTest(unittest.TestCase):
             write_file(
                 Path(tmp),
                 "junit-results/TEST-Foo.xml",
-                '<testsuite name="Foo" tests="1" failures="0" errors="1">'
-                "</testsuite>",
+                '<testsuite name="Foo" tests="1" failures="0" errors="1"></testsuite>',
             )
             result = run_guard(CI_CHECK_TESTS, Path(tmp))
         self.assertNotEqual(result.returncode, 0, result.stdout)
@@ -93,8 +99,7 @@ class CiCheckTestsGuardTest(unittest.TestCase):
             write_file(
                 Path(tmp),
                 "junit-results/TEST-Foo.xml",
-                '<testsuite name="Foo" tests="1" failures="0" errors="0">'
-                '<testcase name="works"/></testsuite>',
+                '<testsuite name="Foo" tests="1" failures="0" errors="0"><testcase name="works"/></testsuite>',
             )
             result = run_guard(CI_CHECK_TESTS, Path(tmp))
         self.assertEqual(result.returncode, 0, result.stdout)
