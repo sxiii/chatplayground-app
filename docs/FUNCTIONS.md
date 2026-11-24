@@ -27,6 +27,12 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`ci_check_robolectric_sdk.py`** — guard run in CI after `Check Unit Test Results` (and usable locally). It fails the build when the properties file is missing, when its `sdk` value is not exactly `26`, or when any test source under `app/src` still pins an SDK through `@Config(sdk = …)` / `@Config(minSdk = …)` / `@Config(maxSdk = …)`. The scan now covers `app/src` in full (both `test` and `androidTest` source sets) so a later-added instrumentation test cannot silently override the pinned SDK.
 - **Adding a test:** no annotation needed — inherit `sdk=26` from the properties file. If a case genuinely needs another API level, change the properties file (one place) rather than adding a class-level override, and update this section.
 
+### `autonomy/` guard (`ci_check_autonomy_dirs.py`)
+- **Purpose:** progress notes (`vision.md`, `last_run.md`, `cycle_summary.md`) have been written into `autonomy/` and `app/autonomy/` in the past, leaving three competing "latest" reports; canonical autonomy state lives only in `.autonomy/` at the repository root.
+- **Behaviour:** `ci_check_autonomy_dirs.py` walks the checkout (skipping `.git`, `.gradle`, `.idea`, `.cxx`, `tmp_artifacts` and any `build` directory) and fails with exit code 1 when it finds a directory named `autonomy` anywhere other than `.autonomy/` at the root. It also fails when `.autonomy/` itself is missing, since that would mean the canonical state directory was deleted or moved.
+- **CI placement:** runs right after `Verify Robolectric SDK Consistency`, before any Gradle work, so a stray notes directory fails the build instead of silently creating a second source of truth.
+- **Adding progress notes:** write only to `.autonomy/*.md`. See `.autonomy/README.md` for the canonical file roles.
+
 ### `app/build.gradle` (module build configuration)
 - **`buildFeatures.buildConfig = true`** — AGP 8 defaults `BuildConfig` generation off; the app reads `BuildConfig.DEBUG` for debug-only behaviour (WebView remote debugging), so the class must be generated.
 

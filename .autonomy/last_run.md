@@ -1,29 +1,27 @@
-# Last Run (2026-11-24 03:30 CET)
+# Last Run (2026-11-24 05:58 CET)
 
 ## Baseline
-- Previous GitHub Actions build `45313985123` succeeded (lint fix only).
-- Vision item 48 (captive-portal test coverage) was open.
+- CI run `45327633876` (HEAD `6426d6f`, the captive-portal cycle) **failed** on `Run lintKotlin`:
+  - `NetworkMonitorCapabilityChangeTest.kt:47` — `standard:function-signature` ("First line of body expression fits on same line as function signature").
+  - `NetworkMonitorCapabilityChangeTest.kt:158` — `standard:final-newline` ("File must end with a newline").
+- All prior steps (debug APK build, unit tests, lint, Robolectric SDK guard) were green.
+- Canonical autonomy state: `.autonomy/`; no stray `autonomy/` dirs present.
 
 ## What changed (this cycle)
-1. **Item 48 DONE — Captive-portal / unvalidated network test coverage**: Added `NetworkMonitorCaptivePortalTest.kt` with two cases:
-   - `reportsOfflineWhenNetworkHasInternetButNotValidated` — Wi-Fi with INTERNET capability but no VALIDATED capability must report offline (captive portal).
-   - `reportsOnlineWhenNetworkIsValidatedAndHasInternet` — Wi-Fi with both INTERNET and VALIDATED must report online.
-2. **Robolectric 4.18 API verification**: Iterated against the pinned tag's shadow sources:
-   - `ShadowConnectivityManager.setActiveNetworkInfo(NetworkInfo)` publishes an active Network keyed by type.
-   - `setNetworkCapabilities(Network, NetworkCapabilities)` keys capabilities by the exact Network instance returned by `getActiveNetwork()`.
-   - `NetworkCapabilities.addCapability(int)` is `@HiddenApi` and must be invoked via `Shadows.shadowOf(capabilities).addCapability(...)`.
-3. **Compilation & test pass**: 32 JUnit test suites passed in CI run `45317045855` (lint failed on the new file); after ktlint fixes, run `45318355620` was fully green. First attempt failed compilation (missing `NetworkInfo` import, `addCapability` unresolved), second failed ktlint only (`no-empty-first-line-in-class-body`, `final-newline`), both fixed.
-4. **ktlint compliance**: Removed blank first line in class body; ensured final newline.
+1. **Fixed the two ktlint violations in `NetworkMonitorCapabilityChangeTest.kt`**:
+   - Collapsed `registeredCallback()` signature + single-line body onto one line (function-signature rule).
+   - Added final trailing newline.
+2. **Cleaned `.gitignore`**: re-added `captures/`, `.cxx/` (previously removed in error), added `local.properties` (CI writes its own `sdk.dir`); untracked the committed `local.properties` (`git rm --cached`) so CI's per-run copy doesn't conflict.
+3. **Added `ci_check_autonomy_dirs.py` CI guard**: fails when `autonomy/` or `app/autonomy/` exists outside canonical `.autonomy/`, or when `.autonomy/` itself is missing; wired into `.github/workflows/build.yml` right after the Robolectric SDK guard, before any Gradle work.
+4. **Documented the guard** in `docs/FUNCTIONS.md`.
 
-## Verification
-- `ci_check_robolectric_sdk.py` guard passes (no per-class SDK pins reintroduced).
-- `lintKotlin` and `lintKotlinTest` pass.
-- All 32 JUnit XML result files show SUCCESS.
+## Verification (local)
+- `ci_check_robolectric_sdk.py` → OK.
+- `ci_check_autonomy_dirs.py` → passes with no stray dirs; fails on `autonomy/` and `app/autonomy/`; passes again once removed.
+- `local.properties` untracked; `git check-ignore` confirms it is now excluded.
+- Android build/local `./gradlew` cannot run here (no Java on this host) — verification is via GitHub workers only, per AUTONOMY.md.
 
 ## Next actions (ranked)
-1. Implement Item 49 (CI guard against stray `autonomy/` directories).
-2. Implement Item 51 (`NetworkMonitor.isConnected` stale on `onCapabilitiesChanged`).
-3. Implement Item 52 (`onUnavailable` handling in `observe()`).
-
-## Bounded cycle status
-One cycle executed successfully (vision item 48 completed, three new improvement suggestions added).
+1. Wait for CI run `45327633876` + this cycle's push result; if green, mark vision item 49 DONE in `.autonomy/vision.md`.
+2. Item 50: merge the overlapping offline tests (`NetworkMonitorTest.reportsOfflineWhenNoNetworkIsAvailable` / `NetworkMonitorLoadErrorTest`) into named cases.
+3. Item 51 / 52: already DONE this cycle per last report (capability-change + onUnavailable) — confirm they remain marked DONE.

@@ -79,6 +79,9 @@ jobs:
       - name: Verify Robolectric SDK Consistency
         run: python3 ci_check_robolectric_sdk.py
 
+      - name: Check Autonomy Directories
+        run: python3 ci_check_autonomy_dirs.py
+
       - name: Verify Dependencies
         run: |
           ./gradlew androidDependencies --stacktrace --console=plain

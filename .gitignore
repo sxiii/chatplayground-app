@@ -12,7 +12,11 @@ tmp_artifacts/
 .idea/
 *.iml
 *.hprof
+captures/
+.cxx/
 
-# Misc
+# Local machine SDK path (the CI workflow writes its own local.properties)
+local.properties
+
+# OS / misc
 .DS_Store
-.local.properties

@@ -44,8 +44,7 @@ class NetworkMonitorCapabilityChangeTest {
         shadowOf(cm).networkCallbacks.clear()
     }
 
-    private fun registeredCallback(): ConnectivityManager.NetworkCallback =
-        shadowOf(cm).networkCallbacks.single()
+    private fun registeredCallback(): ConnectivityManager.NetworkCallback = shadowOf(cm).networkCallbacks.single()
 
     @Test
     fun onCapabilitiesChangedReportsOfflineWhenValidationIsLost() {
