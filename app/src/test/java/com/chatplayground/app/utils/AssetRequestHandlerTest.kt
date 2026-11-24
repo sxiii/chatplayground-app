@@ -58,8 +58,8 @@ class AssetRequestHandlerTest {
 
     @Test
     fun assetPathForIgnoresQueryAndFragment() {
-        assertEquals("A query parameter does not change the asset path", AssetRequestHandler.assetPathFor("file:///android_asset/offline.html?v=1"))
-        assertEquals("A fragment does not change the asset path", AssetRequestHandler.assetPathFor("file:///android_asset/offline.html#top"))
+        assertEquals("offline.html", AssetRequestHandler.assetPathFor("file:///android_asset/offline.html?v=1"))
+        assertEquals("offline.html", AssetRequestHandler.assetPathFor("file:///android_asset/offline.html#top"))
     }
 
     @Test
