@@ -10,25 +10,34 @@ class GestureNavigationHandlerTest {
     private var forwardCount = 0
 
     /** Fake that always has history available and content scrollable. */
-    private val alwaysAvailableTarget = object : GestureNavigationTarget {
-        override fun canGoBack() = true
-        override fun canGoForward() = true
-        override fun canContentScrollHorizontally() = false
-    }
+    private val alwaysAvailableTarget =
+        object : GestureNavigationTarget {
+            override fun canGoBack() = true
+
+            override fun canGoForward() = true
+
+            override fun canContentScrollHorizontally() = false
+        }
 
     /** Fake that never has history available. */
-    private val noHistoryTarget = object : GestureNavigationTarget {
-        override fun canGoBack() = false
-        override fun canGoForward() = false
-        override fun canContentScrollHorizontally() = false
-    }
+    private val noHistoryTarget =
+        object : GestureNavigationTarget {
+            override fun canGoBack() = false
+
+            override fun canGoForward() = false
+
+            override fun canContentScrollHorizontally() = false
+        }
 
     /** Fake that reports content can scroll sideways. */
-    private val scrollableContentTarget = object : GestureNavigationTarget {
-        override fun canGoBack() = true
-        override fun canGoForward() = true
-        override fun canContentScrollHorizontally() = true
-    }
+    private val scrollableContentTarget =
+        object : GestureNavigationTarget {
+            override fun canGoBack() = true
+
+            override fun canGoForward() = true
+
+            override fun canContentScrollHorizontally() = true
+        }
 
     private fun handler(
         target: GestureNavigationTarget = alwaysAvailableTarget,
