@@ -1,22 +1,21 @@
 # Cycle Summary (2026-11-25)
 
 ## Objective
-Implement item 84 — WebView Ad Blocker / Content Filter using `shouldInterceptRequest`.
+Verify CI run `45640394689` (Download Completion Notifications, vision item 86) is green, record the cycle state in `.autonomy/`, and queue the next bounded cycle.
 
 ## Outcome
-✅ **Implemented** — New `ContentFilterRequestHandler.kt` (pure-JVM, plain-JUnit-testable) blocks known ad/tracker hosts (doubleclick.net, googlesyndication.com, google-analytics.com, facebook.net, googletagservices.com plus subdomains) via `WebViewClient.shouldInterceptRequest`, returning an empty response so they never reach the network. Wired into `MainActivity.shouldInterceptRequest` ahead of asset interception. Covered by `ContentFilterRequestHandlerTest` (null/blank, legit pass-through, ad domains, tracker domains, case-insensitivity, query/fragment, look-alike rejection). Local style guard passed.
+✅ **CI verified green** — run `45640394689`, full build + all tests + lint + ktlint + JaCoCo green on GitHub workers. Vision item 86 marked complete.
 
 ## What Changed
-1. **New** `app/src/main/java/com/chatplayground/app/utils/ContentFilterRequestHandler.kt` — host-based blocklist, case-insensitive, subdomains blocked, look-alikes not blocked.
-2. **New** `app/src/test/java/com/chatplayground/app/utils/ContentFilterRequestHandlerTest.kt` — 8 behavioral tests.
-3. **Edited** `app/src/main/java/com/chatplayground/app/MainActivity.kt` — imported handler, added `contentFilterResponse()`, wired into `shouldInterceptRequest`.
-4. **Edited** `.autonomy/vision.md` — marked items 82 and 84 complete.
+1. `.autonomy/ci_status.md` — latest green run = `45640394689`; recent runs table updated (failures `45631715949`, `45630272736`; successes `45640394689`, `45596800910`, `45594287201`); Next Actions updated.
+2. `.autonomy/vision.md` — item 86 marked complete; open items 90 (Port `DesktopModeHandler` to Kotlin Multiplatform) and 91 (integration tests for `DesktopModeHandler` with real WebView) added.
+3. `.autonomy/last_run.md` — written for this cycle.
+4. Commit `fd5958b` pushed directly to `main` (vision.md + ci_status.md only).
 
 ## How It Went Through CI
-- Local style guard (`scripts/check_kotlin_style.py`): PASSED on all 3 touched `.kt` files.
-- Commit `6258986` pushed directly to `main`; CI verdict pending.
-- Commit `23d4983` (vision.md docs only) pushed directly to `main`; CI verdict pending.
+- Run `45640394689`: green — no failures.
 
 ## Next Steps
-1. Verify GitHub Actions run for commit `6258986` is green.
-2. If green, pick the next open vision item (recommended: item 83 — Biometric Authentication lock, or item 85 — User-Agent Switcher for Desktop View).
+1. Verify GitHub Actions run for commit `fd5958b` is green.
+2. If green, pick the next open vision item — recommended item 90 (Port `DesktopModeHandler` to Kotlin Multiplatform) or item 83 (Biometric Authentication lock).
+3. Run `scripts/check_kotlin_style.py` locally before any `.kt` push.
