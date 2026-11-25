@@ -12,8 +12,9 @@ package com.chatplayground.app.utils
  * No Android dependencies: can be fully unit-tested with plain JUnit.
  */
 object ContentFilterRequestHandler {
-    private val BLOCKED_HOSTS = setOf(
-        "googleads.g.doubleclick.net",
+    private val BLOCKED_HOSTS =
+        setOf(
+            "googleads.g.doubleclick.net",
         "pagead2.googlesyndication.com",
         "securepubads.g.doubleclick.net",
         "tpc.googlesyndication.com",

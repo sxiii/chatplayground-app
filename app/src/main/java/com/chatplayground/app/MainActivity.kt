@@ -605,7 +605,6 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
         }
     }
 
-
     /** Selects the MIME type for a bundled asset by its file extension. */
     private fun mimeTypeFor(assetPath: String): String {
         return when (assetPath.substringAfterLast('.', "").lowercase()) {
