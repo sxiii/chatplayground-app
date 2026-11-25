@@ -34,6 +34,7 @@ import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import com.chatplayground.app.utils.AssetRequestHandler
+import com.chatplayground.app.utils.ContentFilterRequestHandler
 import com.chatplayground.app.utils.DataClearer
 import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.GestureNavigationHandler
@@ -557,33 +558,47 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
     }
 
     /**
-     * Serves a bundled asset (the offline fallback page and any other
-     * whitelisted asset) straight from the APK instead of letting the WebView
-     * go through its normal asset/resource loader.
-     *
-     * Returns `null` for every URL that is not a whitelisted bundled asset —
-     * remote URLs and unknown asset names keep loading normally.
-     */
-    @Suppress("DEPRECATION")
-    internal fun shouldInterceptRequest(
-        view: WebView?,
-        url: String?,
-    ): android.webkit.WebResourceResponse? {
-        val assetPath = AssetRequestHandler.assetPathFor(url) ?: return null
-        return try {
-            val inputStream = assets.open(assetPath)
-            android.webkit.WebResourceResponse(
-                mimeTypeFor(assetPath),
-                "UTF-8",
-                inputStream,
-            )
-        } catch (e: java.io.IOException) {
-            // The asset is whitelisted but missing from the APK — fall back to
-            // the WebView's normal loading path rather than crashing.
-            Log.w("MainActivity", "Failed to open bundled asset: $assetPath", e)
-            null
-        }
-    }
+     /** Serves a bundled asset (the offline fallback page and any other
+      * whitelisted asset) straight from the APK instead of letting the WebView
+      * go through its normal asset/resource loader.
+      *
+      * Returns `null` for every URL that is not a whitelisted bundled asset —
+      * remote URLs and unknown asset names keep loading normally.
+      */
+     @Suppress("DEPRECATION")
+     internal fun shouldInterceptRequest(
+         view: WebView?,
+         url: String?,
+     ): android.webkit.WebResourceResponse? {
+         // Block known ad/tracker hosts before anything else so they never
+         // reach the network.
+         contentFilterResponse(url)?.let { return it }
+         // Serve bundled assets first (offline page, etc.).
+         val assetPath = AssetRequestHandler.assetPathFor(url) ?: return null
+         return try {
+             val inputStream = assets.open(assetPath)
+             android.webkit.WebResourceResponse(
+                 mimeTypeFor(assetPath),
+                 "UTF-8",
+                 inputStream,
+             )
+         } catch (e: java.io.IOException) {
+             // The asset is whitelisted but missing from the APK — fall back to
+             // the WebView's normal loading path rather than crashing.
+             Log.w("MainActivity", "Failed to open bundled asset: $assetPath", e)
+             null
+         }
+     }
+
+     /** Blocks requests to known ad/tracker hosts by returning an empty
+      * response, so they never reach the network. Returns null when the URL is
+      * not blocked and should load normally. */
+     private fun contentFilterResponse(url: String?): android.webkit.WebResourceResponse? {
+         return if (ContentFilterRequestHandler.shouldIntercept(url)) {
+             android.webkit.WebResourceResponse("text/plain", "UTF-8", java.io.ByteArrayInputStream(byteArray()))
+         } else null
+     }
+
 
     /** Selects the MIME type for a bundled asset by its file extension. */
     private fun mimeTypeFor(assetPath: String): String {
