@@ -15,14 +15,14 @@ object ContentFilterRequestHandler {
     private val BLOCKED_HOSTS =
         setOf(
             "googleads.g.doubleclick.net",
-        "pagead2.googlesyndication.com",
-        "securepubads.g.doubleclick.net",
-        "tpc.googlesyndication.com",
-        "www.google-analytics.com",
-        "ssl.google-analytics.com",
-        "connect.facebook.net",
-        "www.googletagservices.com",
-    )
+            "pagead2.googlesyndication.com",
+            "securepubads.g.doubleclick.net",
+            "tpc.googlesyndication.com",
+            "www.google-analytics.com",
+            "ssl.google-analytics.com",
+            "connect.facebook.net",
+            "www.googletagservices.com",
+        )
 
     /**
      * Returns true when [url] points to a known ad/tracker host that the

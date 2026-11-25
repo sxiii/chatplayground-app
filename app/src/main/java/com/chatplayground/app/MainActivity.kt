@@ -590,9 +590,11 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
         }
     }
 
-    /** Blocks requests to known ad/tracker hosts by returning an empty
+    /**
+     * Blocks requests to known ad/tracker hosts by returning an empty
      * response, so they never reach the network. Returns null when the URL is
-     * not blocked and should load normally. */
+     * not blocked and should load normally.
+     */
     private fun contentFilterResponse(url: String?): android.webkit.WebResourceResponse? {
         return if (ContentFilterRequestHandler.shouldIntercept(url)) {
             android.webkit.WebResourceResponse(
