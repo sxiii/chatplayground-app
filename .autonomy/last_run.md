@@ -1,23 +1,27 @@
-# Last Run (2026-11-24)
+# Last Run (2026-11-25)
 
 ## Baseline
-- CI status: Run 45497016270 success (2026-11-24) — Custom User-Agent string verified green on GitHub workers
-- Working tree: clean
+- CI status: Run 45511203790 success (2026-11-24) — full build, all tests, lint, ktlint and JaCoCo green on GitHub workers
+- Working tree was clean before this cycle
 
 ## What Changed (this cycle)
-1. **Fixed ktlint `no-empty-first-line-in-class-body` violation** — Removed blank line after `class ClearAllDataTest {` in `ClearAllDataTest.kt`. Commit `938ca95`, CI run 45494173307 success.
-2. **Implemented Custom User-Agent string (vision item 63)** — `WebViewConfigurator.configure()` now sets `userAgentString = "ChatPlayground/1.0"`. Added test `WebViewConfiguratorTest.configureSetsCustomUserAgentString`. Documented in `docs/FUNCTIONS.md`. Commit `03c0438`, CI run 45497016270 success.
-3. **Implemented vision item 66 - Unify cache clearing** — Removed duplicate `action_clear_cache` menu item and `CacheClearer` utility class. The "Clear All Data" menu item now provides the unified operation covering cookies, cache, and SharedPreferences.
-4. **Updated `.autonomy/ci_status.md`** — Run 45453104814 → completed success; added runs 45494173307 and 45497016270.
-5. **Updated `.autonomy/cycle_summary.md`** — Recorded both CI runs as success.
-6. **Updated `.autonomy/vision.md`** — Marked item 63 as DONE with implementation details.
+1. **Documented AssetRequestHandler in docs/FUNCTIONS.md** BEFORE implementation (per project requirement: functions must be documented before code changes). Added section 6 covering `assetPathFor(url)`, `shouldIntercept(url)`, and `shouldInterceptRequest` wiring.
+2. **Implemented vision item 33 — Optimize WebView Asset Loading**:
+   - New `AssetRequestHandler.kt` (pure-JVM utility, zero Android deps): maps `file:///android_asset/<path>` URLs to whitelisted asset paths; rejects remote URLs, blank/malformed inputs, path traversal (`..`), subdirectory assets, and unknown names. Returns null for anything not whitelisted.
+   - New `AssetRequestHandlerTest.kt` (plain JUnit, no Robolectric): asserts null-for-null, null-for-blank, null-for-https/http, null-for-path-traversal/subdirs/non-whitelisted; correct path for whitelisted asset; query/fragment stripping works; `shouldIntercept` mirrors `assetPathFor`.
+   - `MainActivity.kt`: added `internal shouldInterceptRequest(WebView, String?)` that opens whitelisted assets from `assets/`, selecting MIME type by extension; catches IOException and falls back to null instead of crashing. Added `mimeTypeFor()` helper. Wired both WebResourceRequest and deprecated-string overloads onto the anonymous `WebViewClient`.
+3. **CI run history**: First push had missing import (`Unresolved reference: AssetRequestHandler`). Fix: added import. Second push had JUnit assertEquals arg-order bug (message-as-first-arg instead of expected). Fix: corrected args. Third push had ktlint violations (blank line after class body + argument-list-wrapping/max-line-length on long assert lines). Fix: reformatted test file. CI run 45511203790 succeeded after all three iterations.
+4. **Marked vision item 33 as DONE** in `.autonomy/vision.md`.
+5. **Updated `.autonomy/ci_status.md`** with run tracking.
+6. **No other vision items modified** in this cycle.
 
 ## Current CI Status
-- Run ID: 45497016270
+- Run ID: 45511203790
 - Status: success
-- Started/finished: 2026-11-24
+- Started/finished: 2026-11-24T23:35:04Z
 - Local CI guards: ALL PASSED
 
-## Next Actions (ranked)
-1. Review vision items 64, 65, 66 - already completed
-2. Continue with remaining open vision items
+## Next Actions
+1. Inspect remaining open vision items: 39 (test resilience), 40 (gesture nav), 42 (dynamic shortcuts), 43 (ad blocker), 44 (biometric lock)
+2. Pick next bounded item following TDD discipline
+3. Continue development cycles until backlog is meaningfully reduced
