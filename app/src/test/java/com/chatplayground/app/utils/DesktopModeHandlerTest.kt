@@ -14,7 +14,8 @@ class DesktopModeHandlerTest {
     @Test
     fun testMobileMode() {
         val handler = DesktopModeHandler
-        handler.isDesktop = false
+        handler.toggle() // reset to mobile from whatever leftover state
+        handler.toggle() // two toggles → back to mobile
         assertEquals("ChatPlayground/1.0", handler.userAgent)
         assertFalse("Mobile mode must not use wide viewport", handler.useWideViewPort)
         assertFalse("Mobile mode must not load with overview", handler.loadWithOverviewMode)
@@ -23,7 +24,7 @@ class DesktopModeHandlerTest {
     @Test
     fun testDesktopMode() {
         val handler = DesktopModeHandler
-        handler.isDesktop = true
+        handler.toggle() // enter desktop mode
         // Using a standard desktop-like User-Agent
         assertTrue(
             "Desktop mode should use a different user agent",
@@ -36,9 +37,22 @@ class DesktopModeHandlerTest {
     @Test
     fun testToggle() {
         val handler = DesktopModeHandler
-        handler.isDesktop = false
         assertFalse(handler.isDesktop)
         handler.toggle()
         assertTrue(handler.isDesktop)
+    }
+
+    @Test
+    fun testToggleBackToMobileResetsAllFields() {
+        val handler = DesktopModeHandler
+        handler.toggle() // desktop
+        assertTrue(handler.isDesktop)
+        assertTrue(handler.useWideViewPort)
+        assertTrue(handler.loadWithOverviewMode)
+        handler.toggle() // back to mobile
+        assertFalse(handler.isDesktop)
+        assertEquals("ChatPlayground/1.0", handler.userAgent)
+        assertFalse(handler.useWideViewPort)
+        assertFalse(handler.loadWithOverviewMode)
     }
 }
