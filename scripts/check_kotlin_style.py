@@ -43,14 +43,72 @@ def check(path: Path) -> list[str]:
         problems.append("standard:final-newline — file must end with a newline")
 
     text = raw.decode("utf-8", errors="replace")
-    for lineno, line in enumerate(text.splitlines(), start=1):
+    lines = text.splitlines()
+    for lineno, line in enumerate(lines, start=1):
         if line != line.rstrip():
             problems.append(f"standard:no-trailing-spaces — line {lineno} has trailing whitespace")
         stripped = line.lstrip(" ")
         if stripped.startswith("\t"):
             problems.append(f"standard:indent — line {lineno} indents with a tab")
 
+    problems.extend(
+        f"standard:multiline-expression-wrapping — line {ln}: {l}"
+        for ln, l in _multiline_expression_wrapping_violations(lines)
+    )
+
     return [f"{path}: {p}" for p in problems]
+
+
+def _multiline_expression_wrapping_violations(lines: list[str]) -> list[tuple[int, str]]:
+    """Flag assignments whose RHS is a multiline call starting mid-line.
+
+    ktlint `standard:multiline-expression-wrapping`: when an expression spans
+    multiple lines it must start on a new line, e.g.
+
+        BAD:  val urls = listOf(
+                  "https://example.com/a",
+              )
+        GOOD: val urls =
+                  listOf(
+                      "https://example.com/a",
+                  )
+
+    A plain-JVM heuristic: track paren/brace/bracket depth; when depth leaves
+    zero on a line that also contains `=` before the opening delimiter and the
+    expression closes on a later line, the call started mid-line — violation.
+    """
+    violations: list[tuple[int, str]] = []
+    depth = 0
+    in_expr = False
+    expr_start = 0
+    expr_start_line = ""
+    expr_has_assign_before = False
+    for lineno, raw in enumerate(lines, start=1):
+        line = raw.rstrip()
+        stripped = line.strip()
+        if not stripped or stripped.startswith("//"):
+            continue
+        prev = depth
+        for ch in stripped:
+            if ch in "({[":
+                depth += 1
+            elif ch in ")}]":
+                depth -= 1
+        if not in_expr and prev == 0 and depth > 0:
+            # expression begins on this line
+            in_expr = True
+            expr_start = lineno
+            expr_start_line = line
+            rhs_before_paren = stripped.split("(", 1)[0]
+            expr_has_assign_before = "=" in rhs_before_paren
+        elif in_expr and depth == 0:
+            if lineno > expr_start and expr_has_assign_before:
+                violations.append((expr_start, expr_start_line))
+            in_expr = False
+            expr_start = 0
+            expr_start_line = ""
+            expr_has_assign_before = False
+    return violations
 
 
 def main(argv: list[str]) -> int:

@@ -196,6 +196,18 @@ class KotlinStyleGuardTest(unittest.TestCase):
             result = self._check(tmp, "class Foo {\n\tval x = 1\n}\n")
         self.assertNotEqual(result.returncode, 0, result.stdout)
 
+    def test_fails_when_multiline_expression_starts_on_same_line(self) -> None:
+        """A multiline expression must start on a new line (ktlint standard:multiline-expression-wrapping)."""
+        with tempfile.TemporaryDirectory() as tmp:
+            result = self._check(tmp, "val urls = listOf(\n    \"https://example.com/a\",\n    \"https://example.com/b\",\n)\n")
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("multiline-expression", result.stdout.lower())
+
+    def test_passes_when_multiline_expression_starts_on_new_line(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = self._check(tmp, "val urls =\n    listOf(\n        \"https://example.com/a\",\n        \"https://example.com/b\",\n    )\n")
+        self.assertEqual(result.returncode, 0, result.stdout)
+
     def test_passes_when_file_is_clean(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             result = self._check(tmp, "class Foo {\n    val x = 1\n}\n")
