@@ -9,8 +9,9 @@ object DesktopModeHandler {
     private const val MOBILE_UA = "ChatPlayground/1.0"
 
     /** The desktop-like User-Agent string. */
-    private const val DESKTOP_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 ChatPlayground/1.0"
+    private const val DESKTOP_UA =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
+        "Chrome/120.0.0.0 Safari/537.36 ChatPlayground/1.0"
 
     var userAgent: String = MOBILE_UA
         set(value) {

@@ -19,6 +19,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_GLOBS = ("app/src/**/*.kt",)
 
+MAX_LINE_LENGTH = 140
+
 
 def collect_files(argv: list[str]) -> list[Path]:
     if argv:
@@ -55,6 +57,13 @@ def check(path: Path) -> list[str]:
         f"standard:multiline-expression-wrapping — line {ln}: {l}"
         for ln, l in _multiline_expression_wrapping_violations(lines)
     )
+
+    for lineno, line in enumerate(lines, start=1):
+        if len(line) > MAX_LINE_LENGTH:
+            problems.append(
+                f"standard:max-line-length — line {lineno} is {len(line)} chars "
+                f"(max {MAX_LINE_LENGTH})"
+            )
 
     return [f"{path}: {p}" for p in problems]
 
