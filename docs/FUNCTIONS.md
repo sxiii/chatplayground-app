@@ -137,4 +137,13 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`recordRetry()`**: Records that a retry was consumed (advances the count even if the retry itself fails).
 - **`reset()`**: Resets the retry counter to zero, e.g. after a page commits successfully.
 - **`backoffDelayMs(): Long`**: Exponential backoff delay for the next retry: `baseDelayMs * 2^retryCount`, delivered in milliseconds.
-- **`MainActivity.navigationRetryPolicy: NavigationRetryPolicy`**: `MainActivity` holds an instance (default `maxRetries = 3`) and delegates all retry-budget decisions to it — `onPageFinished` and `onNewIntent` call `reset()`, and `onReceivedError` calls `shouldRetry(true)` then schedules the reload via a main-thread `Handler` using `backoffDelayMs()`. The old `WebViewLoadRetryPolicy` (which coupled the budget to Android `Handler`/`Looper`) is removed; scheduling now lives in `MainActivity`.
+140. **`MainActivity.navigationRetryPolicy: NavigationRetryPolicy`**: `MainActivity` holds an instance (default `maxRetries = 3`) and delegates all retry-budget decisions to it — `onPageFinished` and `onNewIntent` call `reset()`, and `onReceivedError` calls `shouldRetry(true)` then schedules the reload via a main-thread `Handler` using `backoffDelayMs()`. The old `WebViewLoadRetryPolicy` (which coupled the budget to Android `Handler`/`Looper`) is removed; scheduling now lives in `MainActivity`.
+
+## 8. WebView Gesture Navigation (`GestureNavigationHandler`)
+
+- **`GestureNavigationHandler(onSwipeRight, onSwipeLeft, swipeThreshold, swipeVelocityThreshold)`**: Pure-JVM, zero-Android-dependency helper for detecting horizontal swipe gestures from raw movement coordinates. Lives in `app/src/main/java/com/chatplayground/app/utils/GestureNavigationHandler.kt` and is unit-testable with plain JUnit (no Robolectric, no `@Config`, no shadow plumbing).
+- **`handleFling(startX, startY, endX, endY, velocityX, velocityY): Boolean`**: Evaluates a fling gesture. When the horizontal displacement (`abs(diffX)`) exceeds the vertical displacement (`abs(diffY)`) and both `abs(diffX)` and `abs(velocityX)` exceed their respective thresholds:
+    - A rightward swipe (`diffX > 0`) triggers the `onSwipeRight` callback.
+    - A leftward swipe (`diffX < 0`) triggers the `onSwipeLeft` callback.
+    - Returns `true` if a swipe was detected and handled, `false` otherwise.
+- **`MainActivity.gestureNavigationHandler: GestureNavigationHandler`**: `MainActivity` holds an instance initialized with `webView.goBack()` and `webView.goForward()` callbacks. A `GestureDetector` (configured with `SimpleOnGestureListener` overriding `onFling`) delegates to the handler. The WebView's `OnTouchListener` forwards events to the detector, enabling native-like back/forward navigation gestures.

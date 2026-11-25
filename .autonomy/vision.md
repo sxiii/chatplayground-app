@@ -123,3 +123,13 @@ while keeping the main content in a WebView.
 64. **[x] [LOW] `app/src/androidTest/java/.../MainActivityTest.kt` is a Robolectric unit test, not an instrumentation test**: DONE 2026-11-24. No such file exists — only valid instrumentation test `SecureStorageInstrumentedTest.kt` remains in `app/src/androidTest/java/`.
 65. **[x] [LOW] Docs section 70 ("Custom Tab Warm-up &amp; Theming") claims behavior that was de-scoped**: DONE 2026-11-24. `docs/FUNCTIONS.md` §70 updated to match reality — no service binding; package stamping + toolbar theming remain implemented.
 66. **[x] [MEDIUM] Cache clearing duplicated across two menu items**: DONE 2026-11-24. Removed `action_clear_cache` menu item and `CacheClearer` utility class entirely. The "Clear All Data" menu item (`action_clear_all_data`) provides the unified operation via `DataClearer.clearAllData()` covering: offline cache, WebView cache + cookies (flushed), and SharedPreferences clearing. Removed `clearCacheMenuItemClearsCache` test from `MainActivityTest.kt`. Removed `CacheClearer.kt` and `CacheClearerTest.kt` duplicates. Acceptance met: one unified "Clear All Data" operation with full test coverage.
+
+67. **[ ] [LOW] Add Gesture Navigation for WebView Back/Forward** — Implement swipe gestures to navigate WebView's history stack (left-to-right swipe = back, right-to-left swipe = forward), providing native-like browsing experience without requiring on-screen buttons. Covered by a new unit test asserting gesture detection maps to `webView.goBack()`/`webView.goForward()`.
+
+68. **[ ] [MEDIUM] Implement WebView Ad Blocker / Content Filter using shouldInterceptRequest** — Extend `AssetRequestHandler` or add a new `ContentFilterRequestHandler` that intercepts known ad/tracker domains via `WebViewClient.shouldInterceptRequest` and returns empty responses, blocking unwanted content without client-side JS injection. Covered by unit tests asserting blocked and allowed URL patterns.
+
+69. **[ ] [LOW] Add User-Agent Switcher for Desktop View** — Implement `DesktopModeHandler` (with unit tests) allowing users to toggle between mobile and desktop User-Agent strings and configure WebView viewport settings (`useWideViewPort`, `loadWithOverviewMode`), allowing desktop site rendering when desired.
+
+70. **[ ] [LOW] Implement Download Completion Notifications** — Enhance `MainActivity` download handling to show user notifications upon download start/completion and handle `DownloadManager` completion broadcasts.
+
+71. **[ ] [MEDIUM] SSL Error Handling Policy** — Implement `onReceivedSslError` in `WebViewClient` with a secure default policy (cancel SSL connection, notify user/log) to prevent silent fallback or insecure connection handling.
