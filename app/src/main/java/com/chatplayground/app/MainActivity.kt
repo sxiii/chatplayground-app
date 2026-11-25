@@ -35,20 +35,25 @@ import com.chatplayground.app.utils.AssetRequestHandler
 import com.chatplayground.app.utils.DataClearer
 import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.GestureNavigationHandler
+import com.chatplayground.app.utils.GestureNavigationTarget
 import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.NavigationRetryPolicy
 import com.chatplayground.app.utils.UrlProvider
 import com.chatplayground.app.utils.WebViewConfigurator
 import com.chatplayground.app.utils.WebViewDebugging
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GestureNavigationTarget {
     internal lateinit var webView: WebView
     internal val navigationRetryPolicy = NavigationRetryPolicy(maxRetries = 3)
-    internal val gestureNavigationHandler =
-        GestureNavigationHandler(
-            onSwipeRight = { if (::webView.isInitialized) webView.goBack() },
-            onSwipeLeft = { if (::webView.isInitialized) webView.goForward() },
-        )
+    internal lateinit var gestureNavigationHandler =
+            GestureNavigationHandler(
+                target = this,
+                onSwipeRight = { if (::webView.isInitialized) webView.goBack() },
+                onSwipeLeft = { if (::webView.isInitialized) webView.goForward() },
+            )
+        internal fun canGoBack(): Boolean = webView.canGoBack()
+        internal fun canGoForward(): Boolean = webView.canGoForward()
+        internal fun canContentScrollHorizontally(): Boolean = false
     private lateinit var gestureDetector: GestureDetector
     private val retryHandler = Handler(Looper.getMainLooper())
     internal lateinit var networkMonitor: NetworkMonitor

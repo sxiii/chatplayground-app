@@ -9,8 +9,12 @@ import kotlin.math.abs
  * Robolectric, a MotionEvent or a live WebView. [onSwipeRight] maps to "back"
  * and [onSwipeLeft] maps to "forward", matching the direction a finger travels
  * when the page is dragged back to a previous document.
+ * [target] supplies the WebView capabilities the gesture must respect: a swipe
+ * is never taken from content that scrolls sideways, and never fires when the
+ * matching history entry does not exist.
  */
 class GestureNavigationHandler(
+    private val target: GestureNavigationTarget,
     private val onSwipeRight: () -> Unit,
     private val onSwipeLeft: () -> Unit,
     private val swipeThreshold: Int = DEFAULT_SWIPE_THRESHOLD,
@@ -43,9 +47,19 @@ class GestureNavigationHandler(
             return false
         }
 
+        if (target.canContentScrollHorizontally()) {
+            return false
+        }
+
         if (diffX > 0) {
+            if (!target.canGoBack()) {
+                return false
+            }
             onSwipeRight()
         } else {
+            if (!target.canGoForward()) {
+                return false
+            }
             onSwipeLeft()
         }
         return true

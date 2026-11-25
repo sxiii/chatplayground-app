@@ -136,5 +136,11 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (open)
 
-72. **[LOW] Pre-submit ktlint habit**: `.autonomy/last_run.md` must record that `scripts/check_kotlin_style.py` was run locally before every push touching `.kt` files (item 60 acceptance). This cycle's CI failure proved the value — make it mandatory.
+72. **[x] [LOW] Pre-submit ktlint habit**: Every push touching `.kt` files is preceded by a local `scripts/check_kotlin_style.py` run and recorded in `.autonomy/last_run.md`. DONE 2026-11-25.
 73. **[LOW] Add idempotent ktlint-fix step**: run `./gradlew :app:formatKotlin` locally before pushing to auto-correct trailing-comma and blank-line violations instead of burning CI worker round-trips.
+
+## Next Improvement Suggestions (2026-11-25, after the ktlint test-cleanup cycle)
+
+74. **[MEDIUM] Swipe-to-navigate fires even when it should not**: `MainActivity.dispatchTouchEvent` feeds every event to the `GestureDetector`, and `GestureNavigationHandler.handleFling` decides purely on distance/velocity/direction. Two real gaps: (a) a horizontal fling inside content that itself scrolls sideways (code blocks, carousels, swipeable message rows) still triggers `goBack()`/`goForward()`; (b) a swipe fires the callback even when the WebView has no back/forward history, so the gesture is a silent no-op instead of falling through to page content. Acceptance: guard with `webView.canScrollHorizontally(...)` and `canGoBack()`/`canGoForward()` before invoking history navigation; unit tests cover "content can scroll horizontally → not handled", "no back history → forward/back not invoked", and the existing happy paths stay green.
+
+75. **[LOW] `scripts/check_kotlin_style.py` rejects directories**: passing `app/src` exits 1 with `cannot read ([Errno 21] Is a directory)`, so the "run the guard across the tree before pushing" habit (item 72) can only be done by listing files by hand. Acceptance: the script accepts directories, walks them recursively for `*.kt`, and `scripts/test_ci_checks.py` gains a fixture asserting a directory argument checks its files instead of failing.

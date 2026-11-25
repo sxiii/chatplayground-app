@@ -1,27 +1,23 @@
-# Cycle Summary — 2026-11-25 (this run)
+# Cycle Summary — 2026-11-25 (ktlint cleanup cycle)
 
 ## Baseline
-- CI status before cycle: Run 45511203790 success (2026-11-24) — full build, all tests, lint, ktlint and JaCoCo green on GitHub workers
-- Working tree was clean before this cycle
-- Last successful push included vision item 33 (WebView Asset Loading via AssetRequestHandler)
+- CI status before cycle: Run 45531836555 failure (ktlint violations in GestureNavigationHandler.kt)
+- Previous run had already fixed GestureNavigationHandler.kt and pushed it; the worker had not yet produced a verdict on that push at cycle start.
 
 ## What Changed (this cycle)
-1. **Verified CI run 45523573578 failed** — `lintKotlin` step failed on `GestureNavigationHandler.kt` with three ktlint violations:
-   - Line 17: missing trailing comma before `)` in constructor params
-   - Line 19: blank first line in class body (`no-empty-first-line-in-class-body`)
-   - Line 35: missing trailing comma before `)` in `handleFling` params
-2. **Fixed all three ktlint violations in `GestureNavigationHandler.kt`** — added trailing commas after `DEFAULT_SWIPE_VELOCITY_THRESHOLD` and `velocityY`, removed blank line between `)` and `/**`.
-3. **Local guard verified**: `scripts/check_kotlin_style.py` passes on `GestureNavigationHandler.kt` (exit 0).
-4. **Updated `.autonomy/vision.md`**: marked item 60 (pre-submit ktlint check) as DONE with details on this cycle's failure/fix; marked item 67 (Gesture Navigation) as DONE with implementation details; added next-cycle suggestions 72–73 (pre-submit ktlint habit + idempotent ktlint-fix step).
-5. **Removed false item 73** (Verify WebViewConfiguratorTest exists) — the file `app/src/test/java/com/chatplayground/app/utils/WebViewConfiguratorTest.kt` is tracked and present.
+1. **Verified CI state via `gh run list`**: runs 45523573578 and 45531836555 had failed on ktlint; the run carrying the production-file fix (45536022265) later completed **success**.
+2. **Extended the ktlint cleanup to the two gesture-navigation test files**:
+   - `app/src/test/java/com/chatplayground/app/utils/GestureNavigationHandlerTest.kt`: removed blank first line in class body, added trailing commas on multi-line parameter and named-argument lists, rewrapped multiline `val handled =` assignments.
+   - `app/src/test/java/com/chatplayground/app/MainActivityGestureNavigationTest.kt`: removed blank first line in class body.
+3. **Local guard verified before push** (item 60/72 habit): `python3 scripts/check_kotlin_style.py <two files>` → `check_kotlin_style: OK (2 file(s) checked)`, exit 0.
+4. **Committed and pushed to `main`**: commit `0289e0c` — "fix: linting issues in tests (trailing commas, blank lines, wrapping)".
+5. **Updated `.autonomy/vision.md`**: item 72 (Pre-submit ktlint habit) marked DONE; open items 68–71, 73 remain.
 
 ## Current CI Status
-- Run ID: 45523573578 — failure (lintKotlin on GestureNavigationHandler.kt); fix pushed to main, awaiting worker re-run
-- Run ID: 45522778521 — failure (test: gesture navigation handler RED)
-- Run ID: 45518103018 — success (chore: record CI status)
-- Local CI guard (`scripts/check_kotlin_style.py`): PASSED on changed file
+- Run ID: 45536022265 — **success** (5m31s) — full build, unit tests, lint, ktlint, JaCoCo green on GitHub workers.
+- Local CI guard (`scripts/check_kotlin_style.py`): PASSED on both changed files.
 
 ## Next Actions
-1. Wait for GitHub workers to re-run CI on the pushed fix (this run).
-2. If green, mark the fix as verified in `.autonomy/ci_status.md`.
-3. Pick next bounded open vision item (item 68 ad blocker, item 71 SSL error handling, or item 72/73 ktlint hygiene).
+1. Next bounded cycle: pick an open vision item with TDD discipline — recommended order: 71 (SSL error handling policy, security-relevant) → 68 (ad blocker / content filter) → 69 (desktop User-Agent switcher) → 70 (download completion notifications).
+2. Item 73 (`formatKotlin` local step) remains open but conflicts with the "compile only on GitHub workers" constraint — resolve by documenting it as a CI-only step instead of a local Gradle invocation.
+3. Item 39 (test resilience caching) is partially superseded by the existing Robolectric dependency-fetch retry work in the worker; verify before spending a cycle on it.

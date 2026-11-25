@@ -1,22 +1,26 @@
 # Last Run (2026-11-25)
 
 ## Baseline
-- CI status: Run 45523573578 failure (2026-11-25) — ktlint violations in GestureNavigationHandler.kt
-- Working tree was clean before this cycle
+- CI status before cycle: Run 45531836555 failure — ktlint violations in GestureNavigationHandler.kt
+- Working tree clean before this cycle
+- Modified (uncommitted): GestureNavigationHandlerTest.kt, MainActivityGestureNavigationTest.kt — ktlint-style fixes
 
 ## What Changed (this cycle)
-1. **Fix ktlint violations in GestureNavigationHandler.kt**:
-   - Added missing trailing commas to `GestureNavigationHandler` constructor and `handleFling` parameters.
-   - Removed blank first line in `GestureNavigationHandler` class body.
-2. **Updated `.autonomy/vision.md`**: Marked item 67 (Gesture Navigation) as DONE, recorded ktlint violations, and added next-cycle improvement suggestions.
-3. **Verified locally**: `scripts/check_kotlin_style.py` passed after fixes.
+1. **Fixed ktlint violations in GestureNavigationHandlerTest.kt**:
+   - Removed blank first line in class body (`no-empty-first-line-in-class-body`)
+   - Added trailing commas on multi-line parameter/named-argument lists
+   - Rewrapped multiline `val handled =` expression assignments per standard wrapping rules
+2. **Fixed ktlint violation in MainActivityGestureNavigationTest.kt**:
+   - Removed blank first line in class body
+3. **Local guard verified**: `scripts/check_kotlin_style.py` passed on both files (exit 0)
+4. **Committed and pushed to `main`** (commit 0289e0c)
+5. **Updated `.autonomy/vision.md`**: marked item 72 (Pre-submit ktlint habit) as DONE
 
 ## Current CI Status
-- Run ID: 45523573578 (failure, 2026-11-25T01:09:08Z)
-- Status: failure (ktlint)
-- Local CI guards: ALL PASSED (post-fix)
+- Run ID: 45536022265 — **success** (full build, all tests, lint, ktlint, JaCoCo green on GitHub workers)
+- Run ID: 45531836555 — failure (previous cycle's ktlint, now resolved by this run)
+- Local CI guards: ALL PASSED
 
 ## Next Actions
-1. Push the fixes to `main` to clear the CI failure.
-2. Proceed with remaining open vision items: 39 (test resilience), 42 (dynamic shortcuts), 43 (ad blocker), 44 (biometric lock).
-3. Pick next bounded item following TDD discipline.
+1. Proceed with remaining open vision items: 39 (test resilience — caching/retry for transient network failures), 42 (dynamic shortcuts), 43 (ad blocker / content filter via shouldInterceptRequest), 44 (biometric lock)
+2. Record this cycle's outcome in `.autonomy/cycle_summary.md`
