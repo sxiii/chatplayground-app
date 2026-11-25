@@ -16,7 +16,6 @@ import org.robolectric.Shadows.shadowOf
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivityGestureNavigationTest {
-
     private fun activityWithHistory(): Pair<MainActivity, android.webkit.WebView> {
         val controller =
             Robolectric.buildActivity(MainActivity::class.java)
