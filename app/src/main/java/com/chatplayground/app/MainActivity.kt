@@ -45,15 +45,15 @@ import com.chatplayground.app.utils.WebViewDebugging
 class MainActivity : AppCompatActivity(), GestureNavigationTarget {
     internal lateinit var webView: WebView
     internal val navigationRetryPolicy = NavigationRetryPolicy(maxRetries = 3)
-    internal lateinit var gestureNavigationHandler =
+    internal var gestureNavigationHandler =
             GestureNavigationHandler(
                 target = this,
                 onSwipeRight = { if (::webView.isInitialized) webView.goBack() },
                 onSwipeLeft = { if (::webView.isInitialized) webView.goForward() },
             )
-        internal fun canGoBack(): Boolean = webView.canGoBack()
-        internal fun canGoForward(): Boolean = webView.canGoForward()
-        internal fun canContentScrollHorizontally(): Boolean = false
+    override fun canGoBack(): Boolean = webView.canGoBack()
+    override fun canGoForward(): Boolean = webView.canGoForward()
+    override fun canContentScrollHorizontally(): Boolean = false
     private lateinit var gestureDetector: GestureDetector
     private val retryHandler = Handler(Looper.getMainLooper())
     internal lateinit var networkMonitor: NetworkMonitor
