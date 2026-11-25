@@ -46,11 +46,12 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
     internal lateinit var webView: WebView
     internal val navigationRetryPolicy = NavigationRetryPolicy(maxRetries = 3)
     internal var gestureNavigationHandler =
-            GestureNavigationHandler(
-                target = this,
-                onSwipeRight = { if (::webView.isInitialized) webView.goBack() },
-                onSwipeLeft = { if (::webView.isInitialized) webView.goForward() },
-            )
+        GestureNavigationHandler(
+            target = this,
+            onSwipeRight = { if (::webView.isInitialized) webView.goBack() },
+            onSwipeLeft = { if (::webView.isInitialized) webView.goForward() },
+        )
+
     override fun canGoBack(): Boolean = webView.canGoBack()
     override fun canGoForward(): Boolean = webView.canGoForward()
     override fun canContentScrollHorizontally(): Boolean = false
