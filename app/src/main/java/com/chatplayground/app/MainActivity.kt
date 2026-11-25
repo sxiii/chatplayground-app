@@ -4,6 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.http.SslError
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -17,6 +18,7 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.SslErrorHandler
 import android.webkit.URLUtil
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -272,6 +274,25 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
                     val isMainFrame = request?.isForMainFrame() ?: true
 
                     this@MainActivity.handleWebViewError(view ?: return, code, isMainFrame)
+                }
+
+                override fun onReceivedSslError(
+                    view: WebView?,
+                    handler: SslErrorHandler?,
+                    error: android.net.http.SslError?,
+                ) {
+                    // Secure default policy: cancel the SSL connection on any
+                    // certificate error. Proceeding with an insecure connection
+                    // would expose the user to MITM attacks, so the handler is
+                    // never allowed to continue. The default WebViewClient
+                    // implementation proceeds (insecure), so super() is
+                    // deliberately NOT called. Log the error so failures are
+                    // diagnosable without weakening the security boundary.
+                    Log.w(
+                        "MainActivity",
+                        "SSL error (${error?.primaryError}) for ${error?.url} — cancelling connection",
+                    )
+                    handler?.cancel()
                 }
             }
         // Load the deep link that launched us when it is a ChatPlayground URL,
