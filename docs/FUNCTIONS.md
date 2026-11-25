@@ -115,6 +115,14 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`AppLock.authenticator: () -> Boolean`**: Injectable authenticator seam defaulting to deny-all so protected reads fail closed. Takes no Context so `AppLock` stays pure-JVM and unit-testable without Robolectric/Android; production wiring supplies a `BiometricPrompt`-backed lambda, unit tests substitute a fake.
 - **`AppLock.resetForTesting()`**: Clears the unlocked state so the lock re-engages; used only by tests.
 
+### App Lock Integration (`MainActivity`)
+- **Integration**: In `MainActivity.onCreate`, `webView.loadUrl` must be gated behind `AppLock.unlock()` when `AppLock.enabled` is `true`.
+- **Flow**:
+  1. Initialize `AppLock` with the production biometric authenticator (e.g., `BiometricPrompt`).
+  2. In `onCreate`, if `AppLock.enabled` is `false`, proceed to `loadUrl`.
+  3. If `AppLock.enabled` is `true`, initialize the WebView, but defer `loadUrl` until `AppLock.unlock()` returns `true`.
+  4. If `unlock()` returns `false`, the app remains locked and `loadUrl` is not called, leaving the user in the locked state until successful authentication or app restart.
+
 
 ### Deep Links (`DeepLinkResolver` + `AndroidManifest.xml`)
 - **`resolve(url: String?): String?`**: Maps an incoming `Intent` data URL onto the canonical in-app WebView URL, or returns `null` when the URL is not a ChatPlayground link. Rules: `http`/`https` URLs on `chatplayground.ai` or `www.chatplayground.ai` are accepted (scheme normalised to `https`, `www.` dropped, path/query/fragment preserved); the custom scheme `chatplayground://<host>/<path>` maps to `https://chatplayground.ai/<path>`; `null`, blank, look-alike hosts (e.g. `chatplayground.ai.evil.com`) and unknown schemes are rejected.

@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import com.chatplayground.app.security.AppLock
 import com.chatplayground.app.utils.AssetRequestHandler
 import com.chatplayground.app.utils.ContentFilterRequestHandler
 import com.chatplayground.app.utils.DataClearer
@@ -302,6 +303,10 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
             DeepLinkResolver.resolve(intent?.data?.toString())
                 ?: UrlProvider.getChatPlaygroundUrl()
         lastTargetUrl = startUrl
+        if (AppLock.isLocked()) {
+            Toast.makeText(this, "App is locked. Authenticate to proceed.", Toast.LENGTH_LONG).show()
+            return
+        }
         webView.loadUrl(startUrl)
 
         webView.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->

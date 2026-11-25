@@ -2,6 +2,7 @@ package com.chatplayground.app
 
 import android.webkit.WebResourceRequest
 import android.webkit.WebViewClient
+import com.chatplayground.app.security.AppLock
 import com.chatplayground.app.utils.UrlProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -336,5 +337,38 @@ class MainActivityTest {
 
         val dialog = org.robolectric.shadows.ShadowDialog.getLatestDialog()
         assertNotNull("Theme selection dialog should be shown", dialog)
+    }
+
+    @Test
+    fun appLockBlocksWebViewLoadUrlWhenLocked() {
+        AppLock.enabled = true
+        AppLock.authenticator = { false }
+        AppLock.resetForTesting()
+
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+
+        assertTrue("AppLock must be locked for this test", AppLock.isLocked())
+        assertEquals(
+            "WebView must not load any URL while the app is locked",
+            null,
+            shadowOf(activity.getWebView()).lastLoadedUrl,
+        )
+    }
+
+    @Test
+    fun appLockAllowsWebViewLoadUrlWhenUnlocked() {
+        AppLock.enabled = true
+        AppLock.authenticator = { true }
+        AppLock.unlock()
+
+        assertFalse("AppLock must be unlocked for this test", AppLock.isLocked())
+
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+
+        assertEquals(
+            "WebView must load the ChatPlayground URL when unlocked",
+            "https://chatplayground.ai",
+            shadowOf(activity.getWebView()).lastLoadedUrl,
+        )
     }
 }
