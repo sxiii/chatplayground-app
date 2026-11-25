@@ -11,8 +11,10 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
+import android.view.GestureDetector
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
@@ -32,6 +34,7 @@ import androidx.core.content.ContextCompat
 import com.chatplayground.app.utils.AssetRequestHandler
 import com.chatplayground.app.utils.DataClearer
 import com.chatplayground.app.utils.DeepLinkResolver
+import com.chatplayground.app.utils.GestureNavigationHandler
 import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.NavigationRetryPolicy
 import com.chatplayground.app.utils.UrlProvider
@@ -41,9 +44,27 @@ import com.chatplayground.app.utils.WebViewDebugging
 class MainActivity : AppCompatActivity() {
     internal lateinit var webView: WebView
     internal val navigationRetryPolicy = NavigationRetryPolicy(maxRetries = 3)
+    internal val gestureNavigationHandler =
+        GestureNavigationHandler(
+            onSwipeRight = { if (::webView.isInitialized) webView.goBack() },
+            onSwipeLeft = { if (::webView.isInitialized) webView.goForward() },
+        )
+    private lateinit var gestureDetector: GestureDetector
     private val retryHandler = Handler(Looper.getMainLooper())
     internal lateinit var networkMonitor: NetworkMonitor
     internal var lastTargetUrl: String = ""
+
+    /**
+     * Horizontal flings are routed to [gestureNavigationHandler] before the
+     * WebView sees the event. Every event is still dispatched normally, so
+     * taps, link clicks, text selection and vertical scrolling are unchanged.
+     */
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (::gestureDetector.isInitialized) {
+            gestureDetector.onTouchEvent(ev)
+        }
+        return super.dispatchTouchEvent(ev)
+    }
 
     /**
      * True when the current main-frame navigation ended in an error. The
@@ -93,6 +114,32 @@ class MainActivity : AppCompatActivity() {
                 }
             },
         )
+
+        // Right swipe = back, left swipe = forward, like a native browser. The
+        // detector only observes; `dispatchTouchEvent` still delivers every
+        // event to the WebView so page interaction is untouched.
+        gestureDetector =
+            GestureDetector(
+                this,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onFling(
+                        e1: MotionEvent?,
+                        e2: MotionEvent,
+                        velocityX: Float,
+                        velocityY: Float,
+                    ): Boolean {
+                        if (e1 == null) return false
+                        return gestureNavigationHandler.handleFling(
+                            startX = e1.x,
+                            startY = e1.y,
+                            endX = e2.x,
+                            endY = e2.y,
+                            velocityX = velocityX,
+                            velocityY = velocityY,
+                        )
+                    }
+                },
+            )
 
         webView.webChromeClient =
             object : WebChromeClient() {
