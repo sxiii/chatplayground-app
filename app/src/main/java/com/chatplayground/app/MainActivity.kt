@@ -595,7 +595,7 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
       * not blocked and should load normally. */
      private fun contentFilterResponse(url: String?): android.webkit.WebResourceResponse? {
          return if (ContentFilterRequestHandler.shouldIntercept(url)) {
-             android.webkit.WebResourceResponse("text/plain", "UTF-8", java.io.ByteArrayInputStream(emptyByteArray()))
+             android.webkit.WebResourceResponse("text/plain", "UTF-8", java.io.ByteArrayInputStream(ByteArray(0)))
          } else null
      }
 
