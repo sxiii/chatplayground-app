@@ -3,8 +3,8 @@ package com.chatplayground.app
 import android.net.http.SslError
 import android.webkit.SslErrorHandler
 import android.webkit.WebViewClient
-import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -41,7 +41,6 @@ class MainActivitySslErrorTest {
         val client = webView.webViewClient
 
         val handler = mockk<SslErrorHandler>(relaxed = true)
-        every { handler.proceed() } just Runs
         client.onReceivedSslError(webView, handler, sslError())
 
         verify { handler.cancel() }
