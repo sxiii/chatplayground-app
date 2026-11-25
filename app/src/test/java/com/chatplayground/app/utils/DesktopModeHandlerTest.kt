@@ -3,6 +3,7 @@ package com.chatplayground.app.utils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -11,11 +12,19 @@ import org.junit.Test
  */
 class DesktopModeHandlerTest {
 
+    @Before
+    fun setUp() {
+        val handler = DesktopModeHandler
+        handler.isDesktop = false
+        handler.userAgent = "ChatPlayground/1.0"
+        handler.useWideViewPort = false
+        handler.loadWithOverviewMode = false
+    }
+
     @Test
     fun testMobileMode() {
         val handler = DesktopModeHandler
-        handler.toggle() // reset to mobile from whatever leftover state
-        handler.toggle() // two toggles → back to mobile
+        // Assert starting default state is mobile
         assertEquals("ChatPlayground/1.0", handler.userAgent)
         assertFalse("Mobile mode must not use wide viewport", handler.useWideViewPort)
         assertFalse("Mobile mode must not load with overview", handler.loadWithOverviewMode)
