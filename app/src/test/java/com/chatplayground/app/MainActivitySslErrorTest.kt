@@ -1,7 +1,7 @@
 package com.chatplayground.app
 
+import android.net.http.SslError
 import android.webkit.SslErrorHandler
-import android.webkit.WebViewClient
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
@@ -18,8 +18,8 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivitySslErrorTest {
-    private fun sslError(): android.net.http.SslError {
-        return mockk<android.net.http.SslError>(relaxed = true)
+    private fun sslError(): SslError {
+        return mockk<SslError>(relaxed = true)
     }
 
     @Test
