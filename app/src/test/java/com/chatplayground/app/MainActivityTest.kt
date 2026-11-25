@@ -3,6 +3,7 @@ package com.chatplayground.app
 import android.webkit.WebResourceRequest
 import android.webkit.WebViewClient
 import com.chatplayground.app.security.AppLock
+import com.chatplayground.app.utils.DesktopModeHandler
 import com.chatplayground.app.utils.UrlProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -367,6 +368,33 @@ class MainActivityTest {
 
         assertEquals(
             "WebView must load the ChatPlayground URL when unlocked",
+            "https://chatplayground.ai",
+            shadowOf(activity.getWebView()).lastLoadedUrl,
+        )
+    }
+
+    @Test
+    fun toggleDesktopModeMenuItemSwitchesToDesktopModeAndReloads() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val menu = org.robolectric.fakes.RoboMenu(activity)
+        activity.onCreateOptionsMenu(menu)
+        val item = menu.findItem(R.id.action_toggle_desktop_mode)
+        val wasDesktop = DesktopModeHandler.isDesktop
+
+        val handled = activity.onOptionsItemSelected(item)
+
+        assertTrue("Toggle desktop mode action should be handled", handled)
+        assertTrue(
+            "Desktop mode should flip after toggle",
+            DesktopModeHandler.isDesktop != wasDesktop,
+        )
+        assertEquals(
+            "WebView User-Agent should follow DesktopModeHandler",
+            DesktopModeHandler.userAgent,
+            activity.getWebView().settings.userAgentString,
+        )
+        assertEquals(
+            "WebView should reload after desktop mode toggle",
             "https://chatplayground.ai",
             shadowOf(activity.getWebView()).lastLoadedUrl,
         )

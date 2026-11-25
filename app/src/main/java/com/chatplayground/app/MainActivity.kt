@@ -409,6 +409,14 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
                 showCookieManagementDialog()
                 true
             }
+            R.id.action_toggle_desktop_mode -> {
+                DesktopModeHandler.toggle()
+                DesktopModeHandler.applyTo(webView)
+                webView.reload()
+                val modeLabel = if (DesktopModeHandler.isDesktop) "Desktop" else "Mobile"
+                Toast.makeText(this, "Switched to $modeLabel mode", Toast.LENGTH_SHORT).show()
+                true
+            }
             R.id.action_about -> {
                 androidx.appcompat.app.AlertDialog.Builder(this)
                     .setTitle("About")
