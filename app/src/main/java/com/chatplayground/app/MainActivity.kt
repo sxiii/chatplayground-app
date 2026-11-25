@@ -53,10 +53,15 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
         )
 
     override fun canGoBack(): Boolean = webView.canGoBack()
+
     override fun canGoForward(): Boolean = webView.canGoForward()
+
     override fun canContentScrollHorizontally(): Boolean = false
+
     private lateinit var gestureDetector: GestureDetector
+
     private val retryHandler = Handler(Looper.getMainLooper())
+
     internal lateinit var networkMonitor: NetworkMonitor
     internal var lastTargetUrl: String = ""
 
