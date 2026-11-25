@@ -108,6 +108,14 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`authenticateWithBiometric(context, onSuccess, onFailure)`**: Displays a system biometric prompt (fingerprint/face) via `BiometricPrompt` and invokes [onSuccess] on successful authentication or [onFailure] on cancellation/error.
 - **`getStringWithBiometric(context, key)`**: Returns the decrypted value for [key] only after successful biometric authentication; returns `null` if authentication has not been performed or fails.
 
+### App Lock (`AppLock`) — startup gate for secure app access
+- **`AppLock.enabled: Boolean`**: Whether the startup lock is active. When `false`, `isLocked()` always returns `false` and `unlock()` returns `true` without consulting the authenticator.
+- **`AppLock.isLocked(): Boolean`**: `true` when the lock is enabled and no successful authentication has occurred since the process started; `false` otherwise. Callers gate content loading on this.
+- **`AppLock.unlock(): Boolean`**: Runs the injected authenticator. Returns `true` on success (and records the unlocked state so `isLocked()` becomes `false`); returns `false` and leaves the app locked when authentication is denied — fail closed. Returns `true` immediately when the lock is disabled.
+- **`AppLock.authenticator: BiometricAuthenticator`**: Injectable seam defaulting to a deny-all authenticator so protected reads fail closed. Production wiring supplies a `BiometricPrompt`-backed implementation; unit tests substitute a fake because `BiometricPrompt` cannot run under Robolectric.
+- **`AppLock.resetForTesting()`**: Clears the unlocked state so the lock re-engages; used only by tests.
+
+
 ### Deep Links (`DeepLinkResolver` + `AndroidManifest.xml`)
 - **`resolve(url: String?): String?`**: Maps an incoming `Intent` data URL onto the canonical in-app WebView URL, or returns `null` when the URL is not a ChatPlayground link. Rules: `http`/`https` URLs on `chatplayground.ai` or `www.chatplayground.ai` are accepted (scheme normalised to `https`, `www.` dropped, path/query/fragment preserved); the custom scheme `chatplayground://<host>/<path>` maps to `https://chatplayground.ai/<path>`; `null`, blank, look-alike hosts (e.g. `chatplayground.ai.evil.com`) and unknown schemes are rejected.
 - **`isDeepLink(url: String?): Boolean`**: Convenience predicate — `resolve(url) != null`.
