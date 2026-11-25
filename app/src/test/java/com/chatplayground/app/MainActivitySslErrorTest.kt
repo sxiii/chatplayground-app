@@ -22,13 +22,8 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class MainActivitySslErrorTest {
 
-    private fun sslError(code: Int = SslError.SSL_DATE_INVALID): SslError {
-        val cert = mockk<java.security.cert.X509Certificate>(relaxed = true)
-        return SslError(
-            code,
-            cert,
-            "https://chatplayground.ai",
-        )
+    private fun sslError(): SslError {
+        return mockk<SslError>(relaxed = true)
     }
 
     @Test
