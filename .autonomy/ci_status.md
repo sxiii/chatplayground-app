@@ -1,9 +1,12 @@
 # CI Status
 
 ## Current Run
-- **Run ID**: 45596800910 (completed, 2026-11-25T10:37:45Z+)
+- **Run ID**: 45597437868 (completed, 2026-11-25T10:41:47Z+)
 - **Status**: success
-- **Notes**: `feat(ci): add ktlint multiline-expression-wrapping self-test and guard` — added `standard:multiline-expression-wrapping` heuristic to `scripts/check_kotlin_style.py` plus two self-tests in `scripts/test_ci_checks.py`. Full build, all tests, lint, ktlint, JaCoCo green on GitHub workers.
+- **Notes**: `chore(autonomy): record CI green for ktlint guard cycle` — full build, all tests, lint, ktlint, JaCoCo green on GitHub workers.
+
+## Pending Work (not yet on CI)
+- `DesktopModeHandler.kt` + `DesktopModeHandlerTest.kt` added for vision item 85 (User-Agent Switcher / Desktop View). Committed but not yet verified on a GitHub worker run.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
