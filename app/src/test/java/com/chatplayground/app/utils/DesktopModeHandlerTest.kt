@@ -11,7 +11,6 @@ import org.junit.Test
  * and viewport setting mapping.
  */
 class DesktopModeHandlerTest {
-
     @Before
     fun setUp() {
         val handler = DesktopModeHandler
