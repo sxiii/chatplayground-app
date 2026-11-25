@@ -38,6 +38,7 @@ import com.chatplayground.app.utils.AssetRequestHandler
 import com.chatplayground.app.utils.ContentFilterRequestHandler
 import com.chatplayground.app.utils.DataClearer
 import com.chatplayground.app.utils.DeepLinkResolver
+import com.chatplayground.app.utils.DesktopModeHandler
 import com.chatplayground.app.utils.GestureNavigationHandler
 import com.chatplayground.app.utils.GestureNavigationTarget
 import com.chatplayground.app.utils.LinkRouter

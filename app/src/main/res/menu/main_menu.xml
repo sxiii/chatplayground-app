@@ -5,7 +5,10 @@
         android:id="@+id/action_external_browser"
         android:title="Open in Browser"
         app:showAsAction="never" />
-    
+    <item
+        android:id="@+id/action_toggle_desktop_mode"
+        android:title="Toggle Desktop Mode"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_clear_all_data"
         android:title="Clear All Data"
