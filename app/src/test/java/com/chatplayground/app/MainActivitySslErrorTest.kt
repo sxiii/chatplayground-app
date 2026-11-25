@@ -3,6 +3,8 @@ package com.chatplayground.app
 import android.net.http.SslError
 import android.webkit.SslErrorHandler
 import android.webkit.WebViewClient
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -19,20 +21,6 @@ import org.robolectric.RobolectricTestRunner
  */
 @RunWith(RobolectricTestRunner::class)
 class MainActivitySslErrorTest {
-
-    /** A recording [SslErrorHandler] double that remembers which action was taken. */
-    private class RecordingSslErrorHandler : SslErrorHandler() {
-        var proceedCalled = false
-        var cancelCalled = false
-
-        override fun proceed() {
-            proceedCalled = true
-        }
-
-        override fun cancel() {
-            cancelCalled = true
-        }
-    }
 
     private fun sslError(code: Int = SslError.SSL_DATE_INVALID): SslError {
         val cert = java.security.cert.CertificateFactory.getInstance("X.509")
@@ -52,16 +40,11 @@ class MainActivitySslErrorTest {
         val webView = activity.getWebView()
         val client = webView.webViewClient
 
-        val handler = RecordingSslErrorHandler()
+        val handler = mockk<SslErrorHandler>(relaxed = true)
+        every { handler.proceed() } just Runs
         client.onReceivedSslError(webView, handler, sslError())
 
-        assertTrue(
-            "SSL error policy must cancel the connection on any SSL error",
-            handler.cancelCalled,
-        )
-        assertFalse(
-            "SSL error policy must NEVER proceed with an insecure connection",
-            handler.proceedCalled,
-        )
+        verify { handler.cancel() }
+        verify(exactly = 0) { handler.proceed() }
     }
 }

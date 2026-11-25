@@ -132,7 +132,7 @@ while keeping the main content in a WebView.
 
 70. **[ ] [LOW] Implement Download Completion Notifications** — Enhance `MainActivity` download handling to show user notifications upon download start/completion and handle `DownloadManager` completion broadcasts.
 
-71. **[ ] [MEDIUM] SSL Error Handling Policy** — Implement `onReceivedSslError` in `WebViewClient` with a secure default policy (cancel SSL connection, notify user/log) to prevent silent fallback or insecure connection handling.
+71. **[x] [MEDIUM] SSL Error Handling Policy** — DONE 2026-11-25. `MainActivity`'s `WebViewClient` now overrides `onReceivedSslError(view, handler, error)` with a secure default policy: the connection is **cancelled** on any certificate error and `proceed()` is never called. The default `WebViewClient` implementation proceeds (insecure), so `super.onReceivedSslError(...)` is deliberately *not* called — calling it would silently re-enable the MITM exposure the override exists to prevent. The error is logged at warn level (`MainActivity`, with the primary error code and URL) so failures are diagnosable without weakening the security boundary. Covered by `MainActivitySslErrorTest.sslErrorPolicyCancelsConnectionAndNeverProceeds`, which drives the real `WebViewClient` callback with a recording `SslErrorHandler` double and asserts `cancel()` was called and `proceed()` was not. Commit `6dc43a5`.
 
 ## Next Improvement Suggestions (open)
 
@@ -154,3 +154,6 @@ while keeping the main content in a WebView.
 78. **[LOW] `docs/FUNCTIONS.md` §8 now describes behavior that only works in unit tests**: the section claims the gesture "is never taken from content that scrolls sideways", but per item 76 the real `MainActivity` always reports `false`. Acceptance: once item 76 lands, the docs must describe the directional/positional check accurately; until then the docs must not overstate the shipped behavior.
 
 79. **[LOW] `GestureNavigationHandler` has no `onFling` entry point of its own — the policy is split across two classes**: `MainActivity` holds a `GestureDetector` with an `SimpleOnGestureListener` that extracts the coordinates/velocity and calls `handleFling`, while `handleFling` holds the decision policy. Acceptance: either move the `GestureDetector` wiring into `GestureNavigationHandler` (so the policy is one unit) or document the split in `docs/FUNCTIONS.md` §8; the current state has no test asserting the velocity/distance thresholds are read from the same source in both places.
+
+80. **[MEDIUM] Add Roboelectric test for `MainActivity` menu actions and data clearing**: Verify that clicking \"Clear All Data\" correctly invokes `DataClearer` and clears cookies/cache/SharedPreferences end-to-end.
+81. **[LOW] Add automated integration test for `WebViewConfigurator` headers and settings**: Ensure custom User-Agent and security settings are correctly populated on every created WebView instance.

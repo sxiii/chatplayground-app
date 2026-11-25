@@ -1,26 +1,22 @@
 # Last Run (2026-11-25)
 
 ## Baseline
-- CI status before cycle: Run 45531836555 failure — ktlint violations in GestureNavigationHandler.kt
-- Working tree clean before this cycle
-- Modified (uncommitted): GestureNavigationHandlerTest.kt, MainActivityGestureNavigationTest.kt — ktlint-style fixes
+- CI status before cycle: Run 45553771941 — **failure** on commit `6dc43a5`: `Run Unit Tests` failed to compile `MainActivitySslErrorTest.kt` (`Cannot access '<init>': it is package-private in 'SslErrorHandler'`).
+- Working tree carried uncommitted `.autonomy/` edits from the previous cycle (cycle_summary/last_run/vision) — committed with this cycle.
 
 ## What Changed (this cycle)
-1. **Fixed ktlint violations in GestureNavigationHandlerTest.kt**:
-   - Removed blank first line in class body (`no-empty-first-line-in-class-body`)
-   - Added trailing commas on multi-line parameter/named-argument lists
-   - Rewrapped multiline `val handled =` expression assignments per standard wrapping rules
-2. **Fixed ktlint violation in MainActivityGestureNavigationTest.kt**:
-   - Removed blank first line in class body
-3. **Local guard verified**: `scripts/check_kotlin_style.py` passed on both files (exit 0)
-4. **Committed and pushed to `main`** (commit 0289e0c)
-5. **Updated `.autonomy/vision.md`**: marked item 72 (Pre-submit ktlint habit) as DONE
+1. **Fixed the item-71 test compile failure** (recovery of unfinished work, per AUTONOMY.md step 2):
+   - `SslErrorHandler` has a package-private constructor, so the test's `RecordingSslErrorHandler : SslErrorHandler()` subclass could never compile on the worker. Replaced it with a MockK double (`mockk<SslErrorHandler>(relaxed = true)`), asserting `verify { handler.cancel() }` and `verify(exactly = 0) { handler.proceed() }`.
+   - Added `testImplementation 'io.mockk:mockk:1.13.9'` to `app/build.gradle`.
+   - Production code unchanged — `MainActivity.onReceivedSslError` already cancels and never calls `proceed()`/`super`.
+2. **Added vision items 80 and 81** (new improvement suggestions) to `.autonomy/vision.md`.
+3. **Local guards verified**: `scripts/check_kotlin_style.py` (after auto-fixing `app/build.gradle` trailing whitespace/newline), `ci_check_robolectric_sdk.py`, `ci_check_autonomy_dirs.py` all pass.
+4. **Committed and pushed to `main`**.
 
 ## Current CI Status
-- Run ID: 45536022265 — **success** (full build, all tests, lint, ktlint, JaCoCo green on GitHub workers)
-- Run ID: 45531836555 — failure (previous cycle's ktlint, now resolved by this run)
-- Local CI guards: ALL PASSED
+- Pushed the test fix directly to `main`. Awaiting the GitHub Actions verdict for this commit.
+- Previous run (45553771941) failed only at `Run Unit Tests` (Kotlin compile); every earlier step (debug APK, androidTest assemble) passed.
 
 ## Next Actions
-1. Proceed with remaining open vision items: 39 (test resilience — caching/retry for transient network failures), 42 (dynamic shortcuts), 43 (ad blocker / content filter via shouldInterceptRequest), 44 (biometric lock)
-2. Record this cycle's outcome in `.autonomy/cycle_summary.md`
+1. Monitor CI for the new commit; if `Run Unit Tests` fails again, read `gh run view <id> --log-failed` before changing anything.
+2. Next bounded cycle per AUTONOMY.md: pick open vision item (recommended: 68 — ad blocker / content filter using `shouldInterceptRequest`, or item 76 — gestural scroll guard fix).
