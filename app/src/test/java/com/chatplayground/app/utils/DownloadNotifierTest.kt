@@ -7,8 +7,7 @@ import org.junit.Test
 class DownloadNotifierTest {
     @Test
     fun downloadStartedReturnsStartNotification() {
-        val notifier = DownloadNotifier()
-        val (title, body) = notifier.downloadStarted("report.pdf")
+        val (title, body) = DownloadNotifier.downloadStarted("report.pdf")
 
         assertEquals("Download started", title)
         assertTrue("Body should name the file", body.contains("report.pdf"))
@@ -17,8 +16,7 @@ class DownloadNotifierTest {
 
     @Test
     fun downloadCompletedReturnsCompletionNotification() {
-        val notifier = DownloadNotifier()
-        val (title, body) = notifier.downloadCompleted("report.pdf")
+        val (title, body) = DownloadNotifier.downloadCompleted("report.pdf")
 
         assertEquals("Download complete", title)
         assertTrue("Body should name the file", body.contains("report.pdf"))
@@ -27,16 +25,14 @@ class DownloadNotifierTest {
 
     @Test
     fun downloadStartedBodyIncludesFileSizeWhenKnown() {
-        val notifier = DownloadNotifier()
-        val (_, body) = notifier.downloadStarted("image.png", totalBytes = 1_048_576)
+        val (_, body) = DownloadNotifier.downloadStarted("image.png", totalBytes = 1_048_576)
 
         assertTrue("Body should include file size when known", body.contains("1 MB"))
     }
 
     @Test
     fun downloadStartedOmitsFileSizeWhenUnknown() {
-        val notifier = DownloadNotifier()
-        val (_, body) = notifier.downloadStarted("file.bin")
+        val (_, body) = DownloadNotifier.downloadStarted("file.bin")
 
         assertTrue("Body should not contain a size placeholder when unknown", !body.contains("MB"))
     }
