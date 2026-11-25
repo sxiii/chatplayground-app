@@ -558,13 +558,13 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
     }
 
     /**
-     /** Serves a bundled asset (the offline fallback page and any other
-      * whitelisted asset) straight from the APK instead of letting the WebView
-      * go through its normal asset/resource loader.
-      *
-      * Returns `null` for every URL that is not a whitelisted bundled asset —
-      * remote URLs and unknown asset names keep loading normally.
-      */
+     * Serves a bundled asset (the offline fallback page and any other
+     * whitelisted asset) straight from the APK instead of letting the WebView
+     * go through its normal asset/resource loader.
+     *
+     * Returns `null` for every URL that is not a whitelisted bundled asset —
+     * remote URLs and unknown asset names keep loading normally.
+     */
      @Suppress("DEPRECATION")
      internal fun shouldInterceptRequest(
          view: WebView?,

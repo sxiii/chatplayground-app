@@ -33,7 +33,7 @@ object ContentFilterRequestHandler {
 
         val schemeEnd = url.indexOf("://")
         val hostStart = if (schemeEnd != -1) schemeEnd + 3 else 0
-        val pathStart = url.indexOfAny(arrayOf('/', '?', '#'), hostStart)
+        val pathStart = url.indexOfAny(charArrayOf('/', '?', '#'), hostStart)
         val host = if (pathStart != -1) url.substring(hostStart, pathStart) else url.substring(hostStart)
 
         return BLOCKED_HOSTS.any { blocked ->
