@@ -14,9 +14,8 @@ class GestureNavigationHandler(
     private val onSwipeRight: () -> Unit,
     private val onSwipeLeft: () -> Unit,
     private val swipeThreshold: Int = DEFAULT_SWIPE_THRESHOLD,
-    private val swipeVelocityThreshold: Int = DEFAULT_SWIPE_VELOCITY_THRESHOLD
+    private val swipeVelocityThreshold: Int = DEFAULT_SWIPE_VELOCITY_THRESHOLD,
 ) {
-
     /**
      * Evaluates one fling.
      *
@@ -32,7 +31,7 @@ class GestureNavigationHandler(
         endX: Float,
         endY: Float,
         velocityX: Float,
-        velocityY: Float
+        velocityY: Float,
     ): Boolean {
         val diffX = endX - startX
         val diffY = endY - startY
