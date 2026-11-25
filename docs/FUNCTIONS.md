@@ -112,7 +112,7 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`AppLock.enabled: Boolean`**: Whether the startup lock is active. When `false`, `isLocked()` always returns `false` and `unlock()` returns `true` without consulting the authenticator.
 - **`AppLock.isLocked(): Boolean`**: `true` when the lock is enabled and no successful authentication has occurred since the process started; `false` otherwise. Callers gate content loading on this.
 - **`AppLock.unlock(): Boolean`**: Runs the injected authenticator. Returns `true` on success (and records the unlocked state so `isLocked()` becomes `false`); returns `false` and leaves the app locked when authentication is denied — fail closed. Returns `true` immediately when the lock is disabled.
-- **`AppLock.authenticator: BiometricAuthenticator`**: Injectable seam defaulting to a deny-all authenticator so protected reads fail closed. Production wiring supplies a `BiometricPrompt`-backed implementation; unit tests substitute a fake because `BiometricPrompt` cannot run under Robolectric.
+- **`AppLock.authenticator: () -> Boolean`**: Injectable authenticator seam defaulting to deny-all so protected reads fail closed. Takes no Context so `AppLock` stays pure-JVM and unit-testable without Robolectric/Android; production wiring supplies a `BiometricPrompt`-backed lambda, unit tests substitute a fake.
 - **`AppLock.resetForTesting()`**: Clears the unlocked state so the lock re-engages; used only by tests.
 
 

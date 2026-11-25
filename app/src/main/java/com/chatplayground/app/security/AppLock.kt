@@ -22,8 +22,13 @@ object AppLock {
     /** True when the lock is enabled and no successful unlock has occurred yet. */
     @Volatile private var unlocked: Boolean = false
 
-    /** Injectable authenticator seam; deny-all by default (fail closed). */
-    @Volatile var authenticator: BiometricAuthenticator = BiometricAuthenticator { false }
+    /**
+     * Injectable authenticator seam; deny-all by default (fail closed).
+     * Takes no Context so [AppLock] stays pure-JVM and unit-testable without
+     * Robolectric / Android. Production wiring supplies a BiometricPrompt-backed
+     * lambda; tests substitute a fake.
+     */
+    @Volatile var authenticator: () -> Boolean = { false }
 
     /** Returns true when the app's content is locked (blocked from rendering). */
     fun isLocked(): Boolean = enabled && !unlocked
@@ -39,7 +44,7 @@ object AppLock {
             unlocked = false
             return true
         }
-        val success = authenticator.authenticate(/* context */ null)
+        val success = authenticator()
         if (success) unlocked = true
         return success
     }

@@ -14,8 +14,9 @@ import org.junit.Test
 class AppLockTest {
     @Before
     fun setUp() {
-        AppLock.authenticator = BiometricAuthenticator { false }
+        AppLock.authenticator = { false }
         AppLock.enabled = false
+        AppLock.resetForTesting()
     }
 
     @Test
@@ -27,21 +28,21 @@ class AppLockTest {
     @Test
     fun isLockedReturnsFalseWhenLockDisabledEvenIfAuthenticatorDenies() {
         AppLock.enabled = false
-        AppLock.authenticator = BiometricAuthenticator { false }
+        AppLock.authenticator = { false }
         assertFalse(AppLock.isLocked())
     }
 
     @Test
     fun isLockedReturnsTrueWhenLockEnabledAndNoPriorAuthentication() {
         AppLock.enabled = true
-        AppLock.authenticator = BiometricAuthenticator { false }
+        AppLock.authenticator = { false }
         assertTrue("Lock enabled with no prior unlock must block content", AppLock.isLocked())
     }
 
     @Test
     fun unlockSucceedsWhenAuthenticatorReturnsTrue() {
         AppLock.enabled = true
-        AppLock.authenticator = BiometricAuthenticator { true }
+        AppLock.authenticator = { true }
         assertTrue("unlock() must return true when biometric auth succeeds", AppLock.unlock())
         assertFalse("After a successful unlock the app must be unlocked", AppLock.isLocked())
     }
@@ -49,7 +50,7 @@ class AppLockTest {
     @Test
     fun unlockFailsClosedWhenAuthenticatorReturnsFalse() {
         AppLock.enabled = true
-        AppLock.authenticator = BiometricAuthenticator { false }
+        AppLock.authenticator = { false }
         assertFalse("unlock() must return false when biometric auth is denied", AppLock.unlock())
         assertTrue("A failed unlock must leave the app locked", AppLock.isLocked())
     }
@@ -57,7 +58,7 @@ class AppLockTest {
     @Test
     fun unlockIsNoOpWhenLockDisabled() {
         AppLock.enabled = false
-        AppLock.authenticator = BiometricAuthenticator { false }
+        AppLock.authenticator = { false }
         // When the lock is disabled, unlock() must not even consult the
         // authenticator — and must report success so callers can proceed.
         assertTrue(AppLock.unlock())
@@ -67,7 +68,7 @@ class AppLockTest {
     @Test
     fun resetForTestingClearsUnlockedState() {
         AppLock.enabled = true
-        AppLock.authenticator = BiometricAuthenticator { true }
+        AppLock.authenticator = { true }
         AppLock.unlock()
         assertFalse(AppLock.isLocked())
         AppLock.resetForTesting()
