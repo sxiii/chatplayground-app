@@ -42,12 +42,13 @@ class ContentFilterRequestHandlerTest {
 
     @Test
     fun shouldInterceptReturnsTrueForKnownAdDomains() {
-        val adUrls = listOf(
-            "https://googleads.g.doubleclick.net/pagead/ad",
-            "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
-            "https://securepubads.g.doubleclick.net/gampad/ads",
-            "https://tpc.googlesyndication.com/sodar/sodar2/224/runner.html",
-        )
+        val adUrls =
+            listOf(
+                "https://googleads.g.doubleclick.net/pagead/ad",
+                "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+                "https://securepubads.g.doubleclick.net/gampad/ads",
+                "https://tpc.googlesyndication.com/sodar/sodar2/224/runner.html",
+            )
         adUrls.forEach { url ->
             assertTrue(
                 "$url must be blocked by the content filter",
@@ -58,12 +59,13 @@ class ContentFilterRequestHandlerTest {
 
     @Test
     fun shouldInterceptReturnsTrueForKnownTrackerDomains() {
-        val trackerUrls = listOf(
-            "https://www.google-analytics.com/analytics.js",
-            "https://ssl.google-analytics.com/collect",
-            "https://connect.facebook.net/en_US/fbevents.js",
-            "https://www.googletagservices.com/tag/js/gpt.js",
-        )
+        val trackerUrls =
+            listOf(
+                "https://www.google-analytics.com/analytics.js",
+                "https://ssl.google-analytics.com/collect",
+                "https://connect.facebook.net/en_US/fbevents.js",
+                "https://www.googletagservices.com/tag/js/gpt.js",
+            )
         trackerUrls.forEach { url ->
             assertTrue(
                 "$url must be blocked by the content filter",
