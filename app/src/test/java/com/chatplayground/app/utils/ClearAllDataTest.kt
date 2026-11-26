@@ -5,6 +5,7 @@ import android.webkit.CookieManager
 import android.webkit.WebView
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -87,5 +88,21 @@ class ClearAllDataTest {
         assertEquals("app_data should be cleared", null, appDataPrefs.getString("app_key", null))
         assertEquals("desktop_mode_prefs should be cleared", false, desktopModePrefs.getBoolean("desktop_mode", false))
         assertEquals("theme_prefs should be cleared", 0, themePrefs.getInt("theme_mode", 0))
+    }
+
+    @Test
+    fun clearAllDataResetsDesktopModeHandlerState() {
+        context = ApplicationProvider.getApplicationContext()
+        val webView = WebView(context)
+
+        // Arrange: set desktop mode in-memory state to true
+        DesktopModeHandler.applyDesktopMode(true)
+        assertTrue(DesktopModeHandler.isDesktop)
+
+        // Act: Clear all data
+        DataClearer.clearAllData(context, webView)
+
+        // Assert: DesktopModeHandler in-memory state is reset to false
+        assertFalse(DesktopModeHandler.isDesktop)
     }
 }

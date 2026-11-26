@@ -35,5 +35,8 @@ object DataClearer {
         for (prefFile in PREF_FILES) {
             context.getSharedPreferences(prefFile, Context.MODE_PRIVATE).edit().clear().apply()
         }
+
+        // Reset in-memory desktop-mode state so it matches the cleared storage
+        DesktopModeHandler.applyDesktopMode(false)
     }
 }
