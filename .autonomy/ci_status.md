@@ -10,12 +10,13 @@
 - Verified GHA build: Run `45767719301` returned absolute success (all compiles, checks, and unit tests passed).
 
 ## Recent CI Runs
-| Run ID | Status | Notes |
-|--------|--------|-------|
-| 45767719301 | success | Fixed AppLock state-leak and KtLint imports (Green!) |
-| 45723583082 | failure | ktlint fail: IntegrationTest class body line / imports ordering |
-| 45723535564 | failure | MainActivityTest toggleDesktopMode failed due to AppLock leak |
-| 45705989020 | success | AppLock startup gate wiring (latest verified green) |
+|| Run ID | Status | Notes |
+||--------|--------|-------|
+|| 45768878119 | success | Docs: fixed vision.md template corruption, marked items 94/95 resolved |
+|| 45767719301 | success | Style: fixed ktlint import ordering + empty class body line |
+|| 45766576194 | failure | ktlint fail: IntegrationTest class body line / imports ordering |
+|| 45723535564 | failure | MainActivityTest toggleDesktopMode failed due to AppLock state leak |
+|| 45705989020 | success | AppLock startup gate wiring (latest verified green before fixes) |
 
 ## CI Guard Status (local verification)
 - `ci_check_autonomy_dirs.py`: PASSED
