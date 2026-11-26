@@ -4,9 +4,10 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebViewClient
 import com.chatplayground.app.security.AppLock
 import com.chatplayground.app.utils.DesktopModeHandler
+import com.chatplayground.app.utils.SingletonCleanupRule
 import com.chatplayground.app.utils.UrlProvider
-import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -20,6 +21,10 @@ import org.robolectric.shadows.ShadowLog
 
 @RunWith(RobolectricTestRunner::class)
 class MainActivityTest {
+    @Rule
+    @JvmField
+    val singletonCleanupRule = SingletonCleanupRule()
+
     @Test
     fun urlProviderReturnsChatPlaygroundUrl() {
         assertEquals("https://chatplayground.ai", UrlProvider.getChatPlaygroundUrl())
@@ -430,13 +435,5 @@ class MainActivityTest {
         assertFalse(DesktopModeHandler.isDesktop)
         assertEquals("ChatPlayground/1.0", activity.getWebView().settings.userAgentString)
         assertFalse(activity.getWebView().settings.useWideViewPort)
-    }
-
-    @After
-    fun tearDown() {
-        // Ensure AppLock doesn't leak locked state into subsequent tests
-        AppLock.enabled = false
-        // Reset DesktopModeHandler singleton so restore tests start clean
-        DesktopModeHandler.applyDesktopMode(false)
     }
 }

@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -11,6 +12,10 @@ import org.junit.Test
  * and viewport setting mapping.
  */
 class DesktopModeHandlerTest {
+    @Rule
+    @JvmField
+    val singletonCleanupRule = SingletonCleanupRule()
+
     @Before
     fun setUp() {
         val handler = DesktopModeHandler

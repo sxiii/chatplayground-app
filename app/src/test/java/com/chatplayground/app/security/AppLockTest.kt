@@ -3,7 +3,9 @@ package com.chatplayground.app.security
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import com.chatplayground.app.utils.SingletonCleanupRule
 
 /**
  * Pure-JVM tests for [AppLock]: the gate that decides whether the app
@@ -12,6 +14,10 @@ import org.junit.Test
  * BiometricPrompt (which cannot run under plain JUnit / Robolectric).
  */
 class AppLockTest {
+    @Rule
+    @JvmField
+    val singletonCleanupRule = SingletonCleanupRule()
+
     @Before
     fun setUp() {
         AppLock.authenticator = { false }
