@@ -1,11 +1,11 @@
 package com.chatplayground.app.security
 
+import com.chatplayground.app.utils.SingletonCleanupRule
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.chatplayground.app.utils.SingletonCleanupRule
 
 /**
  * Pure-JVM tests for [AppLock]: the gate that decides whether the app
