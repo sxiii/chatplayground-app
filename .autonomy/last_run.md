@@ -1,22 +1,19 @@
 # Last Run (2026-11-26)
 
 ## Baseline
-- CI status before cycle: Run `45767719301` — **success** on commit `ed68720` (style(lint): fix ktlint import ordering and empty class body line).
-- The lint failure chain on `lintKotlinTest` (`MainActivityTest.kt:407`) had caused runs `45829239413`, `45830716024` to fail.
+- CI status before cycle: Run `45834496458` — **success** on commit `61cdac2` (style/lint: record green CI run 45832347826).
+- Last known failing run: `45839596827` — `lintKotlin` import-ordering failure on commit `d27a710`.
 
 ## What Changed (this cycle)
-
-1. **Resolved `lintKotlin` failure in `MainActivityTest.kt:407`** — three commit attempts (`207de44`, `1e3f14c`, `6b9c31c`) settled on keeping `getSharedPreferences(...)` on a single line, which satisfies ktlint's `standard:multiline-expression-wrapping` rule. CI run `45832347826` green.
-2. **Added `useWideViewPort`/`loadWithOverviewMode` default assertions to `WebViewConfiguratorIntegrationTest`** (vision item 93) — verifies viewport defaults don't drift when `DesktopModeHandler` overrides them later.
-3. **Marked vision items 96–99 complete**: `@After tearDown` resets `AppLock` + `DesktopModeHandler` between tests; desktop mode persists across restarts via `desktop_mode_prefs`; `onCreateRestoresPersistedDesktopMode` asserts `applyTo` is called on cold start.
-4. **Renumbered vision item 99 → 100** ("Consolidate test state cleanup").
+1. **Resolved `lintKotlin` failure in `AppLockTest.kt` and `MainActivityTest.kt`** — reordered `com.chatplayground` imports before `org.junit` imports (and `org.junit.Rule` after the Assert block) to satisfy ktlint `standard:import-ordering`. CI run `45840913370` green.
+2. **Completed vision item 100 — consolidated test state cleanup**: Added `SingletonCleanupRule.kt` (JUnit `TestWatcher` resetting `AppLock` + `DesktopModeHandler` after every test); applied via `@Rule @JvmField` to `MainActivityTest`, `AppLockTest`, `DesktopModeHandlerTest`; removed manual `@After tearDown` resets.
+3. **Marked vision item 100 complete**; added backlog items 101 (`SingletonCleanupRuleTest`) and 102 (extend rule to `SecureStorage` seams).
+4. Updated `.autonomy/ci_status.md`, `.autonomy/last_run.md`, `.autonomy/cycle_summary.md` with current CI run IDs and status.
 
 ## Current CI Status
-
-- Last known green run before this cycle: `45767719301`.
-- This cycle's green run: `45832347826` (verified via `gh run view`).
+- Last known green run before this cycle: `45834496458`.
+- This cycle's green run: `45840913370` (verified via `gh run view`).
 
 ## Next Actions
-
-1. Changes are pushed to `main`; CI run `45832347826` confirmed green.
-2. Next bounded cycle: vision item 100 — establish shared test rule / cleanup routine to automate resetting of mutable global singletons between tests.
+1. Changes are pushed to `origin/main`; CI run `45840913370` confirmed green.
+2. Next bounded cycle: vision item 101 — add `SingletonCleanupRuleTest` verifying the rule resets global singletons after a mutating test.

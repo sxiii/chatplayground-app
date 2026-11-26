@@ -1,31 +1,31 @@
 # CI Status
 
 ## Current Run
-- **Run ID**: 45832347826 (success) — triggered by commit `6b9c31c` ("fix(lint): keep getSharedPreferences on one line to satisfy ktlint").
-- Previous verified green run: `45767719301` (`ed68720`).
+- **CI green**: run `45840913370` — success on commit `0891b59` ("fix(lint): order imports lexicographically in AppLockTest.kt and MainActivityTest.kt"). Full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
+- Previous verified green run: `45834496458` (`61cdac2`).
+- Preceding failure: run `45839596827` on commit `d27a710` failed `lintKotlin` ([standard:import-ordering] `com.chatplayground` imports placed after `org.junit` in `AppLockTest.kt` and `MainActivityTest.kt`); fixed by reordering imports and re-pushed as `0891b59`.
 
-## Pending Work (this cycle)
-
-- WebViewConfiguratorIntegrationTest now asserts `useWideViewPort=false` and `loadWithOverviewMode=false` defaults (vision item 93) — landed in this cycle's commit.
-- Vision items 96/97/98/99 marked complete; item 100 (shared test rule for singleton cleanup) opened.
+## What Changed (this cycle)
+1. **Vision item 100 — Consolidate test state cleanup**: Added `app/src/test/java/com/chatplayground/app/utils/SingletonCleanupRule.kt`, a JUnit `TestWatcher` rule that resets `AppLock` and `DesktopModeHandler` after every test. Applied via `@Rule @JvmField val singletonCleanupRule` to `MainActivityTest`, `AppLockTest`, and `DesktopModeHandlerTest`, replacing manual `@After tearDown` resets.
+2. **Import-ordering lint fix**: Reordered `com.chatplayground` imports before `org.junit` imports (and `org.junit.Rule` after the Assert block) to satisfy ktlint's `standard:import-ordering` rule.
+3. **vision.md**: Item 100 marked complete; new backlog items 101 (add `SingletonCleanupRuleTest`) and 102 (extend rule to `SecureStorage` seams) added.
 
 ## Recent CI Runs
-||| Run ID | Status | Notes ||
-|||--------|--------|-------||
-||| 45832347826 | success | Lint fix: getSharedPreferences single-line form satisfies ktlint ||
-||| 45830716024 | failure | lintKotlin multiline-expression-wrapping on MainActivityTest.kt:407 ||
-||| 45829239413 | failure | lintKotlin multiline-expression-wrapping + trailing comma on MainActivityTest.kt:407 ||
-||| 45823604989 | failure | lintKotlinTest failed (earlier lint error) ||
-||| 45767719301 | success | Style: fixed ktlint import ordering + empty class body line ||
+| Run ID | Status | Notes |
+|--------|--------|-------|
+| 45840913370 | success | Import-ordering fix; full build + all tests + ktlint + JaCoCo green |
+| 45839596827 | failure | lintKotlin import-ordering on AppLockTest.kt / MainActivityTest.kt |
+| 45834496458 | success | docs(autonomy): record green CI run 45832347826 |
+| 45832347826 | success | Lint fix: getSharedPreferences single-line form satisfies ktlint |
 
 ## CI Guard Status (local verification)
+- `scripts/check_kotlin_style.py`: PASSED (all changed files)
 - `ci_check_autonomy_dirs.py`: PASSED
-- `ci_check_robolectric_sdk.py`: PASSED (no new @Config pins)
-- `scripts/check_kotlin_style.py`: PASSED (64 files)
-- `scripts/test_ci_checks.py`: PASSED (18 tests)
+- `ci_check_robolectric_sdk.py`: PASSED
+- `scripts/test_ci_checks.py`: PASSED
 
 ## Next Actions
-1. Verify the new CI run is green; if it fails, read `gh run view --log-failed` and fix.
-2. Next bounded cycle: vision item 100 — establish shared test rule / cleanup routine to automate resetting of mutable global singletons between tests.
+1. Changes are pushed to `main`; CI run `45840913370` confirmed green.
+2. Next cycle: vision item 101 — add `SingletonCleanupRuleTest` verifying the rule resets `AppLock.enabled` and `DesktopModeHandler.isDesktop` after a mutating test.
 
-*Last updated by cron job at 2026-11-26 14:21 CET*
+*Last updated by cron job at 2026-11-26 15:20 CET*
