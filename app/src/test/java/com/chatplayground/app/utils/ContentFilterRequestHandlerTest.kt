@@ -109,4 +109,36 @@ class ContentFilterRequestHandlerTest {
             ContentFilterRequestHandler.shouldIntercept("https://www.analytics.com/beacon"),
         )
     }
+
+    @Test
+    fun shouldInterceptBlocksAdHostWithPort() {
+        assertTrue(
+            "ad host with port must be blocked",
+            ContentFilterRequestHandler.shouldIntercept("https://googleads.g.doubleclick.net:8080/pagead/ad"),
+        )
+    }
+
+    @Test
+    fun shouldInterceptBlocksAdHostWithPortAndQuery() {
+        assertTrue(
+            "ad host with port and query must be blocked",
+            ContentFilterRequestHandler.shouldIntercept("https://googleads.g.doubleclick.net:8080/pagead/ad?id=123&foo=bar"),
+        )
+    }
+
+    @Test
+    fun shouldInterceptDoesNotBlockLegitimateHostWithPort() {
+        assertFalse(
+            "legitimate host with port must pass through",
+            ContentFilterRequestHandler.shouldIntercept("https://chatplayground.ai:8080/pricing"),
+        )
+    }
+
+    @Test
+    fun shouldInterceptDoesNotBlockLegitimateHostWithPortAndFragment() {
+        assertFalse(
+            "legitimate host with port and fragment must pass through",
+            ContentFilterRequestHandler.shouldIntercept("https://docs.chatplayground.ai:8443/guide#section"),
+        )
+    }
 }
