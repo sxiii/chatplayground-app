@@ -4,9 +4,9 @@ import android.content.Context
 import android.webkit.CookieManager
 import android.webkit.WebView
 import androidx.test.core.app.ApplicationProvider
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -14,15 +14,11 @@ import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class ClearAllDataTest {
+    @Rule @JvmField
+    val singletonCleanupRule = SingletonCleanupRule()
+
     private lateinit var context: Context
     private lateinit var cacheManager: OfflineCacheManager
-
-    @After
-    fun tearDown() {
-        // Clean up SharedPreferences between tests
-        val prefs = context.getSharedPreferences("app_data", Context.MODE_PRIVATE)
-        prefs.edit().clear().apply()
-    }
 
     @Test
     fun clearAllDataClearsOfflineCacheAndWebViewCacheAndCookiesAndPrefs() {

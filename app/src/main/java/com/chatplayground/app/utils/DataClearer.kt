@@ -9,11 +9,14 @@ import android.webkit.WebView
  * Used by the menu "Clear All Data" action.
  */
 object DataClearer {
+    /** All SharedPreferences files the app uses, cleared by [clearAllData]. */
+    private val PREF_FILES = listOf("app_data", "desktop_mode_prefs", "theme_prefs")
+
     /**
      * Clears all app data:
      * - Offline cache manager entries (stored as JSON files)
      * - WebView internal cache (cookies, disk cache, memory cache)
-     * - Application SharedPreferences
+     * - All application SharedPreferences files (app_data, desktop_mode_prefs, theme_prefs)
      */
     fun clearAllData(
         context: Context,
@@ -28,8 +31,9 @@ object DataClearer {
         cookieManager.removeAllCookies(null)
         cookieManager.flush()
 
-        // Clear all SharedPreferences
-        val prefs = context.getSharedPreferences("app_data", Context.MODE_PRIVATE)
-        prefs.edit().clear().apply()
+        // Clear all SharedPreferences files
+        for (prefFile in PREF_FILES) {
+            context.getSharedPreferences(prefFile, Context.MODE_PRIVATE).edit().clear().apply()
+        }
     }
 }
