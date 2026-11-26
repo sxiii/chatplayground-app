@@ -404,10 +404,11 @@ class MainActivityTest {
 
     @Test
     fun onCreateRestoresPersistedDesktopMode() {
-        val prefs = RuntimeEnvironment.application.getSharedPreferences(
-            "desktop_mode_prefs",
-            android.content.Context.MODE_PRIVATE
-        )
+        val prefs = RuntimeEnvironment.application
+            .getSharedPreferences(
+                "desktop_mode_prefs",
+                android.content.Context.MODE_PRIVATE,
+            )
         prefs.edit().putBoolean("desktop_mode", true).apply()
 
         // Simulate toggle already applied on a previous run
