@@ -58,7 +58,6 @@ object DesktopModeHandler {
      * Pure-JVM — no Android types — so it stays unit-testable without Robolectric.
      */
     @JvmName("applyDesktopMode")
-    @JvmName("applyDesktopMode")
     fun applyDesktopMode(desktop: Boolean) {
         isDesktop = desktop
         userAgent = if (desktop) DESKTOP_UA else MOBILE_UA
