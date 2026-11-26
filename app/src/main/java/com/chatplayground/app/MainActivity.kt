@@ -444,7 +444,7 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
     private fun applySavedDesktopMode() {
         val prefs = getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
         val isDesktop = prefs.getBoolean("desktop_mode", false)
-        DesktopModeHandler.setDesktop(isDesktop)
+        DesktopModeHandler.applyDesktopMode(isDesktop)
     }
 
     private fun applySavedTheme() {

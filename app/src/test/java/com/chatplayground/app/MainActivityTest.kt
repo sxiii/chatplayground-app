@@ -409,7 +409,7 @@ class MainActivityTest {
         prefs.edit().putBoolean("desktop_mode", true).apply()
 
         // Simulate toggle already applied on a previous run
-        DesktopModeHandler.setDesktop(true)
+        DesktopModeHandler.applyDesktopMode(true)
 
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
 
@@ -438,6 +438,6 @@ class MainActivityTest {
         // Ensure AppLock doesn't leak locked state into subsequent tests
         AppLock.enabled = false
         // Reset DesktopModeHandler singleton so restore tests start clean
-        DesktopModeHandler.setDesktop(false)
+        DesktopModeHandler.applyDesktopMode(false)
     }
 }

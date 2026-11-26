@@ -57,7 +57,9 @@ object DesktopModeHandler {
      * Sets the desktop/mobile mode and derives all dependent fields (UA, viewport).
      * Pure-JVM — no Android types — so it stays unit-testable without Robolectric.
      */
-    fun setDesktop(desktop: Boolean) {
+    @JvmName("applyDesktopMode")
+    @JvmName("applyDesktopMode")
+    fun applyDesktopMode(desktop: Boolean) {
         isDesktop = desktop
         userAgent = if (desktop) DESKTOP_UA else MOBILE_UA
         useWideViewPort = desktop

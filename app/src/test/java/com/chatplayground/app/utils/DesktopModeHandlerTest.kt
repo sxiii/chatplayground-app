@@ -67,7 +67,7 @@ class DesktopModeHandlerTest {
     @Test
     fun testSetDesktopToDesktopDerivesAllFields() {
         val handler = DesktopModeHandler
-        handler.setDesktop(true)
+        handler.applyDesktopMode(true)
 
         assertTrue(handler.isDesktop)
         assertTrue(handler.userAgent.contains("Chrome") && handler.userAgent.contains("Windows"))
@@ -78,8 +78,8 @@ class DesktopModeHandlerTest {
     @Test
     fun testSetDesktopToMobileDerivesAllFields() {
         val handler = DesktopModeHandler
-        handler.setDesktop(true)
-        handler.setDesktop(false)
+        handler.applyDesktopMode(true)
+        handler.applyDesktopMode(false)
 
         assertFalse(handler.isDesktop)
         assertEquals("ChatPlayground/1.0", handler.userAgent)
@@ -92,11 +92,11 @@ class DesktopModeHandlerTest {
         val handler = DesktopModeHandler
         handler.isDesktop = false // ensure mobile start
 
-        handler.setDesktop(true)
+        handler.applyDesktopMode(true)
         assertTrue(handler.isDesktop)
         assertTrue(handler.userAgent.contains("Chrome") && handler.userAgent.contains("Windows"))
 
-        handler.setDesktop(false)
+        handler.applyDesktopMode(false)
         assertFalse(handler.isDesktop)
         assertEquals("ChatPlayground/1.0", handler.userAgent)
     }
