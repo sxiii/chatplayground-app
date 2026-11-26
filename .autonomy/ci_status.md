@@ -1,15 +1,13 @@
 # CI Status
 
 ## Current Run
-- **CI green**: run `45854565908` — success on commit `d6b8f87` (\"test(autonomy): fix import-ordering in SingletonCleanupRuleTest\"). Full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
-- Previous verified green run: `45840913370` (`0891b59`).
-- Preceding failures: run `45853742153` (`lintKotlin` wrapping) and `45854565908` (`lintKotlin` import-ordering).
+- **CI green**: run `45893417503` — success on commit `6bfe81b` (\"fix(autonomy): reset DesktopModeHandler in-memory state in DataClearer.clearAllData\"). Full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
+- Previous verified green run: `45854565908` (`d6b8f87`).
+- Preceding failures: None this cycle.
 
 ## What Changed (this cycle)
-1. **Vision item 101 — Add `SingletonCleanupRuleTest`**: Unit test verifies `SingletonCleanupRule` actually resets `AppLock` and `DesktopModeHandler` state after test mutation.
-2. **Vision item 102 — Extend `SingletonCleanupRule` to `SecureStorage` seams**: `SecureStorage.authenticator` and `SecureStorage.storeFactory` resets folded into the shared rule. `SecureStorageBiometricTest` refactored to use the rule, removing manual teardown.
-3. **Lint fixes**: Fixed `multiline-expression-wrapping`, `no-empty-first-line-in-class-body`, and `import-ordering` in `SingletonCleanupRuleTest.kt`.
-4. **vision.md**: Items 101/102 marked complete; new backlog items 103 (fix `docs/FUNCTIONS.md` numbering) and 104 (audit test suite for import-ordering) added.
+1. **Vision item 200/207 — Add `DataClearer` unit test**: Added `clearAllDataClearsCookiesAndNonAppDataSharedPreferencesSimultaneously` to `ClearAllDataTest.kt` verifying cookies, `desktop_mode_prefs`, and `theme_prefs` are wiped together.
+2. **vision.md**: Items 200/207 marked complete.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |

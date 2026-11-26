@@ -105,4 +105,28 @@ class ClearAllDataTest {
         // Assert: DesktopModeHandler in-memory state is reset to false
         assertFalse(DesktopModeHandler.isDesktop)
     }
+
+    @Test
+    fun clearAllDataClearsCookiesAndNonAppDataSharedPreferencesSimultaneously() {
+        context = ApplicationProvider.getApplicationContext()
+        val webView = WebView(context)
+
+        // Arrange: a cookie plus data in desktop_mode_prefs and theme_prefs
+        CookieManager.getInstance().setCookie("https://chatplayground.ai", "session=abc")
+        assertTrue("Cookie should exist", CookieManager.getInstance().hasCookies())
+
+        val desktopModePrefs = context.getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
+        desktopModePrefs.edit().putBoolean("desktop_mode", true).apply()
+
+        val themePrefs = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        themePrefs.edit().putInt("theme_mode", 1).apply()
+
+        // Act: Clear all data
+        DataClearer.clearAllData(context, webView)
+
+        // Assert: cookies and both non-app_data SharedPreferences files are cleared
+        assertFalse("Cookies should be cleared", CookieManager.getInstance().hasCookies())
+        assertEquals("desktop_mode_prefs should be cleared", false, desktopModePrefs.getBoolean("desktop_mode", false))
+        assertEquals("theme_prefs should be cleared", 0, themePrefs.getInt("theme_mode", 0))
+    }
 }

@@ -1,24 +1,20 @@
 # Cycle Summary (2026-11-26, post-cleanup)
 
 ## Objective
-Implement Vision Items 101 (unit test `SingletonCleanupRule`) and 102 (extend rule to `SecureStorage`), ensure CI green on the GitHub worker, and update project documentation.
+Verify the `DataClearer` DesktopModeHandler reset patch landed, add a `ClearAllDataTest` for simultaneous cookie/SharedPreferences clearing, address remaining vision items, and confirm CI green on the GitHub worker.
 
 ## What Changed
 
-1. `app/src/test/java/com/chatplayground/app/utils/SingletonCleanupRuleTest.kt` — new unit test for `SingletonCleanupRule` (vision item 101).
-
-2. `app/src/test/java/com/chatplayground/app/utils/SingletonCleanupRule.kt` — extended to also reset `SecureStorage` seams (`authenticator` and `storeFactory`, vision item 102).
-
-3. `app/src/test/java/com/chatplayground/app/security/SecureStorageBiometricTest.kt` — refactored to use `SingletonCleanupRule`, removing manual `@After tearDown`.
-
-4. `.autonomy/vision.md` — items 101/102 marked complete; new backlog items 103/104 added.
-
-5. `.autonomy/ci_status.md`, `.autonomy/last_run.md`, `.autonomy/cycle_summary.md` — updated.
+1. `app/src/main/java/com/chatplayground/app/utils/DataClearer.kt` — `clearAllData()` now calls `DesktopModeHandler.applyDesktopMode(false)` to reset in-memory desktop-mode state to mobile after clearing `desktop_mode_prefs` SharedPreferences.
+2. `app/src/test/java/com/chatplayground/app/utils/ClearAllDataTest.kt` — added `clearAllDataClearsCookiesAndNonAppDataSharedPreferencesSimultaneously` covering cookies + `desktop_mode_prefs` + `theme_prefs` cleared together.
+3. `.autonomy/vision.md` — removed duplicate open entry 207 (duplicate of done item 200); added open improvement suggestions 208 (DesktopModeHandler real-WebView integration tests), 209 (persist `DesktopModeHandler.isDesktop` across restarts), 210 (`WebViewConfigurator` `useWideViewPort`/`loadWithOverviewMode` default assertions).
+4. `.autonomy/ci_status.md`, `.autonomy/last_run.md`, `.autonomy/cycle_summary.md` — updated to CI run `45893417503`.
 
 ## Verification
 - `scripts/check_kotlin_style.py` — OK on all 66 files.
-- CI runs `45853742153` (lint failure) & `45854565908` (success, lint fix verified).
-- Commit `d6b8f87` pushed to `origin/main`.
+- CI run `45893417503` — success on commit `6bfe81b`; full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
+- Commit `6bfe81b` pushed to `origin/main`; branch up to date.
 
 ## Next Steps
-1. Monitor for lint regressions and address new improvement suggestions in `vision.md` (items 103-104).
+1. Address improvement suggestions 208–210 in `.autonomy/vision.md` in the next bounded cycle.
+2. Continue monitoring CI for regressions after each push.
