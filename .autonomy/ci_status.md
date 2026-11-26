@@ -1,22 +1,21 @@
 # CI Status
 
 ## Current Run
-- **Run ID**: 45723535564 (in_progress) — triggered by commit `3237e4e` ("feat(ui): complete desktop-mode toggle, add test and integration test, update autonomy docs").
+- **Run ID**: 45767719301 (success) — triggered by commit `ed68720` ("style(lint): fix ktlint import ordering and empty class body line").
 - Previous verified green run: `45705989020` (`66d537a`).
 
 ## Pending Work (this cycle)
-- Completed the desktop-mode toggle in `MainActivity.kt` (`action_toggle_desktop_mode`).
-- Added unit test `MainActivityTest.toggleDesktopModeMenuItemSwitchesToDesktopModeAndReloads`.
-- Committed pending `WebViewConfiguratorIntegrationTest.kt` (vision item 87).
-- Added vision items 92 and 93 to `.autonomy/vision.md`.
+- Resolved test suite state leak: Added `@After fun tearDown() { AppLock.enabled = false }` to prevent AppLock from leaking its locked state across Robolectric tests alphabetically.
+- Standardized KtLint style: Fixed import ordering in `MainActivityTest.kt` and empty class body line in `WebViewConfiguratorIntegrationTest.kt`.
+- Verified GHA build: Run `45767719301` returned absolute success (all compiles, checks, and unit tests passed).
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
 |--------|--------|-------|
-| 45723535564 | in_progress | Desktop-mode toggle wiring + integration test |
+| 45767719301 | success | Fixed AppLock state-leak and KtLint imports (Green!) |
+| 45723583082 | failure | ktlint fail: IntegrationTest class body line / imports ordering |
+| 45723535564 | failure | MainActivityTest toggleDesktopMode failed due to AppLock leak |
 | 45705989020 | success | AppLock startup gate wiring (latest verified green) |
-| 45659593251 | success | Autonomy docs update before AppLock wiring |
-| 45658164607 | success | AppLock authenticator seam takes no Context |
 
 ## CI Guard Status (local verification)
 - `ci_check_autonomy_dirs.py`: PASSED
@@ -25,7 +24,7 @@
 - `scripts/test_ci_checks.py`: PASSED (18 tests)
 
 ## Next Actions
-1. Monitor CI run `45723535564` to completion.
-2. Record run result in `ci_status.md` during the next cycle.
+1. Reiterate and implement vision item 92 (persist `DesktopModeHandler.isDesktop` in `SharedPreferences` across restarts).
+2. Establish shared test rule / cleanup routine to automate resetting of mutable global singletons between tests.
 
-*Last updated by cron job at 2026-11-26 00:48 CET*
+*Last updated by cron job at 2026-11-26 07:22 CET*

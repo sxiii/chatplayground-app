@@ -181,5 +181,12 @@ while keeping the main content in a WebView.
 93. [ ] [MEDIUM] `WebViewConfiguratorIntegrationTest` should assert `useWideViewPort` and `loadWithOverviewMode` defaults — the integration test (item 87) checks JS, DOM storage, mixed content, file/content access, and User-Agent, but does not verify the initial viewport defaults that `DesktopModeHandler` overrides later. Add assertions for `useWideViewPort` and `loadWithOverviewMode` on a freshly configured WebView to catch accidental defaults drift.
 
 ## Vision Items (Nov 26, 2026)
-94. Investigate why WebView  does not update shadow  in Robolectric tests.
-95. Update  to correctly verify reload behavior or adjust implementation to use  if needed for testing.
+94. [x] Investigate why WebView `reload()` does not update `shadowOf(webView).lastLoadedUrl` in Robolectric tests — DONE 2026-11-26. Root cause: the `toggleDesktopModeMenuItemSwitchesToDesktopModeAndReloads` test failed because `appLockBlocksWebViewLoadUrlWhenLocked` set `AppLock.enabled = true` and called `resetForTesting()` but never reset `enabled` back to `false`. Since JUnit runs tests alphabetically, `appLockBlocksWebViewLoadUrlWhenLocked` ran before `toggleDesktopMode...`, leaving AppLock locked. When the toggle test created its activity, `AppLock.isLocked()` returned `true`, so `onCreate` returned early without loading the URL. Fix: added `@After fun tearDown() { AppLock.enabled = false }` to `MainActivityTest` to prevent state leak. CI run `45766576194` triggered.
+95. [x] Update test to correctly verify reload behavior or adjust implementation to use `loadUrl` if needed for testing — DONE 2026-11-26. The reload assertion was correct; the issue was AppLock state leak, not `reload()` vs `loadUrl()`. The `@After` tearDown resolves it.
+
+## Next Improvement Suggestions (2026-11-26, after the AppLock state-leak fix cycle)
+
+96. [ ] [LOW] Add `@After` tearDown to ALL test classes that touch `AppLock` — `MainActivityTest` now has one, but any future test class that sets `AppLock.enabled` should also reset it in a tearDown to prevent cross-test contamination. Consider adding a shared test rule or utility.
+97. [ ] [MEDIUM] Persist `DesktopModeHandler.isDesktop` across app restarts (reiterate item 92) — the toggle resets to mobile mode on every cold start. Persist in `SharedPreferences` (`desktop_mode_prefs`) and restore in `MainActivity.onCreate` before the first `loadUrl`.
+98. [ ] [LOW] Add unit test verifying `DesktopModeHandler.applyTo` is called during `MainActivity.onCreate` when desktop mode is persisted — ensures the WebView starts with the correct UA/viewport on cold start.
+99. [ ] [MEDIUM] Consolidate test state cleanup — multiple test classes mutate global singletons (`AppLock`, `DesktopModeHandler`, theme prefs). Consider a shared `@Before`/`@After` or a JUnit `TestRule` that resets all global state between tests to prevent future cross-test contamination.
