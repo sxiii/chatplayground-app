@@ -1,10 +1,10 @@
 package com.chatplayground.app.utils
 
+import android.content.Context
 import com.chatplayground.app.security.AppLock
 import com.chatplayground.app.security.BiometricAuthenticator
 import com.chatplayground.app.security.EncryptedStore
 import com.chatplayground.app.security.SecureStorage
-import android.content.Context
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
