@@ -67,4 +67,29 @@ class ClearAllDataTest {
 
         assertTrue(true)
     }
+
+    @Test
+    fun clearAllDataClearsAllSharedPreferencesIncludingDesktopModeAndThemePrefs() {
+        context = ApplicationProvider.getApplicationContext()
+        cacheManager = OfflineCacheManager(context.cacheDir)
+        val webView = WebView(context)
+
+        // Arrange: populate all three SharedPreferences files
+        val appDataPrefs = context.getSharedPreferences("app_data", Context.MODE_PRIVATE)
+        appDataPrefs.edit().putString("app_key", "app_value").apply()
+
+        val desktopModePrefs = context.getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
+        desktopModePrefs.edit().putBoolean("desktop_mode", true).apply()
+
+        val themePrefs = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        themePrefs.edit().putInt("theme_mode", 1).apply()
+
+        // Act: Clear all data
+        DataClearer.clearAllData(context, webView)
+
+        // Assert: All three SharedPreferences files are cleared
+        assertEquals("app_data should be cleared", null, appDataPrefs.getString("app_key", null))
+        assertEquals("desktop_mode_prefs should be cleared", false, desktopModePrefs.getBoolean("desktop_mode", false))
+        assertEquals("theme_prefs should be cleared", 0, themePrefs.getInt("theme_mode", 0))
+    }
 }

@@ -198,5 +198,7 @@ while keeping the main content in a WebView.
 ## Next Improvement Suggestions (2026-11-26, post-audit)
 
 200. [ ] [LOW] Add unit tests for `DataClearer` edge cases when clearing SharedPreferences and WebView cookies simultaneously under mock/robolectric environments.
-201. [ ] [LOW] Add automated regression test for `ContentFilterRequestHandler` query parameters and special URI structures.
+201. [x] [LOW] Add automated regression test for `ContentFilterRequestHandler` query parameters and special URI structures — DONE 2026-11-26. Added port/query/fragment regression tests (`shouldInterceptBlocksAdHostWithPort`, `shouldInterceptBlocksAdHostWithPortAndQuery`, `shouldInterceptDoesNotBlockLegitimateHostWithPort`, `shouldInterceptDoesNotBlockLegitimateHostWithPortAndFragment`). Found and fixed a real bug: `shouldIntercept` kept the port in the host string so `googleads.g.doubleclick.net:8080` never matched `googleads.g.doubleclick.net`; stripped the port before matching. CI run `45868061704` green on commit `be1f1be`.
 202. [ ] [LOW] Add automated integration test for `WebViewConfigurator` headers and settings: Ensure custom User-Agent and security settings are correctly populated on every created WebView instance.
+203. [ ] [HIGH] `DataClearer.clearAllData` only clears `app_data` SharedPreferences, leaving `desktop_mode_prefs` and `theme_prefs` intact — the "Clear All Data" menu item does not actually clear all user data. Acceptance: clear all three SharedPreferences files; add test covering this.
+204. [ ] [LOW] Add `@After` tearDown to `ClearAllDataTest` to reset `AppLock` and `DesktopModeHandler` via `SingletonCleanupRule` for consistency (currently the test class doesn't use the rule).
