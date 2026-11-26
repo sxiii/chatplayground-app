@@ -1,22 +1,22 @@
 # CI Status
 
 ## Current Run
-- **Run ID**: 45767719301 (success) — triggered by commit `ed68720` ("style(lint): fix ktlint import ordering and empty class body line").
-- Previous verified green run: `45705989020` (`66d537a`).
+- **Run ID**: 45832347826 (success) — triggered by commit `6b9c31c` ("fix(lint): keep getSharedPreferences on one line to satisfy ktlint").
+- Previous verified green run: `45767719301` (`ed68720`).
 
 ## Pending Work (this cycle)
-- Resolved test suite state leak: Added `@After fun tearDown() { AppLock.enabled = false }` to prevent AppLock from leaking its locked state across Robolectric tests alphabetically.
-- Standardized KtLint style: Fixed import ordering in `MainActivityTest.kt` and empty class body line in `WebViewConfiguratorIntegrationTest.kt`.
-- Verified GHA build: Run `45767719301` returned absolute success (all compiles, checks, and unit tests passed).
+
+- WebViewConfiguratorIntegrationTest now asserts `useWideViewPort=false` and `loadWithOverviewMode=false` defaults (vision item 93) — landed in this cycle's commit.
+- Vision items 96/97/98/99 marked complete; item 100 (shared test rule for singleton cleanup) opened.
 
 ## Recent CI Runs
-|| Run ID | Status | Notes |
-||--------|--------|-------|
-|| 45768878119 | success | Docs: fixed vision.md template corruption, marked items 94/95 resolved |
-|| 45767719301 | success | Style: fixed ktlint import ordering + empty class body line |
-|| 45766576194 | failure | ktlint fail: IntegrationTest class body line / imports ordering |
-|| 45723535564 | failure | MainActivityTest toggleDesktopMode failed due to AppLock state leak |
-|| 45705989020 | success | AppLock startup gate wiring (latest verified green before fixes) |
+||| Run ID | Status | Notes ||
+|||--------|--------|-------||
+||| 45832347826 | success | Lint fix: getSharedPreferences single-line form satisfies ktlint ||
+||| 45830716024 | failure | lintKotlin multiline-expression-wrapping on MainActivityTest.kt:407 ||
+||| 45829239413 | failure | lintKotlin multiline-expression-wrapping + trailing comma on MainActivityTest.kt:407 ||
+||| 45823604989 | failure | lintKotlinTest failed (earlier lint error) ||
+||| 45767719301 | success | Style: fixed ktlint import ordering + empty class body line ||
 
 ## CI Guard Status (local verification)
 - `ci_check_autonomy_dirs.py`: PASSED
@@ -25,7 +25,7 @@
 - `scripts/test_ci_checks.py`: PASSED (18 tests)
 
 ## Next Actions
-1. Reiterate and implement vision item 92 (persist `DesktopModeHandler.isDesktop` in `SharedPreferences` across restarts).
-2. Establish shared test rule / cleanup routine to automate resetting of mutable global singletons between tests.
+1. Verify the new CI run is green; if it fails, read `gh run view --log-failed` and fix.
+2. Next bounded cycle: vision item 100 — establish shared test rule / cleanup routine to automate resetting of mutable global singletons between tests.
 
-*Last updated by cron job at 2026-11-26 07:22 CET*
+*Last updated by cron job at 2026-11-26 14:21 CET*

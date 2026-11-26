@@ -26,5 +26,7 @@ class WebViewConfiguratorIntegrationTest {
         assertFalse("File access should be disabled", settings.allowFileAccess)
         assertFalse("Content access should be disabled", settings.allowContentAccess)
         assertEquals("User-Agent should be ChatPlayground/1.0", "ChatPlayground/1.0", settings.userAgentString)
+        assertFalse("Wide viewport should be off by default", settings.useWideViewPort)
+        assertFalse("Load with overview mode should be off by default", settings.loadWithOverviewMode)
     }
 }
