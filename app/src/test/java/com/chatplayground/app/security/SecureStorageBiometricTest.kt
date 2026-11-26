@@ -2,12 +2,13 @@ package com.chatplayground.app.security
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import org.junit.After
+import com.chatplayground.app.utils.SingletonCleanupRule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -20,6 +21,10 @@ import org.robolectric.RobolectricTestRunner
  * under Robolectric, so these tests inject an in-memory [EncryptedStore]
  * through [SecureStorage.storeFactory]. That keeps the read/write assertions
  * meaningful instead of being unreachable behind a KeyStoreException.
+ *
+ * Global seams (`SecureStorage.authenticator`, `SecureStorage.storeFactory`,
+ * `AppLock`, `DesktopModeHandler`) are reset by [SingletonCleanupRule] after
+ * every test, so the manual `@After tearDown` reset is no longer needed.
  */
 @RunWith(RobolectricTestRunner::class)
 class SecureStorageBiometricTest {
@@ -56,19 +61,16 @@ class SecureStorageBiometricTest {
 
     private val store = InMemoryEncryptedStore()
 
+    @Rule
+    @JvmField
+    val singletonCleanupRule = SingletonCleanupRule()
+
     @Before
     fun setUp() {
         // Fail-closed authenticator by default; individual tests opt in to auth.
         SecureStorage.authenticator = BiometricAuthenticator { false }
         SecureStorage.storeFactory = { store }
         store.clear()
-    }
-
-    @After
-    fun tearDown() {
-        // Restore production wiring so other tests are unaffected by the seam.
-        SecureStorage.authenticator = BiometricAuthenticator { false }
-        SecureStorage.storeFactory = { ctx -> EncryptedSharedPreferencesStore(ctx) }
     }
 
     @Test

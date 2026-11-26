@@ -1,13 +1,17 @@
 package com.chatplayground.app.utils
 
 import com.chatplayground.app.security.AppLock
+import com.chatplayground.app.security.BiometricAuthenticator
+import com.chatplayground.app.security.EncryptedSharedPreferencesStore
+import com.chatplayground.app.security.SecureStorage
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
 /**
- * JUnit Test Rule to ensure global singletons (AppLock and DesktopModeHandler)
- * are reset after EVERY test, preventing cross-test state contamination.
- * Implements Vision Item 100.
+ * JUnit Test Rule to ensure global singletons (AppLock, DesktopModeHandler,
+ * and SecureStorage seams) are reset after EVERY test, preventing
+ * cross-test state contamination.
+ * Implements Vision Items 100 and 102.
  */
 class SingletonCleanupRule : TestWatcher() {
     override fun starting(description: Description) {
@@ -19,5 +23,7 @@ class SingletonCleanupRule : TestWatcher() {
         AppLock.enabled = false
         AppLock.resetForTesting()
         DesktopModeHandler.applyDesktopMode(false)
+        SecureStorage.authenticator = BiometricAuthenticator { false }
+        SecureStorage.storeFactory = { context -> EncryptedSharedPreferencesStore(context) }
     }
 }
