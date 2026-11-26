@@ -12,7 +12,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class WebViewConfiguratorIntegrationTest {
-
     @Test
     fun configureAppliesAllSecurityAndUiSettings() {
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()

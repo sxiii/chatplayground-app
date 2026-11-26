@@ -5,11 +5,11 @@ import android.webkit.WebViewClient
 import com.chatplayground.app.security.AppLock
 import com.chatplayground.app.utils.DesktopModeHandler
 import com.chatplayground.app.utils.UrlProvider
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
