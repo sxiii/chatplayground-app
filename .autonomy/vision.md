@@ -179,3 +179,7 @@ while keeping the main content in a WebView.
 91. [ ] [MEDIUM] Add automated integration tests for `DesktopModeHandler` using real WebView instances — the existing `DesktopModeHandlerTest` is plain JUnit on JVM; add instrumentation-level coverage against a real `WebView` to verify viewport settings (`useWideViewPort`, `loadWithOverviewMode`) actually take effect on the widget.
 92. [ ] [LOW] Persist `DesktopModeHandler.isDesktop` across app restarts — the current toggle resets to mobile mode on every cold start. Persist the preference in `SharedPreferences` (`desktop_mode_prefs`) and restore it in `MainActivity.onCreate` before the first `loadUrl`, so users keep their desktop/mobile choice. Acceptance: toggle desktop mode, kill the app, relaunch, verify the UA and viewport settings match the saved preference.
 93. [ ] [MEDIUM] `WebViewConfiguratorIntegrationTest` should assert `useWideViewPort` and `loadWithOverviewMode` defaults — the integration test (item 87) checks JS, DOM storage, mixed content, file/content access, and User-Agent, but does not verify the initial viewport defaults that `DesktopModeHandler` overrides later. Add assertions for `useWideViewPort` and `loadWithOverviewMode` on a freshly configured WebView to catch accidental defaults drift.
+
+## Vision Items (Nov 26, 2026)
+94. Investigate why WebView  does not update shadow  in Robolectric tests.
+95. Update  to correctly verify reload behavior or adjust implementation to use  if needed for testing.

@@ -9,6 +9,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -398,5 +399,11 @@ class MainActivityTest {
             "https://chatplayground.ai",
             shadowOf(activity.getWebView()).lastLoadedUrl,
         )
+    }
+
+    @After
+    fun tearDown() {
+        // Ensure AppLock doesn't leak locked state into subsequent tests
+        AppLock.enabled = false
     }
 }
