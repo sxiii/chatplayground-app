@@ -11,14 +11,13 @@
 
 ## Verification
 - `scripts/check_kotlin_style.py` — OK on all 67 files.
-- CI run `45901902604` — success on commit `9843377`: full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
-- CI run `45902539104` — success on commit `a24dbce`: vision.md cleanup; full build green.
+- CI run `45903583316` — success on commit `06eb12f`: full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
 - Working tree clean, `main` up to date with `origin/main`.
 
 ## Current CI Status
-- This cycle's green run: `45902539104` on commit `a24dbce`.
+- This cycle's green run: `45903583316` on commit `06eb12f`.
 - All CI checks green: full build, all tests, lint, ktlint, JaCoCo.
 
 ## Next Actions
-1. Changes pushed to `origin/main`; CI run `45902539104` confirmed green.
+1. Changes pushed to `origin/main`; CI run `45903583316` confirmed green.
 2. Remaining open item: 206 (WebViewConfigurator integration test on real WebView instances).
