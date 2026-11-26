@@ -1,29 +1,29 @@
 # CI Status
 
 ## Current Run
-- **CI green**: run `45893417503` — success on commit `6bfe81b` (\"fix(autonomy): reset DesktopModeHandler in-memory state in DataClearer.clearAllData\"). Full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
-- Previous verified green run: `45854565908` (`d6b8f87`).
-- Preceding failures: None this cycle.
+- **CI green**: run `45902539104` — success on commit `a24dbce` ("chore(autonomy): mark vision items 208-210 complete"). Full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
+- Previous verified green run: `45901902604` (`9843377`).
+- Previous verified green run: `45900950605` (`b1bce7f`).
+- Preceding failures: run `45901205662` — ktlint formatting failure on new instrumentation test; cleared by `9843377`.
 
 ## What Changed (this cycle)
-1. **Vision item 200/207 — Add `DataClearer` unit test**: Added `clearAllDataClearsCookiesAndNonAppDataSharedPreferencesSimultaneously` to `ClearAllDataTest.kt` verifying cookies, `desktop_mode_prefs`, and `theme_prefs` are wiped together.
-2. **vision.md**: Items 200/207 marked complete.
+1. **Updated `docs/FUNCTIONS.md`** — added `DesktopModeHandler`, `ContentFilterRequestHandler`, `DownloadNotifier`, `DataClearer`, `SingletonCleanupRule`, `NetworkMonitor` `onCapabilitiesChanged`/`onUnavailable` handling, and `check_kotlin_style.py` self-test sections.
+2. **Added `DesktopModeHandlerInstrumentedTest.kt`** (androidTest source set) — real-WebView coverage verifying viewport settings (`useWideViewPort`, `loadWithOverviewMode`) and desktop UA take effect on the widget (vision item 208). Initial push failed ktlint; fixed by commit `9843377`.
+3. **vision.md** — marked items 208–210 complete; 209 and 210 are duplicates of done items 98/93.
+4. **`.autonomy/`** — `ci_status.md`, `last_run.md`, `cycle_summary.md` updated to run `45902539104`.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
 |--------|--------|-------|
-| 45854565908 | success | Import-ordering fix; full build + all tests + ktlint + JaCoCo green |
-| 45853742153 | failure | lintKotlin multiline-expression-wrapping |
-| 45840913370 | success | Previous green run |
+| 45902539104 | success | vision.md cleanup; full build + all tests + ktlint + JaCoCo green |
+| 45901902604 | success | ktlint fix on instrumentation test |
+| 45900950605 | success | docs/FUNCTIONS.md update |
+| 45901205662 | failure | ktlint: no-empty-first-line-in-class-body + wrapping on androidTest |
+| 45897413992 | success | previous cycle's green run |
 
 ## CI Guard Status (local verification)
-- `scripts/check_kotlin_style.py`: PASSED (all 66 files)
-- `ci_check_autonomy_dirs.py`: PASSED
-- `ci_check_robolectric_sdk.py`: PASSED
-- `scripts/test_ci_checks.py`: PASSED
+- `scripts/check_kotlin_style.py`: PASSED (all 67 files)
 
 ## Next Actions
-1. Changes are pushed to `main`; CI run `45854565908` confirmed green.
-2. Next cycle: monitor for lint regressions and address new improvement suggestions in `vision.md` (items 103-104).
-
-*Last updated by cron job at 2026-11-26 16:35 CET*
+1. Changes pushed to `main`; CI run `45902539104` confirmed green.
+2. Remaining open item: 206 (WebViewConfigurator integration test on real WebView instances).
