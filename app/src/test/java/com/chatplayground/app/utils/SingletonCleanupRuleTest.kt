@@ -13,7 +13,6 @@ import org.junit.runners.model.Statement
  * Implements Vision Item 101.
  */
 class SingletonCleanupRuleTest {
-
     @Test
     fun ruleResetsAppLockAndDesktopModeOnFinished() {
         AppLock.enabled = true
@@ -28,7 +27,11 @@ class SingletonCleanupRuleTest {
             }
         }
 
-        val evaluatedStatement = rule.apply(dummyStatement, Description.createTestDescription(javaClass, "dummy"))
+        val evaluatedStatement =
+            rule.apply(
+                dummyStatement,
+                Description.createTestDescription(javaClass, "dummy"),
+            )
         evaluatedStatement.evaluate()
 
         assertFalse("AppLock.enabled should be reset to false", AppLock.enabled)
