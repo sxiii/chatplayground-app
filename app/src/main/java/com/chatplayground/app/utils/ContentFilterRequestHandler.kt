@@ -34,7 +34,9 @@ object ContentFilterRequestHandler {
         val schemeEnd = url.indexOf("://")
         val hostStart = if (schemeEnd != -1) schemeEnd + 3 else 0
         val pathStart = url.indexOfAny(charArrayOf('/', '?', '#'), hostStart)
-        val host = if (pathStart != -1) url.substring(hostStart, pathStart) else url.substring(hostStart)
+        val hostPort = if (pathStart != -1) url.substring(hostStart, pathStart) else url.substring(hostStart)
+        val colon = hostPort.indexOf(':')
+        val host = if (colon != -1) hostPort.substring(0, colon) else hostPort
 
         return BLOCKED_HOSTS.any { blocked ->
             host.equals(blocked, ignoreCase = true) ||
