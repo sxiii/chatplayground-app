@@ -7,10 +7,9 @@
 - Preceding failures: run `45901205662` — ktlint formatting failure on new instrumentation test; cleared by `9843377`.
 
 ## What Changed (this cycle)
-1. **Updated `docs/FUNCTIONS.md`** — added `DesktopModeHandler`, `ContentFilterRequestHandler`, `DownloadNotifier`, `DataClearer`, `SingletonCleanupRule`, `NetworkMonitor` `onCapabilitiesChanged`/`onUnavailable` handling, and `check_kotlin_style.py` self-test sections.
-2. **Added `DesktopModeHandlerInstrumentedTest.kt`** (androidTest source set) — real-WebView coverage verifying viewport settings (`useWideViewPort`, `loadWithOverviewMode`) and desktop UA take effect on the widget (vision item 208). Initial push failed ktlint; fixed by commit `9843377`.
-3. **vision.md** — marked items 208–210 complete; 209 and 210 are duplicates of done items 98/93.
-4. **`.autonomy/`** — `ci_status.md`, `last_run.md`, `cycle_summary.md` updated to run `45903583316`.
+1. **Added `WebViewConfiguratorInstrumentedTest.kt`** (androidTest source set) — real-WebView coverage asserting JavaScript, DOM storage, mixed-content mode, file/content access, User-Agent, viewport defaults, and configure idempotency on a real `WebView` widget (open vision item 206). Covers `WebViewConfigurator.configure()` on a real widget rather than robolectric shadows.
+2. **vision.md** — added open items 211 (real-WebView `WebViewConfigurator` integration test) and 212 (persist security defaults across WebView recreation).
+3. **`.autonomy/`** — `ci_status.md`, `last_run.md`, `cycle_summary.md` updated to record commit `debdb3f` pushed to `origin/main`; CI run triggered by the push (worker is the compiler — result pending on GitHub).
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
