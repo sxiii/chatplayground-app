@@ -210,3 +210,9 @@ while keeping the main content in a WebView.
 208. [x] [MEDIUM] Add automated integration tests for `DesktopModeHandler` using real WebView instances — DONE 2026-11-26. `DesktopModeHandlerInstrumentedTest.kt` (androidTest source set) verifies viewport settings (`useWideViewPort`, `loadWithOverviewMode`) and desktop UA take effect on a real `WebView` widget. CI run `45901205662` failed on ktlint formatting; fixed in commit `9843377` and re-running as `45901902604`.
 209. [x] [LOW] Persist `DesktopModeHandler.isDesktop` across app restarts — DONE 2026-11-26 (item 98). `MainActivity.onCreate` restores via `applySavedDesktopMode()` and `DesktopModeHandler.applyTo(webView)` before any `loadUrl`; toggle persists to `desktop_mode_prefs`. Duplicate of item 209; item 98 already covers it with CI run `45832347826` green.
 210. [x] [MEDIUM] `WebViewConfiguratorIntegrationTest` asserts `useWideViewPort`/`loadWithOverviewMode` defaults — DONE 2026-11-22 (item 93). `configureAppliesAllSecurityAndUiSettings` already asserts both defaults are `false`. Duplicate of item 210; item 93 already covered with CI run `44990929779` green.
+
+## Next Improvement Suggestions (open)
+
+211. [ ] [LOW] Add automated integration test for `WebViewConfigurator` on real WebView instances — mirror the robolectric `WebViewConfiguratorIntegrationTest` as an androidTest (`WebViewConfiguratorInstrumentedTest.kt`) asserting JavaScript, DOM storage, mixed-content mode, file/content access, User-Agent, and viewport defaults take effect on a real `WebView` widget. Acceptance: new androidTest file added, `./gradlew :app:assembleAndroidTest` compiles it, ktlint clean.
+
+212. [ ] [MEDIUM] Persist `WebViewConfigurator` security defaults across WebView recreation — `MainActivity.onCreate` re-applies `WebViewConfigurator.configure()` on every new WebView instance; verify this happens for both cold start and configuration-change recreation, covered by `MainActivityTest`.
