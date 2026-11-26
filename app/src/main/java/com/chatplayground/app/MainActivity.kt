@@ -105,6 +105,11 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
         // mixed content never allowed, local file/content access disabled.
         WebViewConfigurator.configure(webView)
 
+        // Restore persisted desktop/mobile mode before any page loads so the
+        // WebView starts with the correct UA and viewport on cold start.
+        applySavedDesktopMode()
+        DesktopModeHandler.applyTo(webView)
+
         // Expose chrome://inspect to debug builds only; a release build never
         // exposes its renderer or page state to an attached debugger.
         WebViewDebugging.configure(BuildConfig.DEBUG)
@@ -415,6 +420,10 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
                 webView.reload()
                 val modeLabel = if (DesktopModeHandler.isDesktop) "Desktop" else "Mobile"
                 Toast.makeText(this, "Switched to $modeLabel mode", Toast.LENGTH_SHORT).show()
+                // Persist the user's desktop/mobile choice so it survives
+                // app restarts (restored in onCreate before the first loadUrl).
+                val prefs = getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
+                prefs.edit().putBoolean("desktop_mode", DesktopModeHandler.isDesktop).apply()
                 true
             }
             R.id.action_about -> {
@@ -429,6 +438,13 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
         }
     }
 
+    /**
+     * Applies saved or persisted desktop mode state.
+     */
+    private fun applySavedDesktopMode() {
+        val prefs = getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
+        val isDesktop = prefs.getBoolean("desktop_mode", false)
+        DesktopModeHandler.setDesktop(isDesktop)
     private fun applySavedTheme() {
         val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
         val mode =

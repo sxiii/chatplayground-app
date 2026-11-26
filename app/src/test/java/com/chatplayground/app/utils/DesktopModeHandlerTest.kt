@@ -63,4 +63,41 @@ class DesktopModeHandlerTest {
         assertFalse(handler.useWideViewPort)
         assertFalse(handler.loadWithOverviewMode)
     }
+
+    @Test
+    fun testSetDesktopToDesktopDerivesAllFields() {
+        val handler = DesktopModeHandler
+        handler.setDesktop(true)
+
+        assertTrue(handler.isDesktop)
+        assertTrue(handler.userAgent.contains("Chrome") && handler.userAgent.contains("Windows"))
+        assertTrue(handler.useWideViewPort)
+        assertTrue(handler.loadWithOverviewMode)
+    }
+
+    @Test
+    fun testSetDesktopToMobileDerivesAllFields() {
+        val handler = DesktopModeHandler
+        handler.setDesktop(true)
+        handler.setDesktop(false)
+
+        assertFalse(handler.isDesktop)
+        assertEquals("ChatPlayground/1.0", handler.userAgent)
+        assertFalse(handler.useWideViewPort)
+        assertFalse(handler.loadWithOverviewMode)
+    }
+
+    @Test
+    fun testSetDesktopDirectlyWithoutToggle() {
+        val handler = DesktopModeHandler
+        handler.isDesktop = false // ensure mobile start
+
+        handler.setDesktop(true)
+        assertTrue(handler.isDesktop)
+        assertTrue(handler.userAgent.contains("Chrome") && handler.userAgent.contains("Windows"))
+
+        handler.setDesktop(false)
+        assertFalse(handler.isDesktop)
+        assertEquals("ChatPlayground/1.0", handler.userAgent)
+    }
 }

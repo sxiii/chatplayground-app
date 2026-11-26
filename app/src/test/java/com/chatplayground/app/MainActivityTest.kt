@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowLog
 
@@ -401,9 +402,42 @@ class MainActivityTest {
         )
     }
 
+    @Test
+    fun onCreateRestoresPersistedDesktopMode() {
+        val prefs = RuntimeEnvironment.application
+            .getSharedPreferences("desktop_mode_prefs", android.content.Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("desktop_mode", true).apply()
+
+        // Simulate toggle already applied on a previous run
+        DesktopModeHandler.setDesktop(true)
+
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+
+        assertEquals(
+            "Restored desktop UA should apply to WebView on cold start",
+            DesktopModeHandler.userAgent,
+            activity.getWebView().settings.userAgentString,
+        )
+        assertTrue(
+            "Restored desktop mode should use wide viewport",
+            activity.getWebView().settings.useWideViewPort,
+        )
+    }
+
+    @Test
+    fun onCreateRestoresPersistedMobileModeWhenNoPreference() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+
+        assertFalse(DesktopModeHandler.isDesktop)
+        assertEquals("ChatPlayground/1.0", activity.getWebView().settings.userAgentString)
+        assertFalse(activity.getWebView().settings.useWideViewPort)
+    }
+
     @After
     fun tearDown() {
         // Ensure AppLock doesn't leak locked state into subsequent tests
         AppLock.enabled = false
+        // Reset DesktopModeHandler singleton so restore tests start clean
+        DesktopModeHandler.setDesktop(false)
     }
 }
