@@ -6,7 +6,12 @@ package com.chatplayground.app.utils
  * No Android dependencies: can be fully unit-tested with plain JUnit.
  */
 object AssetRequestHandler {
-    private val ALLOWED_ASSETS = setOf("offline.html")
+    private val ALLOWED_ASSETS = setOf(
+        "offline.html",
+        "style.css",
+        "app.js",
+        "favicon.ico",
+    )
 
     /**
      * Maps an incoming WebView request URL to a bundled asset path.

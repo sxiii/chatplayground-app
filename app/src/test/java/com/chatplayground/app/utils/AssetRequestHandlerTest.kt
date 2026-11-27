@@ -46,14 +46,17 @@ class AssetRequestHandlerTest {
     }
 
     @Test
+    fun assetPathForAcceptsWhitelistedCssJsAndIconAssets() {
+        assertEquals("style.css", AssetRequestHandler.assetPathFor("file:///android_asset/style.css"))
+        assertEquals("app.js", AssetRequestHandler.assetPathFor("file:///android_asset/app.js"))
+        assertEquals("favicon.ico", AssetRequestHandler.assetPathFor("file:///android_asset/favicon.ico"))
+    }
+
+    @Test
     fun assetPathForRejectsNonWhitelistedAssetNames() {
         assertNull(
             "Asset names not on the allowed list must not be intercepted",
-            AssetRequestHandler.assetPathFor("file:///android_asset/style.css"),
-        )
-        assertNull(
-            "Asset names not on the allowed list must not be intercepted",
-            AssetRequestHandler.assetPathFor("file:///android_asset/app.js"),
+            AssetRequestHandler.assetPathFor("file:///android_asset/unknown.txt"),
         )
     }
 

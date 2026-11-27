@@ -216,3 +216,6 @@ while keeping the main content in a WebView.
 211. **[x] [LOW] Add automated integration test for `WebViewConfigurator` on real WebView instances** — DONE 2026-11-26. `WebViewConfiguratorInstrumentedTest.kt` (androidTest source set) asserts JavaScript, DOM storage, mixed-content mode, file/content access, User-Agent, and viewport defaults take effect on a real `WebView` widget. Covered by CI run `45912417013` success.
 
 212. **[x] [MEDIUM] Persist `WebViewConfigurator` security defaults across WebView recreation** — DONE 2026-11-26. `MainActivity.onCreate` re-applies `WebViewConfigurator.configure()` on every new WebView instance; verified via `WebViewConfiguratorInstrumentedTest`.
+
+213. **[MEDIUM] `AssetRequestHandler` support for bundled CSS/JS/Image resources in offline fallback**: Allow bundling offline styling (`style.css`), script (`app.js`), and favicon/images so the offline fallback page is fully styled and interactive without external network dependencies. Covered by unit tests asserting asset path resolution and interception for whitelisted css/js/png assets.
+214. **[LOW] Add automated unit tests for `WebViewCookieManager` persistence**: Verify cookie state persistence and synchronization across activity recreation.
