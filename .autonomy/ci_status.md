@@ -1,11 +1,12 @@
 # CI Status
 ## Current Run
-- **CI status**: Green at HEAD `e49db98` (commit `docs(autonomy): update vision.md with resolved ktlint fixes`). Runs `46013026542` and `46012179317` both completed **success** on `main`; nothing pending, no worker errors.
-- Last successful green runs: `46013026542`, `46012179317`, `45963932870`, `45963445507`, `45963409103`.
+- **CI status**: Green at HEAD `96db493` (commit `docs(autonomy): sync ci_status and last_run to latest green runs`). Run `46017169526` completed **success** on `main`; nothing pending, no worker errors.
+- Last successful green runs: `46017169526`, `46013026542`, `46012179317`, `45963932870`.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
 |--------|--------|-------|
+| 46017169526 | success | push 96db493 — docs(autonomy): sync ci_status and last_run to latest green runs |
 | 46013026542 | success | push e49db98 — docs(autonomy): update vision.md with resolved ktlint fixes |
 | 46012179317 | success | push bf8f390 — fix(ci): resolve remaining ktlint violations in test suite |
 | 46006721228 | failure | push (pre-63b2c9f) — Build Android App failure |
