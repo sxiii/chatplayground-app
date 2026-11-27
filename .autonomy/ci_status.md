@@ -1,20 +1,22 @@
 # CI Status
 ## Current Run
-- **CI status**: Push `9996fb9` (fix shortcut icon reference) in progress / pending GitHub Actions verification. Previous push `0095b38` failed on `ShortcutHelper.kt:21:84 Unresolved reference: ic_brightness` because `android.R.drawable.ic_brightness` is unavailable in the Android SDK. Fixed by switching to `android.R.drawable.ic_menu_info_details`.
-- Last successful green runs: `45963932870`, `45963445507`, `45963409103`, `45948270183`, `45948179020`, `45945415878`.
+- **CI status**: Green at HEAD `e49db98` (commit `docs(autonomy): update vision.md with resolved ktlint fixes`). Runs `46013026542` and `46012179317` both completed **success** on `main`; nothing pending, no worker errors.
+- Last successful green runs: `46013026542`, `46012179317`, `45963932870`, `45963445507`, `45963409103`.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
 |--------|--------|-------|
-| 45998134364 | failure | push 0095b38 — unresolved reference `ic_brightness` in `ShortcutHelper.kt` |
-| 45963932870 | success | push 40ff6fe — docs(autonomy): record cycle 6 outcome and open suggestions |
-| 45963445507 | success | push 86539a0 — docs(autonomy): record CI failure and fix cycle outcome |
-| 45963409103 | success | push 4c0984f — fix(test): multiline expression wrapping in AssetRequestHandlerIntegrationTest |
+| 46013026542 | success | push e49db98 — docs(autonomy): update vision.md with resolved ktlint fixes |
+| 46012179317 | success | push bf8f390 — fix(ci): resolve remaining ktlint violations in test suite |
+| 46006721228 | failure | push (pre-63b2c9f) — Build Android App failure |
+| 46004011706 | failure | push (pre-774483c) — ktlint violations |
+| 45999572972 | failure | push 0095b38 — unresolved reference `ic_brightness` in `ShortcutHelper.kt` |
+| 45998134364 | failure | push 0095b38 — same `ic_brightness` failure |
 
 ## CI Guard Status (local verification)
 - `scripts/check_kotlin_style.py`: PASSED (all 73 files).
 - `scripts/test_ci_checks.py`: PASSED (18 tests, all OK).
 
 ## Next Actions
-- Verify CI success for push `9996fb9`.
-- Open suggestions: item 55 (CI dependency caching/retry), item 90 (KMP port).
+- No pending CI work; all local guards green, worker green at HEAD.
+- Open suggestions remain: item 55 (CI dependency caching/retry), item 90 (KMP port for DesktopModeHandler), item 88 (sync ci_status.md to latest green run — done this cycle).

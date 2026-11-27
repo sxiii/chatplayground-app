@@ -243,20 +243,21 @@ while keeping the main content in a WebView.
 224. **[x] [LOW] `AssetRequestHandler` bundled-asset integration test**: `AssetRequestHandlerIntegrationTest.kt` exercises interception end-to-end through `MainActivity.shouldInterceptRequest` on a Robolectric-built activity so it runs in CI (not merely compiles). Asserts whitelisted assets intercept and remote URLs are rejected.
 225. **[x] [LOW] Tab-indentation negative test for `check_kotlin_style.py`**: `scripts/test_ci_checks.py::test_fails_when_line_is_tab_indented` now asserts exit non-zero and `indent` in output, proving the style guard rejects tab-indented `.kt` files. Guard runs green locally.
 
-## Last Run (2026-11-27, run 6 — development cycle)
+## Last Run (2026-11-27, run 9 — development cycle)
 
 ### Baseline
-- CI status before cycle: runs `45957278255` and `45957322245` (push `dacf7cb`) **failed** on `lintKotlinTest`: multiline-expression-wrapping violation on `AssetRequestHandlerIntegrationTest.kt:26:33`.
+- CI status before cycle: runs `46013026542` and `46012179317` both **success** at HEAD `e49db98`; working tree clean, no pending worker builds.
 
 ### What Changed
-1. **`app/src/test/java/com/chatplayground/app/utils/AssetRequestHandlerIntegrationTest.kt`** — fixed `standard:multiline-expression-wrapping` violation: `webView.webViewClient = object : WebViewClient()` reformatted so `object : WebViewClient()` starts on its own line (matching `check_kotlin_style.py` output).
-2. **`.autonomy/ci_status.md`** — recorded the CI failure (runs `45957278255`/`45957322245`) and this cycle's fix, plus local style-guard verification (exit 0 on the fixed file and all 68 files).
-3. **`.autonomy/vision.md`** — updated items 215-225 to reflect completed state; recorded this cycle as "Last Run".
+1. **`.autonomy/ci_status.md`** — synced to latest green runs (`46013026542`, `46012179317`); push `9996fb9` now confirmed built and green (was previously recorded as "in progress"); all local guards pass (style guard on 73 files, 18 CI self-tests).
+2. **`.autonomy/vision.md`** — recorded this cycle as "Last Run"; added open items below.
 
 ### Verification
-- `scripts/check_kotlin_style.py` — PASSED on `AssetRequestHandlerIntegrationTest.kt` (exit 0); PASSED on all 68 files.
-- Committed as `4c0984f` (fix) + `86539a0` (docs) to `main`; CI worker builds `45963409103` / `45963445507` in progress — verify via `gh run list` / `gh run view`.
+- `gh run list` — runs `46013026542` and `46012179317` both `completed`/`success` on `main` at HEAD `e49db98`.
+- `scripts/check_kotlin_style.py` — PASSED on all 73 Kotlin files (exit 0).
+- `scripts/test_ci_checks.py` — PASSED (18 tests).
+- Working tree clean; nothing uncommitted.
 
 ### Next Actions
-- Verify GitHub CI for pushes `4c0984f` / `86539a0` is green (`gh run list` / `gh run view`).
-- Remaining open suggestions: 206, 214 (WebView cookie persistence tests), 224-228 (scroll restoration, navigation history, session persistence, URL drop logging, ad blocker enhancements); if no bounded code task exists, subsequent cycles end with IDLE beyond documentation.
+- No pending CI work; all guards green at HEAD.
+- Open suggestions: item 55 (CI dependency caching/retry), item 90 (KMP port for DesktopModeHandler), item 206 (WebViewConfigurator integration test on real WebView), item 214 (WebViewCookieManager persistence tests).
