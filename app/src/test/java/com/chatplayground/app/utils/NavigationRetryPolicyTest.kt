@@ -75,4 +75,22 @@ class NavigationRetryPolicyTest {
         policy.reset() // count 0 -> delay 1000 * 2^0 = 1000
         assertEquals(1000, policy.backoffDelayMs())
     }
+
+    @Test
+    fun backoffDelayMsIsCappedAtMaxDelay() {
+        val policy = NavigationRetryPolicy(maxRetries = 10, baseDelayMs = 1000, maxDelayMs = 5000)
+
+        repeat(5) { policy.recordRetry() } // 1000 * 2^5 = 32000, exceeds cap
+        assertEquals(5000, policy.backoffDelayMs())
+    }
+
+    @Test
+    fun backoffDelayMsDoesNotOverflowAtLargeRetryCount() {
+        val policy = NavigationRetryPolicy(maxRetries = 100, baseDelayMs = 1000, maxDelayMs = 60000)
+
+        repeat(100) { policy.recordRetry() } // 2^100 would overflow a Long
+        // Must clamp to the positive cap, never wrap to a negative value.
+        assertEquals(60000, policy.backoffDelayMs())
+        assertTrue(policy.backoffDelayMs() > 0)
+    }
 }

@@ -106,6 +106,7 @@ This document describes the core build, CI/CD, and application runtime functions
 
 ## 6. Navigation Retry Policy (`NavigationRetryPolicy`)
 - **Retry Budget**: Exponential backoff retry (default 3 retries) for main-frame load failures. Reset on successful commit or new Intent.
+- **`backoffDelayMs()`**: Returns `baseDelayMs * 2^retryCount` for the next retry; capped at [Int.MAX_VALUE] to avoid `Long` overflow on very large retry counts.
 
 ## 7. WebView Gesture Navigation (`GestureNavigationHandler`)
 - **Swipe Gestures**: Detects horizontal flings for history navigation (Right = Back, Left = Forward).

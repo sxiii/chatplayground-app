@@ -10,6 +10,7 @@ package com.chatplayground.app.utils
 class NavigationRetryPolicy(
     private val maxRetries: Int = 3,
     private val baseDelayMs: Long = 1000,
+    private val maxDelayMs: Long = 60_000,
 ) {
     private var retryCount = 0
     private val lock = Any()
@@ -45,6 +46,21 @@ class NavigationRetryPolicy(
         synchronized(lock) { retryCount = 0 }
     }
 
-    /** Exponential backoff delay for the next retry: baseDelayMs * 2^retryCount. */
-    fun backoffDelayMs(): Long = baseDelayMs * (1L shl retryCountValue)
+    /** Exponential backoff delay for the next retry: baseDelayMs * 2^retryCount, clamped to
+     * [maxDelayMs]. The exponent is bounded so a very large retry count cannot overflow a Long. */
+    fun backoffDelayMs(): Long {
+        synchronized(lock) {
+            val exponent = retryCount.coerceIn(0, MAX_SAFE_EXPONENT)
+            val multiplier = 1L shl exponent
+            if (baseDelayMs > 0 && multiplier > Long.MAX_VALUE / baseDelayMs) {
+                return maxDelayMs
+            }
+            return (baseDelayMs * multiplier).coerceAtMost(maxDelayMs)
+        }
+    }
+
+    private companion object {
+        /** 2^62 is the largest power of two that still fits in a positive Long. */
+        const val MAX_SAFE_EXPONENT = 62
+    }
 }
