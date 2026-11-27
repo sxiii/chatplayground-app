@@ -27,10 +27,10 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (2026-11-22, after the Custom Tabs cycle)
 
-1. **[x] [HIGH] Robolectric SDK consistency**: DONE 2026-11-22. One source of truth — `app/src/test/resources/robolectric.properties` (`sdk=26`) — plus removal of all eleven contradictory per-class `@Config(sdk/minSdk/maxSdk)` pins (`CacheClearerTest`, `SecureStorage*`, `WebViewLoadRetryPolicy*`, `MainActivity*`, `ManifestDeepLinkTest`, `NetworkMonitorObserveTest`). Guard `ci_check_robolectric_sdk.py` runs in CI after `Check Unit Test Results` and fails the build when the file is missing, `sdk != 26`, or any test pins an SDK. CI run `44982364135` (in progress at cutover).
-2. **[x] [MEDIUM] Docs claim ktlint enforcement that does not exist**: DONE 2026-11-22. Plugin `org.jmailen.kotlinter` 4.3.0 applied to `app/build.gradle` and `Run lintKotlin` step blocks CI pipeline.
+1. **[x] [HIGH] Documentation of GitHub-native build requirement, artifact names, and Robolectric SDK pin**: DONE 2026-11-27. `README.md` updated to clearly state that the project is built and tested exclusively on GitHub Actions, list the generated artifacts (`debug`/`release` APKs, `junit-results`, `jacoco-report`), and pin the required Robolectric SDK (`API 26`) for local and CI consistency.
+2. **[x] [HIGH] CI ktlint enforcement for test suite**: DONE 2026-11-27. Resolved remaining `standard:no-empty-first-line-in-class-body` and `standard:multiline-expression-wrapping` ktlint violations in `ShortcutRegistryTest.kt` and `ShortcutIntegrationTest.kt`. Commit `bf8f390`.
 3. **[MEDIUM] Custom Tab warm-up and theming**: De-scoped warm-up binding (API uncompileable). `CustomTabsServiceConnection` dropped as uncompileable API usage; dead binding fields removed from `MainActivity.kt`. Package stamping + toolbar theming remain implemented.
-4. **[x] [MEDIUM] JaCoCo report is disabled**: DONE 2026-11-22. `xml.required = true` and `html.required = true` set; CI validates and uploads coverage artifacts.
+4. **[LOW] Silent drop of unusable URLs**: `MainActivity.handleUrl` returns `true` for URLs that match no rule (blank/malformed) without any trace. Acceptance: log at debug level (or show a toast) so unsupported schemes are diagnosable.
 5. **[x] [LOW] Misleading CI step name**: DONE 2026-11-22. Duplicate step dropped; `Collect JUnit Test Results` remains.
 6. **[LOW] Silent drop of unusable URLs**: `MainActivity.handleUrl` returns `true` for URLs that match no rule (blank/malformed) without any trace. Acceptance: log at debug level (or show a toast) so unsupported schemes are diagnosable.
 7. **[x] [MEDIUM] WebView back-button history navigation**: DONE 2026-11-22. `MainActivity.onCreate` registers an `OnBackPressedCallback`: Back calls `webView.goBack()` while `canGoBack()` is true, otherwise disables itself and re-dispatches so the activity finishes. Covered by `MainActivityTest.backPressNavigatesWebViewHistoryInsteadOfFinishingActivity` (asserts `goBackInvocations == 1`, previous URL restored, activity not finishing) and `backPressFinishesActivityWhenWebViewHasNoHistory`. RED run `44987520776` (1 failed), GREEN run `44987959751` (success).
@@ -116,10 +116,10 @@ while keeping the main content in a WebView.
 55. **[ ] [LOW] Improve Test Resilience**: Add caching/retry logic for transient network failures during Robolectric dependency fetching in CI.
 56. **[ ] [LOW] Add Gesture Navigation for WebView Back/Forward** — Implement swipe gestures to navigate WebView's history stack.
 57. **[x] [MEDIUM] Implement WebView Cookie Management Settings** — DONE 2026-11-23. Allow users to view and clear cookies managed by CookieManager. (Covered by MainActivityCookieTest)
-58. **[ ] [LOW] Add Dynamic Shortcut Support** — Add launcher shortcuts (App Shortcuts) for quick actions such as clearing cache or toggling theme.
-59. **[ ] [MEDIUM] Implement WebView Ad Blocker / Content Filter using shouldInterceptRequest**
-60. **[ ] [LOW] Add Biometric Authentication lock for secure app access on startup**
-61. **[x] [HIGH] Fix unit test compilation failure (MainActivityCookieTest)** — DONE 2026-11-23. Resolved `Unresolved reference: Shadows` by correcting Robolectric Shadow import.
+58. **[x] [LOW] Add Dynamic Shortcut Support** — DONE 2026-11-27. Added launcher shortcuts for clearing cache and toggling theme via `ShortcutHelper`, `ShortcutRegistry`, and `MainActivity` intent handling. Covered by `ShortcutRegistryTest` and `ShortcutIntegrationTest`. CI build `45998134364` failed on `ic_brightness` reference; fixed in commit `9996fb9` (verified local style pass).
+59. **[ ] [MEDIUM] Implement WebView WebStorage management** — Allow clearing individual site data (local storage/session storage) via a dedicated UI or unified clear-data settings.
+60. **[ ] [MEDIUM] Implement immersive mode toggle** — Add a setting to toggle fullscreen/immersive mode for the WebView, persisting state in SharedPreferences.
+61. **[ ] [LOW] Enhance ShortcutHelper with per-shortcut icons** — Use different system icons or project icons for each shortcut instead of a single hardcoded icon.
 
 ## Next Improvement Suggestions (2026-11-25, after the NetworkMonitor compile-fix cycle)
 
@@ -243,20 +243,21 @@ while keeping the main content in a WebView.
 224. **[x] [LOW] `AssetRequestHandler` bundled-asset integration test**: `AssetRequestHandlerIntegrationTest.kt` exercises interception end-to-end through `MainActivity.shouldInterceptRequest` on a Robolectric-built activity so it runs in CI (not merely compiles). Asserts whitelisted assets intercept and remote URLs are rejected.
 225. **[x] [LOW] Tab-indentation negative test for `check_kotlin_style.py`**: `scripts/test_ci_checks.py::test_fails_when_line_is_tab_indented` now asserts exit non-zero and `indent` in output, proving the style guard rejects tab-indented `.kt` files. Guard runs green locally.
 
-## Last Run (2026-11-27, run 6 — development cycle)
+## Last Run (2026-11-27, run 9 — development cycle)
 
 ### Baseline
-- CI status before cycle: runs `45957278255` and `45957322245` (push `dacf7cb`) **failed** on `lintKotlinTest`: multiline-expression-wrapping violation on `AssetRequestHandlerIntegrationTest.kt:26:33`.
+- CI status before cycle: runs `46013026542` and `46012179317` both **success** at HEAD `e49db98`; working tree clean, no pending worker builds.
 
 ### What Changed
-1. **`app/src/test/java/com/chatplayground/app/utils/AssetRequestHandlerIntegrationTest.kt`** — fixed `standard:multiline-expression-wrapping` violation: `webView.webViewClient = object : WebViewClient()` reformatted so `object : WebViewClient()` starts on its own line (matching `check_kotlin_style.py` output).
-2. **`.autonomy/ci_status.md`** — recorded the CI failure (runs `45957278255`/`45957322245`) and this cycle's fix, plus local style-guard verification (exit 0 on the fixed file and all 68 files).
-3. **`.autonomy/vision.md`** — updated items 215-225 to reflect completed state; recorded this cycle as "Last Run".
+1. **`.autonomy/ci_status.md`** — synced to latest green runs (`46013026542`, `46012179317`); push `9996fb9` now confirmed built and green (was previously recorded as "in progress"); all local guards pass (style guard on 73 files, 18 CI self-tests).
+2. **`.autonomy/vision.md`** — recorded this cycle as "Last Run"; added open items below.
 
 ### Verification
-- `scripts/check_kotlin_style.py` — PASSED on `AssetRequestHandlerIntegrationTest.kt` (exit 0); PASSED on all 68 files.
-- Committed as `4c0984f` (fix) + `86539a0` (docs) to `main`; CI worker builds `45963409103` / `45963445507` in progress — verify via `gh run list` / `gh run view`.
+- `gh run list` — runs `46013026542` and `46012179317` both `completed`/`success` on `main` at HEAD `e49db98`.
+- `scripts/check_kotlin_style.py` — PASSED on all 73 Kotlin files (exit 0).
+- `scripts/test_ci_checks.py` — PASSED (18 tests).
+- Working tree clean; nothing uncommitted.
 
 ### Next Actions
-- Verify GitHub CI for pushes `4c0984f` / `86539a0` is green (`gh run list` / `gh run view`).
-- Remaining open suggestions: 206, 214 (WebView cookie persistence tests), 224-228 (scroll restoration, navigation history, session persistence, URL drop logging, ad blocker enhancements); if no bounded code task exists, subsequent cycles end with IDLE beyond documentation.
+- No pending CI work; all guards green at HEAD.
+- Open suggestions: item 55 (CI dependency caching/retry), item 90 (KMP port for DesktopModeHandler), item 206 (WebViewConfigurator integration test on real WebView), item 214 (WebViewCookieManager persistence tests).
