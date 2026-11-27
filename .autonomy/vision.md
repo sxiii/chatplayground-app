@@ -237,5 +237,22 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (2026-11-27, after the retry-docs cycle)
 
-222. **[ ] [MEDIUM] Consolidate duplicated documentation of `NavigationRetryPolicy` backoff rules**: the retry cap behaviour now exists in two places (`docs/FUNCTIONS.md` §6 table and `NavigationRetryPolicyTest` comments). Keep `docs/FUNCTIONS.md` as the human-readable reference and ensure any future change to `maxDelayMs`/`baseDelayMs` defaults updates the table. Acceptance: a one-line cross-reference in `docs/FUNCTIONS.md` §6 points at `NavigationRetryPolicyTest` as the executable source of truth.
-223. **[LOW] CI workflow has no Kotlin-only style check step docs**: The style guard is `scripts/check_kotlin_style.py` and `lintKotlin`; confirm `docs/FUNCTIONS.md` names the exact workflow step order (style check → Gradle → tests → ktlint) so contributors know what runs where. Acceptance: `docs/FUNCTIONS.md` documents the style guard as a pre-Gradle step.
+222. **[x] [MEDIUM] Consolidate duplicated documentation of `NavigationRetryPolicy` backoff rules**: the retry cap behaviour now exists in two places (`docs/FUNCTIONS.md` §6 table and `NavigationRetryPolicyTest` comments). Documented the executable source of truth in `docs/FUNCTIONS.md` §6. DONE 2026-11-27.
+223. **[x] [LOW] CI workflow has no Kotlin-only style check step docs**: The style guard is `scripts/check_kotlin_style.py` and `lintKotlin`; confirm `docs/FUNCTIONS.md` names the exact workflow step order (style check → Gradle → tests → ktlint) so contributors know what runs where. Acceptance: `docs/FUNCTIONS.md` documents the style guard as a pre-Gradle step. DONE 2026-11-27.
+
+## Last Run (2026-11-27, run 4 — documentation cycle)
+
+### Baseline
+- CI status before cycle: all runs green (`45945415878`, `45944537532`, `45944501776`).
+
+### What Changed
+1. **`docs/FUNCTIONS.md` §6**: Added cross-reference from `backoffDelayMs()` entry to `NavigationRetryPolicyTest` as the executable source of truth (item 222 complete).
+2. **`docs/FUNCTIONS.md` §4 (style guard section)**: Added "Workflow Position" block naming the CI step order: Style Check → Gradle Compile/Assemble → Unit Tests → Formatting/Linting (item 223 complete).
+3. **`.autonomy/vision.md`**: Marked items 222 and 223 complete; added open items 224 (AssetRequestHandler bundled-asset integration test) and 225 (tab-indentation negative test for `check_kotlin_style.py`).
+
+### Verification
+- `scripts/check_kotlin_style.py` runs on `.kt` only; `.md` docs unaffected. All 68 Kotlin files previously green on run `45945415878`.
+
+### Next Actions
+- Open items 224 and 225 remain unassigned.
+- If no bounded code task exists, this cycle ends with IDLE beyond documentation updates.

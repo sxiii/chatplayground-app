@@ -33,6 +33,7 @@ This document describes the core build, CI/CD, and application runtime functions
 
 ### `scripts/check_kotlin_style.py` (Final Newlines & Formatting Guard)
 - **Purpose:** Fast, pure-Python guard asserting every `.kt` file ends with exactly one newline, uses no tab indentation, and carries no trailing whitespace.
+- **Workflow Position:** Executed as an early-stage check alongside other Python-based style check and audit guards. In the CI pipeline, the exact checks and build steps follow the order: Style Check (`check_kotlin_style.py`) → Gradle Compile/Assemble → Unit Tests → Formatting/Linting (`lintKotlin` and `lint`), ensuring syntax/style errors fail the build within seconds before expensive Android compile or Gradle tasks run.
 - **Self-Test:** Includes a multiline-expression-wrapping heuristic that rejects code where a multiline call starts on the same line as its variable declaration, mirroring the project's ktlint policy.
 
 ## 2. Local Gradle Wrapper Utility
@@ -106,7 +107,7 @@ This document describes the core build, CI/CD, and application runtime functions
 
 ## 6. Navigation Retry Policy (`NavigationRetryPolicy`)
 - **Retry Budget**: Exponential backoff retry (default 3 retries) for main-frame load failures. Reset on successful commit or new Intent. Sub-frame failures never retry.
-- **`backoffDelayMs()`**: Returns `baseDelayMs * 2^retryCount` for the next retry, clamped at `maxDelayMs`. Defaults: `baseDelayMs = 1000`, `maxDelayMs = 60000`.
+- **`backoffDelayMs()`**: Returns `baseDelayMs * 2^retryCount` for the next retry, clamped at `maxDelayMs`. Defaults: `baseDelayMs = 1000`, `maxDelayMs = 60000`. (See `NavigationRetryPolicyTest` for executable fixtures and cap assertions).
 - **Overflow protection**: The exponent is bounded (`MAX_SAFE_EXPONENT = 62`) so a very large retry count cannot overflow a `Long`; the delay always clamps to the positive `maxDelayMs` cap and never wraps negative.
 
 | retryCount | baseDelayMs 1000 | Computed | Applied delay |
