@@ -12,7 +12,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class ShortcutIntegrationTest {
-
     @Test
     fun registerShortcutsPublishesDynamicShortcuts() {
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
@@ -26,9 +25,10 @@ class ShortcutIntegrationTest {
 
     @Test
     fun handlingClearCacheShortcutActionClearsData() {
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            action = "com.chatplayground.app.action.CLEAR_CACHE"
-        }
+        val intent =
+            Intent(Intent.ACTION_VIEW).apply {
+                action = "com.chatplayground.app.action.CLEAR_CACHE"
+            }
         val activity = Robolectric.buildActivity(MainActivity::class.java, intent).create().get()
         assertNotNull(activity)
     }
