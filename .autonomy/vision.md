@@ -256,8 +256,8 @@ while keeping the main content in a WebView.
 ### Verification
 - `scripts/check_kotlin_style.py` — PASSED on `AssetRequestHandlerIntegrationTest.kt` and `test_ci_checks.py`.
 - `scripts/test_ci_checks.py` — 18/18 tests OK, including the tab-indentation negative test.
-- Committed as `2c6c9e4` to `main`; CI worker build not yet run — verify via `gh run list` before the next cycle.
+- Committed as `2a7e6f2` to `main`; CI worker build not yet run — verify via `gh run list` before the next cycle.
 
 ### Next Actions
-- Verify GitHub CI for push `2c6c9e4` is green (`gh run list` / `gh run view`).
+- Verify GitHub CI for push `2a7e6f2` is green (`gh run list` / `gh run view`).
 - Remaining open suggestions: biometric lock, dynamic shortcuts, ad blocker; if no bounded code task exists, subsequent cycles end with IDLE beyond documentation.
