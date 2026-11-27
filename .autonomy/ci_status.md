@@ -1,9 +1,9 @@
 # CI Status
 
 ## Current Run
-- **CI pending**: run triggered by commit `69217b9` ("docs(autonomy): update cycle summary for AssetRequestHandler fix") on `main`. Build result not yet confirmed — poll GitHub Actions for completion.
+- **CI pending**: run `45920423518` (commit `0d274b6`, "fix: move java import to end per ktlint import-ordering") on `main`. Build result not yet confirmed — poll GitHub Actions for completion.
 - Last successful green run: `45903583316` (`06eb12f`). Run `45914711616` (`06e4f94`) was also green.
-- Last failed run: `45917202100` (commit `ea6bfdf`) — failed on `AssetRequestHandlerTest.shouldInterceptMirrorsAssetPathFor` because `style.css` was added to `ALLOWED_ASSETS` but the test still asserted it was not interceptable. Fixed in `70ed173` (and records in `69217b9`).
+- Last failed run: `45919884418` (commit `70ed173`) — failed on ktlint `standard:import-ordering` in `AssetRequestHandlerTest.kt` (`java.io.File` import must come after `org.junit` imports). Fixed in `0d274b6`.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
