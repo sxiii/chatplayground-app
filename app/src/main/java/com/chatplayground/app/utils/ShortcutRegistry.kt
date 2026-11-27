@@ -19,8 +19,8 @@ data class ShortcutDefinition(
  * via ShortcutManagerCompat), so no shipped resource needs editing.
  */
 object ShortcutRegistry {
-
-    private val all = listOf(
+    private val all =
+        listOf(
         ShortcutDefinition(
             id = "clear_cache",
             label = "Очистить кэш",

@@ -116,10 +116,10 @@ while keeping the main content in a WebView.
 55. **[ ] [LOW] Improve Test Resilience**: Add caching/retry logic for transient network failures during Robolectric dependency fetching in CI.
 56. **[ ] [LOW] Add Gesture Navigation for WebView Back/Forward** — Implement swipe gestures to navigate WebView's history stack.
 57. **[x] [MEDIUM] Implement WebView Cookie Management Settings** — DONE 2026-11-23. Allow users to view and clear cookies managed by CookieManager. (Covered by MainActivityCookieTest)
-58. **[ ] [LOW] Add Dynamic Shortcut Support** — Add launcher shortcuts (App Shortcuts) for quick actions such as clearing cache or toggling theme.
-59. **[ ] [MEDIUM] Implement WebView Ad Blocker / Content Filter using shouldInterceptRequest**
-60. **[ ] [LOW] Add Biometric Authentication lock for secure app access on startup**
-61. **[x] [HIGH] Fix unit test compilation failure (MainActivityCookieTest)** — DONE 2026-11-23. Resolved `Unresolved reference: Shadows` by correcting Robolectric Shadow import.
+58. **[x] [LOW] Add Dynamic Shortcut Support** — DONE 2026-11-27. Added launcher shortcuts for clearing cache and toggling theme via `ShortcutHelper`, `ShortcutRegistry`, and `MainActivity` intent handling. Covered by `ShortcutRegistryTest` and `ShortcutIntegrationTest`. CI build `45998134364` failed on `ic_brightness` reference; fixed in commit `9996fb9` (verified local style pass).
+59. **[ ] [MEDIUM] Implement WebView WebStorage management** — Allow clearing individual site data (local storage/session storage) via a dedicated UI or unified clear-data settings.
+60. **[ ] [MEDIUM] Implement immersive mode toggle** — Add a setting to toggle fullscreen/immersive mode for the WebView, persisting state in SharedPreferences.
+61. **[ ] [LOW] Enhance ShortcutHelper with per-shortcut icons** — Use different system icons or project icons for each shortcut instead of a single hardcoded icon.
 
 ## Next Improvement Suggestions (2026-11-25, after the NetworkMonitor compile-fix cycle)
 
