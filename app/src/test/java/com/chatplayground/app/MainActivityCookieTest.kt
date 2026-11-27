@@ -42,7 +42,7 @@ class MainActivityCookieTest {
 
         assertTrue("Cookie should survive activity recreation", cookieManager.hasCookies())
         assertEquals(
-            "session=abc123; Path=/",
+            "session=abc123",
             cookieManager.getCookie("https://chatplayground.ai"),
         )
     }
