@@ -219,3 +219,9 @@ while keeping the main content in a WebView.
 
 213. **[MEDIUM] `AssetRequestHandler` support for bundled CSS/JS/Image resources in offline fallback**: Allow bundling offline styling (`style.css`), script (`app.js`), and favicon/images so the offline fallback page is fully styled and interactive without external network dependencies. Covered by unit tests asserting asset path resolution and interception for whitelisted css/js/png assets.
 214. **[LOW] Add automated unit tests for `WebViewCookieManager` persistence**: Verify cookie state persistence and synchronization across activity recreation.
+
+## Vision Items (Nov 27, 2026)
+
+215. **[x] [MEDIUM] `AssetRequestHandler` bundled CSS/JS assets**: Allow bundling offline styling (`style.css`), script (`app.js`) so the offline fallback page is fully styled and interactive without external network dependencies. Covered by unit tests asserting asset path resolution and interception for whitelisted css/js assets. Offline page `offline.html` now loads `style.css` and `app.js` instead of inline markup. CI run triggered for commit `69217b9`; result pending.
+216. **[x] [LOW] `AssetRequestHandler` allowlist/inventory invariant**: `AssetRequestHandler.ALLOWED_ASSETS` formalized as `internal val` with docstring; new regression test `AssetRequestHandlerTest.everyAllowedAssetExistsInBundledAssets` asserts every whitelisted asset has a non-empty file in `app/src/main/assets`, so the allowlist cannot drift from the shipped APK.
+
