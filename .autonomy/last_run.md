@@ -1,18 +1,21 @@
 # Last Run (2026-11-27)
 
 ## Baseline
-- CI status: Run `45920604264` — **success**. Full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
+- CI status before cycle: Run `45922207118` — **success**.
 
 ## What Changed (this cycle)
-1. **Fixed ktlint `standard:import-ordering` failure**: Moved `import java.io.File` to the end (after `org.junit.*` imports) in `app/src/test/java/com/chatplayground/app/utils/AssetRequestHandlerTest.kt`. This resolved the ktlint violation that broke CI run `45919884418` (commit `70ed173`).
-2. **Confirmed CI green**: GitHub Actions CI run `45920423518` (commit `0d274b6`) completed **success**, and run `45920604264` (commit `1a4453b`) completed **success**.
-3. **Autonomy records finalized**: Updated `.autonomy/ci_status.md` with green run IDs `45920423518` and `45920604264`; marked vision items 215-216 complete in `.autonomy/vision.md`; added vision items 217-218.
-4. **Pushed all commits to `main`** on `origin`.
+1. **Bounded task (vision item 217)**: Expanded `NavigationRetryPolicy` backoff coverage and added a real safety cap.
+   - Added `maxDelayMs` constructor parameter (default `60_000` ms) to `NavigationRetryPolicy`.
+   - Rewrote `backoffDelayMs()` to clamp to `maxDelayMs` and bound the exponent (`MAX_SAFE_EXPONENT = 62`) with an overflow guard, so a very large retry count returns the positive cap instead of wrapping negative.
+   - New tests: `backoffDelayMsIsCappedAtMaxDelay` (5 retries, cap 5000 → 5000) and `backoffDelayMsDoesNotOverflowAtLargeRetryCount` (100 retries → positive 60000). Existing `backoffDelayMsGrowsExponentially` still covers 1000→2000→4000.
+2. **Docs**: Documented the `maxDelayMs` cap under `docs/FUNCTIONS.md` §6.
+3. **Vision**: Marked item 217 done; added improvement suggestions 219 (remove dead `retryCount()` method), 220 (cookie-persistence tests, item 214), 221 (document cap table).
 
 ## Verification
 - `scripts/check_kotlin_style.py` — PASSED on all 68 Kotlin files.
-- GitHub Actions CI run `45920423518` — **success** (commit `0d274b6`).
-- GitHub Actions CI run `45920604264` — **success** (commit `1a4453b`).
+- GitHub Actions CI run `45925800147` (commit `22c00cb`) — **success**. Full build, all tests (incl. new NavigationRetryPolicy tests), lint, ktlint, JaCoCo green.
 
 ## Next Actions
-None outstanding for this cycle. All changes committed, pushed, and confirmed green on the GitHub worker.
+- Item 219: remove unused `NavigationRetryPolicy.retryCount()` (dead code).
+- Item 220: cookie persistence tests across activity recreation.
+- Item 218: confirm `check_kotlin_style.py` glob explicitly documents test source-set coverage.

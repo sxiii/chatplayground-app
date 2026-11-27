@@ -1,20 +1,19 @@
-# Cycle Summary (2026-11-27)
+# Cycle Summary (2026-11-27, run 2)
 
 ## Objective
-Fix CI failure caused by outdated test expectations (`AssetRequestHandler` allowlist sync) and confirm the follow-up CI run passes on the GitHub worker.
+Execute one bounded development cycle: verify CI baseline, then complete vision item 217 — cap `NavigationRetryPolicy` backoff delay and expand its unit tests for the maximum cap and exponential-growth bounds.
 
 ## What Changed
-1. **Updated `AssetRequestHandler.ALLOWED_ASSETS`**: Formalized as `internal val` with docstring; removed `favicon.ico`; kept `offline.html`, `style.css`, `app.js`. Added regression test `AssetRequestHandlerTest.everyAllowedAssetExistsInBundledAssets` to prevent drift between allowlist and bundled assets.
-2. **Bundled Assets**: Created `app/src/main/assets/style.css` and `app/src/main/assets/app.js`; updated `offline.html` to link them instead of inline styles/scripts.
-3. **Fixed Test Regression**: Updated `AssetRequestHandlerTest.kt` to expect `style.css` as interceptable (`assertTrue`), replaced negative case with `unknown.txt`, added `assetPathForAcceptsWhitelistedCssAndJsAssets` test, added `import java.io.File`.
-4. **Fixed ktlint `standard:import-ordering`**: Moved `import java.io.File` to after the `org.junit.*` imports (commit `0d274b6`). This resolved the CI failure on run `45919884418`.
-5. **Updated autonomy records**: `.autonomy/ci_status.md`, `.autonomy/last_run.md`, `.autonomy/vision.md` (vision items 215-216 marked complete, items 217-218 added).
+1. **`NavigationRetryPolicy`**: Added `maxDelayMs` (default 60s) constructor parameter. `backoffDelayMs()` now clamps the computed `baseDelayMs * 2^retryCount` to `maxDelayMs`, bounds the exponent at `MAX_SAFE_EXPONENT = 62`, and guards the multiply against `Long` overflow, so large retry counts return the positive cap.
+2. **`NavigationRetryPolicyTest`**: Added `backoffDelayMsIsCappedAtMaxDelay` and `backoffDelayMsDoesNotOverflowAtLargeRetryCount`.
+3. **`docs/FUNCTIONS.md`**: Documented the cap behavior in §6.
+4. **`.autonomy/vision.md`**: Marked item 217 complete; added suggestions 219-221.
 
 ## Verification
-- `scripts/check_kotlin_style.py` — PASSED on all 68 Kotlin files.
-- GitHub Actions CI run `45919884418` (commit `70ed173`) — **failure** (ktlint import-ordering on `AssetRequestHandlerTest.kt`).
-- GitHub Actions CI run `45920423518` (commit `0d274b6`) — **success**. Full build, all tests, lint, ktlint, JaCoCo green.
-- GitHub Actions CI run `45920604264` (commit `1a4453b`) — **success**. Full build green.
+- `scripts/check_kotlin_style.py` — PASSED (68 files) before push.
+- GitHub Actions CI run `45925800147` (commit `22c00cb`) — **success**. Full build, all unit tests (including the two new ones), lint, ktlint, JaCoCo green on the GitHub worker.
 
 ## Next Actions
-None outstanding for this cycle. All changes committed and pushed to `main`; CI confirmed green on the GitHub worker.
+- Item 219: remove unused `NavigationRetryPolicy.retryCount()` method.
+- Item 220: WebView cookie-persistence test across activity recreation.
+- Item 218: verify/document test source-set coverage of the local ktlint guard.
