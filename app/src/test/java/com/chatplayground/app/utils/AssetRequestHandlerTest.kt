@@ -1,5 +1,6 @@
 package com.chatplayground.app.utils
 
+import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -46,10 +47,34 @@ class AssetRequestHandlerTest {
     }
 
     @Test
-    fun assetPathForAcceptsWhitelistedCssJsAndIconAssets() {
+    fun assetPathForAcceptsWhitelistedCssAndJsAssets() {
         assertEquals("style.css", AssetRequestHandler.assetPathFor("file:///android_asset/style.css"))
         assertEquals("app.js", AssetRequestHandler.assetPathFor("file:///android_asset/app.js"))
-        assertEquals("favicon.ico", AssetRequestHandler.assetPathFor("file:///android_asset/favicon.ico"))
+    }
+
+    @Test
+    fun everyAllowedAssetExistsInBundledAssets() {
+        val assetsDir = locateAssetsDir()
+        val missing =
+            AssetRequestHandler.ALLOWED_ASSETS.filter { name ->
+                val file = File(assetsDir, name)
+                !file.isFile || file.length() == 0L
+            }
+        assertTrue(
+            "Whitelisted assets must ship in app/src/main/assets; missing or empty: $missing",
+            missing.isEmpty(),
+        )
+    }
+
+    /** Finds app/src/main/assets from either the module dir or the repo root. */
+    private fun locateAssetsDir(): File {
+        var dir: File? = File(System.getProperty("user.dir") ?: ".").absoluteFile
+        while (dir != null) {
+            File(dir, "app/src/main/assets").takeIf { it.isDirectory }?.let { return it }
+            File(dir, "src/main/assets").takeIf { it.isDirectory }?.let { return it }
+            dir = dir.parentFile
+        }
+        throw AssertionError("Could not locate app/src/main/assets from ${System.getProperty("user.dir")}")
     }
 
     @Test
@@ -94,9 +119,17 @@ class AssetRequestHandlerTest {
     fun shouldInterceptMirrorsAssetPathFor() {
         assertTrue("offline.html is interceptable", AssetRequestHandler.shouldIntercept("file:///android_asset/offline.html"))
 
+        assertTrue(
+            "style.css is whitelisted and must be interceptable",
+            AssetRequestHandler.shouldIntercept("file:///android_asset/style.css"),
+        )
+
         assertFalse("https is not interceptable", AssetRequestHandler.shouldIntercept("https://chatplayground.ai"))
         assertFalse("null is not interceptable", AssetRequestHandler.shouldIntercept(nullUrl))
-        assertFalse("non-whitelisted asset is not interceptable", AssetRequestHandler.shouldIntercept("file:///android_asset/style.css"))
+        assertFalse(
+            "non-whitelisted asset is not interceptable",
+            AssetRequestHandler.shouldIntercept("file:///android_asset/unknown.txt"),
+        )
         assertFalse("path traversal is not interceptable", AssetRequestHandler.shouldIntercept("file:///android_asset/../../../etc/passwd"))
     }
 }

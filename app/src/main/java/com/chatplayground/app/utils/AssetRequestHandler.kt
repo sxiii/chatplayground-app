@@ -6,12 +6,18 @@ package com.chatplayground.app.utils
  * No Android dependencies: can be fully unit-tested with plain JUnit.
  */
 object AssetRequestHandler {
-    private val ALLOWED_ASSETS = setOf(
-        "offline.html",
-        "style.css",
-        "app.js",
-        "favicon.ico",
-    )
+    /**
+     * Bundled assets the WebView may load from `file:///android_asset/`.
+     * Every entry must have a non-empty file in `app/src/main/assets`;
+     * `AssetRequestHandlerTest.everyAllowedAssetExistsInBundledAssets` enforces
+     * that invariant so the allowlist cannot drift from the shipped APK.
+     */
+    internal val ALLOWED_ASSETS =
+        setOf(
+            "offline.html",
+            "style.css",
+            "app.js",
+        )
 
     /**
      * Maps an incoming WebView request URL to a bundled asset path.
