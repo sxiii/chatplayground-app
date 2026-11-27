@@ -18,7 +18,7 @@ object ShortcutHelper {
                 .setShortLabel(def.label)
                 .setLongLabel(def.label)
                 .setIntent(intent)
-                .setIcon(IconCompat.createWithResource(context, android.R.drawable.ic_brightness))
+                .setIcon(IconCompat.createWithResource(context, android.R.drawable.ic_menu_info_details))
                 .build()
         }
         ShortcutManagerCompat.setDynamicShortcuts(context, shortcuts)
