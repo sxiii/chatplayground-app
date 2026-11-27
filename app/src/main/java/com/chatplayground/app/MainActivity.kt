@@ -43,6 +43,7 @@ import com.chatplayground.app.utils.GestureNavigationHandler
 import com.chatplayground.app.utils.GestureNavigationTarget
 import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.NavigationRetryPolicy
+import com.chatplayground.app.utils.ShortcutHelper
 import com.chatplayground.app.utils.UrlProvider
 import com.chatplayground.app.utils.WebViewConfigurator
 import com.chatplayground.app.utils.WebViewDebugging
@@ -348,6 +349,8 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
                 }
             }
         }
+        ShortcutHelper.registerShortcuts(this)
+        handleShortcutIntent(intent)
     }
 
     override fun onDestroy() {
@@ -373,11 +376,27 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
     public override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        handleShortcutIntent(intent)
         val deepLinkUrl = DeepLinkResolver.resolve(intent.data?.toString()) ?: return
         if (!::webView.isInitialized) return
         navigationRetryPolicy.reset()
         lastTargetUrl = deepLinkUrl
         webView.loadUrl(deepLinkUrl)
+    }
+
+    private fun handleShortcutIntent(intent: Intent?) {
+        when (intent?.action) {
+            "com.chatplayground.app.action.CLEAR_CACHE" -> {
+                DataClearer.clearAllData(this)
+                Toast.makeText(this, "Cache cleared via shortcut", Toast.LENGTH_SHORT).show()
+            }
+            "com.chatplayground.app.action.TOGGLE_THEME" -> {
+                val isDark = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+                val newMode = if (isDark) AppCompatDelegate.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_YES
+                AppCompatDelegate.setDefaultNightMode(newMode)
+                Toast.makeText(this, "Theme toggled via shortcut", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

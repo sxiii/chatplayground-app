@@ -20,13 +20,13 @@ object DataClearer {
      */
     fun clearAllData(
         context: Context,
-        webView: WebView,
+        webView: WebView? = null,
     ) {
         // Clear offline cache
         OfflineCacheManager(context.cacheDir).clearCache()
 
         // Clear WebView cache and cookies
-        webView.clearCache(true)
+        webView?.clearCache(true)
         val cookieManager = CookieManager.getInstance()
         cookieManager.removeAllCookies(null)
         cookieManager.flush()

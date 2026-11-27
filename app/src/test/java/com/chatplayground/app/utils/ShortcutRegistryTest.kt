@@ -13,31 +13,28 @@ class ShortcutRegistryTest {
 
     @Test
     fun registryContainsClearCacheShortcut() {
-        val registry = ShortcutRegistry()
-        val shortcut = registry.shortcutById("clear_cache")
+        val shortcut = ShortcutRegistry.shortcutById("clear_cache")
         assertEquals("Очистить кэш", shortcut.label)
         assertEquals("com.chatplayground.app.action.CLEAR_CACHE", shortcut.intentAction)
     }
 
     @Test
     fun registryContainsToggleThemeShortcut() {
-        val registry = ShortcutRegistry()
-        val shortcut = registry.shortcutById("toggle_theme")
+        val shortcut = ShortcutRegistry.shortcutById("toggle_theme")
         assertEquals("Переключить тему", shortcut.label)
         assertEquals("com.chatplayground.app.action.TOGGLE_THEME", shortcut.intentAction)
     }
 
     @Test
     fun allShortcutsHaveUniqueIds() {
-        val registry = ShortcutRegistry()
-        val ids = registry.allShortcuts.map { it.id }.toSet()
-        assertEquals(registry.allShortcuts.size, ids.size)
+        val shortcuts = ShortcutRegistry.allShortcuts()
+        val ids = shortcuts.map { it.id }.toSet()
+        assertEquals(shortcuts.size, ids.size)
     }
 
     @Test
     fun everyShortcutHasNonEmptyLabelAndIcon() {
-        val registry = ShortcutRegistry()
-        for (shortcut in registry.allShortcuts) {
+        for (shortcut in ShortcutRegistry.allShortcuts()) {
             assertEquals(false, shortcut.label.isBlank())
             assertEquals(false, shortcut.iconRes.isBlank())
         }
