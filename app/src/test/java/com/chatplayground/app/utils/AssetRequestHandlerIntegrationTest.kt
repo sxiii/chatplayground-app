@@ -23,21 +23,22 @@ class AssetRequestHandlerIntegrationTest {
         val webView = activity.getWebView()
 
         var intercepted: String? = null
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldInterceptRequest(
-                view: android.webkit.WebView?,
-                url: String?,
-            ): android.webkit.WebResourceResponse? {
-                if (com.chatplayground.app.utils.AssetRequestHandler.shouldIntercept(url)) {
-                    intercepted = url
-                    val path = com.chatplayground.app.utils.AssetRequestHandler.assetPathFor(url)
-                    assertNotNull(path)
-                    val stream = activity.assets.open(path!!)
-                    return android.webkit.WebResourceResponse("text/html", "UTF-8", stream)
+        webView.webViewClient =
+            object : WebViewClient() {
+                override fun shouldInterceptRequest(
+                    view: android.webkit.WebView?,
+                    url: String?,
+                ): android.webkit.WebResourceResponse? {
+                    if (com.chatplayground.app.utils.AssetRequestHandler.shouldIntercept(url)) {
+                        intercepted = url
+                        val path = com.chatplayground.app.utils.AssetRequestHandler.assetPathFor(url)
+                        assertNotNull(path)
+                        val stream = activity.assets.open(path!!)
+                        return android.webkit.WebResourceResponse("text/html", "UTF-8", stream)
+                    }
+                    return super.shouldInterceptRequest(view, url)
                 }
-                return super.shouldInterceptRequest(view, url)
             }
-        }
 
         val testUrl = "file:///android_asset/offline.html"
         assertTrue(

@@ -1,8 +1,8 @@
 # CI Status
 ## Current Run
-- **CI status**: All recent runs green. Run `45944537532` (commit `bf5d2ad`, docs(vision): mark cookie persistence test done) completed **success**. Run `45944501776` (commit `c770ddb`, fix(test): correct cookie getCookie expectation for Robolectric 4.18) completed **success**. Full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
-- Last successful green runs: `45945415878` (`03b83af` — docs(autonomy): record cookie-test fix cycle outcome), `45944537532` (`bf5d2ad`), `45944501776` (`c770ddb`), `45925800147` (`22c00cb`), `45922207118` (`7d50eaa`), `45921576232` (`ff395b6`).
-- Current push `2a7e6f2` (test(autonomy): AssetRequestHandler integration test + tab-indent guard test) has been pushed to `main`; CI worker build not yet run — verify via `gh run list` before the next cycle.
+- **CI status**: All recent runs green. Run `45944537532` (commit `bf5d2ad`) and `45944501776` (commit `c770ddb`) completed **success**. Full build, all tests, lint, ktlint, JaCoCo green on the GitHub worker.
+- Last successful green runs: `45948270183`, `45948179020` (`a961dfb`), `45945415878`, `45944537532`, `45944501776`, `45925800147`.
+- Current push `dacf7cb` (docs(autonomy): correct commit hash 2a7e6f2) — CI worker build **in progress** (`45957322245`). Underlying `2a7e6f2` build **in progress** (`45957278255`).
 - Last resolved failure: `45940216976` (commit `cb6f612`) — `MainActivityCookieTest.cookieStateSurvivesActivityRecreation` failed on `getCookie()` expectation: Robolectric 4.18 `RoboCookieManager.getCookie()` returns `name=value` (`"session=abc123"`), not `"session=abc123; Path=/"`. Fixed in commit `c770ddb`, verified green on run `45944501776`.
 
 ## Recent CI Runs
