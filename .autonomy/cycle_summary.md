@@ -1,18 +1,14 @@
 # Cycle Summary (2026-11-27)
 
 ## Objective
-Verify CI run `45912417013` green, close vision items 211 and 212 (`WebViewConfigurator` real-WebView instrumentation test and security defaults persistence), and record cycle outcome.
+Fix CI failure caused by outdated test expectations (item 213 implementation, `AssetRequestHandler` allowlist sync).
 
 ## What Changed
-
-1. **Verified CI run `45912417013`** — full build, all tests (unit + androidTest), lint, ktlint, JaCoCo green on the GitHub worker.
-2. **Closed vision item 211** — `WebViewConfiguratorInstrumentedTest.kt` added as androidTest asserting JavaScript, DOM storage, mixed-content mode (`NEVER_ALLOW`), file/content access disabled, custom User-Agent (`ChatPlayground/1.0`), viewport defaults (`useWideViewPort=false`, `loadWithOverviewMode=false`), and `configure()` idempotency on a real `WebView` widget.
-3. **Closed vision item 212** — `WebViewConfigurator.configure()` is re-applied on every `WebView` instance created in `MainActivity.onCreate`; verified via `WebViewConfiguratorInstrumentedTest`.
-4. **Updated `.autonomy/` records** — `ci_status.md`, `last_run.md`, and `cycle_summary.md` reflect the confirmed green run `45912417013`.
+1. **Updated `AssetRequestHandler.ALLOWED_ASSETS`**: Formalized allowlist and added a regression test `AssetRequestHandlerTest.everyAllowedAssetExistsInBundledAssets` to prevent drift.
+2. **Bundled Assets**: Created `app/src/main/assets/style.css` and `app/src/main/assets/app.js` and updated `offline.html` to load these instead of inline styles/scripts.
+3. **Fixed Test Regression**: Updated `AssetRequestHandlerTest.kt` to expect `style.css` as interceptable and remove `favicon.ico` from the allowlist (not yet needed/implemented).
 
 ## Verification
 - `scripts/check_kotlin_style.py` — PASSED on all Kotlin files.
-- GitHub Actions CI run `45912417013` — **success**.
+- GitHub Actions CI build triggered for commit `70ed173`.
 
-## Next Steps
-- Select next backlog items or evidence-backed improvements for the next cron cycle.
