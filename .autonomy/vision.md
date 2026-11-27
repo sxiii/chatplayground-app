@@ -243,21 +243,20 @@ while keeping the main content in a WebView.
 224. **[x] [LOW] `AssetRequestHandler` bundled-asset integration test**: `AssetRequestHandlerIntegrationTest.kt` exercises interception end-to-end through `MainActivity.shouldInterceptRequest` on a Robolectric-built activity so it runs in CI (not merely compiles). Asserts whitelisted assets intercept and remote URLs are rejected.
 225. **[x] [LOW] Tab-indentation negative test for `check_kotlin_style.py`**: `scripts/test_ci_checks.py::test_fails_when_line_is_tab_indented` now asserts exit non-zero and `indent` in output, proving the style guard rejects tab-indented `.kt` files. Guard runs green locally.
 
-## Last Run (2026-11-27, run 5 — development cycle)
+## Last Run (2026-11-27, run 6 — development cycle)
 
 ### Baseline
-- CI status before cycle: all runs green (`45945415878`, `45944537532`, `45944501776`); push `a961dfb` verified green on run `45948179020`.
+- CI status before cycle: runs `45957278255` and `45957322245` (push `dacf7cb`) **failed** on `lintKotlinTest`: multiline-expression-wrapping violation on `AssetRequestHandlerIntegrationTest.kt:26:33`.
 
 ### What Changed
-1. **`app/src/test/java/com/chatplayground/app/utils/AssetRequestHandlerIntegrationTest.kt`** (new): Robolectric integration test exercising `AssetRequestHandler` interception end-to-end through `MainActivity.shouldInterceptRequest` on a real Robolectric-built activity — asserts whitelisted assets intercept and remote URLs are rejected. Runs in CI (unlike androidTest, which only compiles).
-2. **`scripts/test_ci_checks.py`**: `test_fails_when_line_is_tab_indented` now asserts exit non-zero and `indent` in output (item 225); fixed pre-existing style violations (final newline, line length) on this file.
-3. **`.autonomy/vision.md`**: Marked items 224 and 225 complete; recorded this cycle as "Last Run".
+1. **`app/src/test/java/com/chatplayground/app/utils/AssetRequestHandlerIntegrationTest.kt`** — fixed `standard:multiline-expression-wrapping` violation: `webView.webViewClient = object : WebViewClient()` reformatted so `object : WebViewClient()` starts on its own line (matching `check_kotlin_style.py` output).
+2. **`.autonomy/ci_status.md`** — recorded the CI failure (runs `45957278255`/`45957322245`) and this cycle's fix, plus local style-guard verification (exit 0 on the fixed file and all 68 files).
+3. **`.autonomy/vision.md`** — updated items 215-225 to reflect completed state; recorded this cycle as "Last Run".
 
 ### Verification
-- `scripts/check_kotlin_style.py` — PASSED on `AssetRequestHandlerIntegrationTest.kt` and `test_ci_checks.py`.
-- `scripts/test_ci_checks.py` — 18/18 tests OK, including the tab-indentation negative test.
-- Committed as `2a7e6f2` to `main`; CI worker build not yet run — verify via `gh run list` before the next cycle.
+- `scripts/check_kotlin_style.py` — PASSED on `AssetRequestHandlerIntegrationTest.kt` (exit 0); PASSED on all 68 files.
+- Committed as `4c0984f` (fix) + `86539a0` (docs) to `main`; CI worker builds `45963409103` / `45963445507` in progress — verify via `gh run list` / `gh run view`.
 
 ### Next Actions
-- Verify GitHub CI for push `2a7e6f2` is green (`gh run list` / `gh run view`).
-- Remaining open suggestions: biometric lock, dynamic shortcuts, ad blocker; if no bounded code task exists, subsequent cycles end with IDLE beyond documentation.
+- Verify GitHub CI for pushes `4c0984f` / `86539a0` is green (`gh run list` / `gh run view`).
+- Remaining open suggestions: 206, 214 (WebView cookie persistence tests), 224-228 (scroll restoration, navigation history, session persistence, URL drop logging, ad blocker enhancements); if no bounded code task exists, subsequent cycles end with IDLE beyond documentation.
