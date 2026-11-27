@@ -231,6 +231,6 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (2026-11-27, after the retry-backoff-cap cycle)
 
-219. **[ ] [LOW] Remove dead `NavigationRetryPolicy.retryCount()` method**: The public `fun retryCount()` duplicates the `retryCountValue` property and is unused anywhere in `main`/`test`/`androidTest` (verified by grep). Remove it and keep a single accessor; update `NavigationRetryPolicyTest` if it referenced it (it currently uses `retryCountValue`).
+219. **[x] [LOW] Remove dead `NavigationRetryPolicy.retryCount()` method**: DONE 2026-11-27. Removed the unused `fun retryCount()` duplicate of `retryCountValue` (verified no references in main/test/androidTest via grep). Kept `retryCountValue` as the single accessor; `NavigationRetryPolicyTest` already used `retryCountValue` and was untouched. Committed as `f5ef30f`; CI worker build pending.
 220. **[ ] [MEDIUM] Add unit tests for WebView cookie persistence across activity recreation (item 214)**: `MainActivityCookieTest` exists but there is no coverage asserting cookie state survives an `Activity` recreate/rotate path. Add a test that flushes and restores `CookieManager` state through `DataClearer`/recreation so cookie loss regressions are caught.
 221. **[ ] [LOW] Document the `maxDelayMs` backoff cap in `docs/FUNCTIONS.md` retry section with a concrete example table** (count→delay for base 1000, cap 60000) so the overflow-protection behavior is discoverable without reading the source.
