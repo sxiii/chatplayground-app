@@ -105,8 +105,20 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`assetPathFor(url: String): String?`**: Maps `file:///android_asset/<path>` to bundled assets (`offline.html`). Intercepted in `shouldInterceptRequest` to serve bytes directly from the APK.
 
 ## 6. Navigation Retry Policy (`NavigationRetryPolicy`)
-- **Retry Budget**: Exponential backoff retry (default 3 retries) for main-frame load failures. Reset on successful commit or new Intent.
-- **`backoffDelayMs()`**: Returns `baseDelayMs * 2^retryCount` for the next retry; capped at [Int.MAX_VALUE] to avoid `Long` overflow on very large retry counts.
+- **Retry Budget**: Exponential backoff retry (default 3 retries) for main-frame load failures. Reset on successful commit or new Intent. Sub-frame failures never retry.
+- **`backoffDelayMs()`**: Returns `baseDelayMs * 2^retryCount` for the next retry, clamped at `maxDelayMs`. Defaults: `baseDelayMs = 1000`, `maxDelayMs = 60000`.
+- **Overflow protection**: The exponent is bounded (`MAX_SAFE_EXPONENT = 62`) so a very large retry count cannot overflow a `Long`; the delay always clamps to the positive `maxDelayMs` cap and never wraps negative.
+
+| retryCount | baseDelayMs 1000 | Computed | Applied delay |
+|------------|------------------|----------|---------------|
+| 0 | 1000 | 1000 × 2⁰ = 1000 | 1000 ms |
+| 1 | 1000 | 1000 × 2¹ = 2000 | 2000 ms |
+| 2 | 1000 | 1000 × 2² = 4000 | 4000 ms |
+| 3 | 1000 | 1000 × 2³ = 8000 | 8000 ms |
+| 4 | 1000 | 1000 × 2⁴ = 16000 | 16000 ms |
+| 5 | 1000 | 1000 × 2⁵ = 32000 | 32000 ms |
+| 6 | 1000 | 1000 × 2⁶ = 64000 | 60000 ms (capped at maxDelayMs) |
+| 7 | 1000 | 1000 × 2⁷ = 128000 | 60000 ms (capped at maxDelayMs) |
 
 ## 7. WebView Gesture Navigation (`GestureNavigationHandler`)
 - **Swipe Gestures**: Detects horizontal flings for history navigation (Right = Back, Left = Forward).
