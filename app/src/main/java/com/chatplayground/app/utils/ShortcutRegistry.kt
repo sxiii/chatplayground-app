@@ -21,19 +21,19 @@ data class ShortcutDefinition(
 object ShortcutRegistry {
     private val all =
         listOf(
-        ShortcutDefinition(
-            id = "clear_cache",
-            label = "Очистить кэш",
-            intentAction = "com.chatplayground.app.action.CLEAR_CACHE",
-            iconRes = "ic_delete",
-        ),
-        ShortcutDefinition(
-            id = "toggle_theme",
-            label = "Переключить тему",
-            intentAction = "com.chatplayground.app.action.TOGGLE_THEME",
-            iconRes = "ic_brightness",
-        ),
-    )
+            ShortcutDefinition(
+                id = "clear_cache",
+                label = "Очистить кэш",
+                intentAction = "com.chatplayground.app.action.CLEAR_CACHE",
+                iconRes = "ic_delete",
+            ),
+            ShortcutDefinition(
+                id = "toggle_theme",
+                label = "Переключить тему",
+                intentAction = "com.chatplayground.app.action.TOGGLE_THEME",
+                iconRes = "ic_brightness",
+            ),
+        )
 
     fun allShortcuts(): List<ShortcutDefinition> = all
 
