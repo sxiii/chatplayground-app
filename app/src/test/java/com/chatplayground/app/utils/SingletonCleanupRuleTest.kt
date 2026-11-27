@@ -59,4 +59,22 @@ class SingletonCleanupRuleTest {
             SecureStorage.storeFactory !== injectedStoreFactory,
         )
     }
+
+    @Test
+    fun ruleResetsDataClearerWebStorageSeamOnFinished() {
+        val injectedDeleter = { }
+        DataClearer.webStorageDeleter = injectedDeleter
+
+        val rule = SingletonCleanupRule()
+        val description = Description.createTestDescription(javaClass, "dummyDataClearer")
+        val statement = rule.apply(NoOpStatement(), description)
+
+        statement.evaluate()
+
+        // A test that replaced the seam must not leak it into other tests.
+        assertTrue(
+            "DataClearer.webStorageDeleter must be reset to the production deleter",
+            DataClearer.webStorageDeleter !== injectedDeleter,
+        )
+    }
 }

@@ -1,6 +1,7 @@
-# Cycle Summary (2026-11-27, run 11)
+# Cycle Summary (2026-11-28, run 12)
 
-- **Status**: SUCCESS
-- **CI Run**: `46023045867` (success)
-- **Work Performed**: Synced CI status and backlog files, verified local guards (`check_kotlin_style.py` & `test_ci_checks.py`), ensured working tree is clean.
-- **Next Steps**: Continue monitoring CI and tackling remaining low/medium priority backlog items.
+- **Status**: SUCCESS (pending CI confirmation)
+- **CI Run Before**: `46073299055` (success)
+- **Task**: Vision item 59 — `DataClearer.clearAllData()` now clears WebStorage (localStorage/sessionStorage).
+- **Work Performed**: Added `webStorageDeleter` injectable seam to `DataClearer`; wired `WebStorage.deleteAllData()` into `clearAllData`; extended `SingletonCleanupRule` to reset the seam; added two unit tests (`clearAllDataClearsWebStorage`, `ruleResetsDataClearerWebStorageSeamOnFinished`); updated `docs/FUNCTIONS.md`.
+- **Next Steps**: Confirm CI green; continue with remaining open backlog items (immersive mode, per-site data UI, clearing-order test).

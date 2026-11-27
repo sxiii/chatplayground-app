@@ -129,4 +129,28 @@ class ClearAllDataTest {
         assertEquals("desktop_mode_prefs should be cleared", false, desktopModePrefs.getBoolean("desktop_mode", false))
         assertEquals("theme_prefs should be cleared", 0, themePrefs.getInt("theme_mode", 0))
     }
+
+    @Test
+    fun clearAllDataClearsWebStorage() {
+        context = ApplicationProvider.getApplicationContext()
+        val webView = WebView(context)
+
+        // Robolectric's ShadowWebStorage returns a stub WebStorage whose
+        // deleteAllData() has no observable state, so record the call through
+        // the injectable seam instead of trying to inspect localStorage.
+        var webStorageCleared = 0
+        DataClearer.webStorageDeleter = { webStorageCleared++ }
+
+        try {
+            DataClearer.clearAllData(context, webView)
+        } finally {
+            DataClearer.resetWebStorageDeleterForTesting()
+        }
+
+        assertEquals(
+            "clearAllData() must clear WebStorage (localStorage/sessionStorage)",
+            1,
+            webStorageCleared,
+        )
+    }
 }

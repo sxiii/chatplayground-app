@@ -60,7 +60,7 @@ This document describes the core build, CI/CD, and application runtime functions
 - **External Browser**: Menu option to open current URL in the system browser.
 - **Safe Link Interception**: `shouldOverrideUrlLoading` intercepts non-HTTP/HTTPS schemes (`mailto:`, `tel:`) to launch system intents.
 - **Custom Tabs for External Links**: User-initiated off-domain `http`/`https` links open in a secure Custom Tab with app-themed chrome.
-- **Unified Data Clearing**: `action_clear_all_data` menu option delegates to `DataClearer` to wipe all caches, cookies, and SharedPreferences.
+- **Unified Data Clearing**: `action_clear_all_data` menu option delegates to `DataClearer` to wipe all caches, cookies, WebStorage (localStorage/sessionStorage), and SharedPreferences. `DataClearer.webStorageDeleter` is an injectable seam (defaults to `WebStorage.getInstance().deleteAllData()`) so the clearing call can be unit-tested under Robolectric, whose `ShadowWebStorage` returns a stub with no observable state.
 - **Theme Selection**: Interactive dialog for Light/Dark/System themes, persisted in `theme_prefs`.
 - **Back-Button History Navigation**: `OnBackPressedCallback` navigates `webView.goBack()` while history exists.
 - **Lifecycle Teardown**: `onDestroy` detaches the WebView before calling `destroy()` to safely release the renderer binding.

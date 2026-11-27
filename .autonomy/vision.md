@@ -117,7 +117,7 @@ while keeping the main content in a WebView.
 56. **[ ] [LOW] Add Gesture Navigation for WebView Back/Forward** — Implement swipe gestures to navigate WebView's history stack.
 57. **[x] [MEDIUM] Implement WebView Cookie Management Settings** — DONE 2026-11-23. Allow users to view and clear cookies managed by CookieManager. (Covered by MainActivityCookieTest)
 58. **[x] [LOW] Add Dynamic Shortcut Support** — DONE 2026-11-27. Added launcher shortcuts for clearing cache and toggling theme via `ShortcutHelper`, `ShortcutRegistry`, and `MainActivity` intent handling. Covered by `ShortcutRegistryTest` and `ShortcutIntegrationTest`. CI build `45998134364` failed on `ic_brightness` reference; fixed in commit `9996fb9` (verified local style pass).
-59. **[ ] [MEDIUM] Implement WebView WebStorage management** — Allow clearing individual site data (local storage/session storage) via a dedicated UI or unified clear-data settings.
+59. **[x] [MEDIUM] Implement WebView WebStorage management** — DONE 2026-11-28. `DataClearer.clearAllData()` now clears `WebStorage` (localStorage/sessionStorage) via `WebStorage.getInstance().deleteAllData()`. Injectable `webStorageDeleter` seam enables unit-testing under Robolectric (whose `ShadowWebStorage` returns a stub with no observable state). Covered by `ClearAllDataTest.clearAllDataClearsWebStorage` and `SingletonCleanupRuleTest.ruleResetsDataClearerWebStorageSeamOnFinished`.
 60. **[ ] [MEDIUM] Implement immersive mode toggle** — Add a setting to toggle fullscreen/immersive mode for the WebView, persisting state in SharedPreferences.
 61. **[ ] [LOW] Enhance ShortcutHelper with per-shortcut icons** — Use different system icons or project icons for each shortcut instead of a single hardcoded icon.
 
@@ -260,4 +260,43 @@ while keeping the main content in a WebView.
 
 ### Next Actions
 - No pending CI work; all guards green at HEAD.
-- Open suggestions: item 55 (CI dependency caching/retry), item 90 (KMP port for DesktopModeHandler), item 206 (WebViewConfigurator integration test on real WebView), item 214 (WebViewCookieManager persistence tests).
+- Open suggestions: item 55 (CI dependency caching/retry), item 90 (KMP port for DesktopModeHandler), item 206 (WebViewConfigurator integration test on real WebView), item 226 (NetworkMonitor rapid subscribe/unsubscribe unit tests).
+
+## Next Improvement Suggestions (2026-11-28, current cycle)
+
+226. **[LOW] `NetworkMonitor` rapid subscribe/unsubscribe unit tests**: Add test coverage verifying that calling `observe()` and `stopObserving()` multiple times in quick succession maintains correct callback registration state without throwing exceptions or leaking callbacks.
+227. **[LOW] CI test coverage reporting guard**: Add a local check script ensuring new Kotlin files have corresponding unit test files where applicable.
+
+## Next Improvement Suggestions (2026-11-28, after the WebStorage-clearing cycle)
+
+228. **[MEDIUM] Dedicated per-site data management UI for WebStorage**: item 59 only wired the *global* `WebStorage.deleteAllData()` into "Clear All Data". A user today cannot inspect or clear localStorage for a single site (e.g. after a broken SPA token is cached in IndexedDB/localStorage). Acceptance: a "Site Data" entry in the menu lists origins with stored data (via `WebStorage.getOrigins`) and offers per-origin clear; covered by a Robolectric test asserting the origin list is read and `deleteOrigin` is invoked for the selected origin. Note: `ShadowWebStorage` is a stub, so the seam must be extended the same way `webStorageDeleter` was.
+229. **[LOW] `DataClearer` clearing order is untested**: `clearAllData` clears offline cache, WebView cache/cookies, WebStorage, prefs, then resets `DesktopModeHandler`. Nothing asserts ordering, and a future refactor could clear prefs before reading a flag from them without a test failing. Acceptance: a test records each step's invocation into a single list and asserts the documented order.
+230. **[LOW] `AppLock` is not reset by "Clear All Data"**: `DataClearer.PREF_FILES` covers `app_data`, `desktop_mode_prefs`, `theme_prefs`, but `AppLock` state lives in memory and (if ever persisted) in its own store, so "Clear All Data" leaves the app lock configured. Decide the intended behaviour explicitly — either reset `AppLock.enabled = false` in `clearAllData` and test it, or document why the lock deliberately survives a data wipe.
+231. **[MEDIUM] Immersive mode toggle (item 60) needs a testable seam before implementation**: `WindowInsetsControllerCompat.hide(...)` is a no-op under Robolectric's shadow Window, so the `ImmersiveModeHandler` should expose a pure-JVM decision function (`isImmersive`, persisted flag) and a thin `apply(activity)` adapter, mirroring the `SecureStorage`/`DataClearer` seam pattern so RED is observable in CI rather than compile-only.
+
+## Last Run (2026-11-28, run 12 — development cycle: WebStorage clearing)
+
+### Baseline
+- CI status before cycle: latest `main` run `46073299055` (merge of PR #9, robolectric 4.18.1 bump) **success**; preceding `main` runs `46039814505`, `46023045867`, `46017169526` all **success**. No pending worker builds, no build errors to repair.
+- Working tree contained one uncommitted file from the previous run: `.autonomy/vision.md` (items 226/227). Recovered into this cycle's commit rather than discarded.
+
+### Task Chosen
+- Vision item **59 `[MEDIUM] Implement WebView WebStorage management`**. Evidence: `DataClearer.clearAllData()` cleared offline cache, WebView cache, cookies and three SharedPreferences files, but never called `WebStorage`. `grep -rn WebStorage app/src/` returned no matches, so the "Clear All Data" menu item left localStorage/sessionStorage intact — a reproducible data-retention defect, not an invented feature.
+
+### What Changed
+1. **`docs/FUNCTIONS.md`** — documented the extended "Unified Data Clearing" behaviour *before* implementation (user standing requirement), including the `webStorageDeleter` seam and why it exists.
+2. **RED** — `ClearAllDataTest.clearAllDataClearsWebStorage` asserts the seam is invoked exactly once by `clearAllData`; `SingletonCleanupRuleTest.ruleResetsDataClearerWebStorageSeamOnFinished` asserts the new global seam cannot leak between tests. Both referenced symbols that did not exist (`DataClearer.webStorageDeleter`, `resetWebStorageDeleterForTesting`), so the suite could not compile — observable RED.
+3. **GREEN** — `DataClearer` gained `@Volatile var webStorageDeleter` defaulting to `WebStorage.getInstance().deleteAllData()`, a `resetWebStorageDeleterForTesting()` helper, and one call site in `clearAllData` between cookie clearing and prefs clearing.
+4. **`SingletonCleanupRule`** — `finished()` now calls `DataClearer.resetWebStorageDeleterForTesting()`, joining `AppLock`, `DesktopModeHandler` and the two `SecureStorage` seams.
+5. **`.autonomy/vision.md`** — item 59 marked done with evidence; items 228–231 added.
+
+### Verification
+- `python3 scripts/check_kotlin_style.py` — PASSED (73 files, exit 0).
+- `python3 scripts/test_ci_checks.py` — PASSED (18 tests, OK).
+- `python3 scripts/check_kotlin_style.py <4 changed .kt files>` — PASSED.
+- Local Java/Gradle is absent by policy, so compilation and the unit tests themselves run only on the GitHub worker; this cycle's push is the verification vehicle. Worker result is not yet known at record time.
+- Diff reviewed: 6 files, +71/−3 — one production behaviour change (`DataClearer`), two test files, one docs line, one test rule, one autonomy update. No unrelated edits.
+
+### Next Actions
+- Confirm this push's `Build Android App` run is green with `gh run list`; if it fails, read `gh run view --log-failed` before starting anything else (AGENTS/AUTONOMY failure policy).
+- Open work remaining: item 55 (CI dependency caching/retry), item 60 (immersive mode toggle — see item 231 for the seam-first approach), item 61 (per-shortcut icons), item 90 (KMP port of `DesktopModeHandler`), item 206 (WebViewConfigurator on real WebView), item 214 (cookie persistence), item 226 (NetworkMonitor rapid subscribe/unsubscribe), item 228 (per-site data UI), item 229 (clearing-order test), item 230 (AppLock vs Clear All Data decision).
