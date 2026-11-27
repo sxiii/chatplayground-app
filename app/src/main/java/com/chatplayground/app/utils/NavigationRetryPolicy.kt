@@ -19,9 +19,6 @@ class NavigationRetryPolicy(
     val retryCountValue: Int
         get() = synchronized(lock) { retryCount }
 
-    /** Number of retries already attempted. */
-    fun retryCount(): Int = retryCountValue
-
     /** Returns true if the load failure should be retried: only main-frame
      * failures and only while [retryCount] is below [maxRetries]. */
     fun shouldRetry(isMainFrame: Boolean): Boolean {
