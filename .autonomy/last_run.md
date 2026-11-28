@@ -13,12 +13,12 @@
 3. `ClearAllDataTest.clearAllDataRunsDestructiveStepsInDocumentedOrder` records and asserts: offline cache → WebView cache → cookies → WebStorage → preferences → desktop mode → AppLock.
 4. `SingletonCleanupRule` resets the observer after each test.
 
-## Verification Before Push
-- `python3 scripts/check_kotlin_style.py` — PASS (73 Kotlin files).
-- `python3 scripts/test_ci_checks.py` — PASS (18 tests).
-- `git diff --check` — PASS.
-- Android/Gradle compilation and unit tests were not run locally per project policy; GitHub Actions is the source of truth.
+## Verification
+- `python3 scripts/check_kotlin_style.py` — PASSED (73 Kotlin files).
+- `python3 scripts/test_ci_checks.py` — PASSED (18 tests).
+- `git diff --check` — PASSED.
+- GitHub worker run `46092737887` — **success** on commit `17f3d85` (build and release-tag jobs).
+- Android/Gradle compilation and unit tests were not run locally per project policy; the GitHub worker is the source of truth.
 
 ## Next Actions
-- Push this bounded change to `main`, then verify its GitHub worker run. If red, inspect `gh run view --log-failed` before unrelated work.
 - Continue with item 228 (per-site WebStorage UI) or item 231/60 (immersive mode seam-first implementation).

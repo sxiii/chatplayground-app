@@ -1,7 +1,9 @@
-# Cycle Summary (2026-11-28, run 12)
+# Cycle Summary (2026-11-28, run 14)
 
-- **Status**: SUCCESS (pending CI confirmation)
-- **CI Run Before**: `46073299055` (success)
-- **Task**: Vision item 59 — `DataClearer.clearAllData()` now clears WebStorage (localStorage/sessionStorage).
-- **Work Performed**: Added `webStorageDeleter` injectable seam to `DataClearer`; wired `WebStorage.deleteAllData()` into `clearAllData`; extended `SingletonCleanupRule` to reset the seam; added two unit tests (`clearAllDataClearsWebStorage`, `ruleResetsDataClearerWebStorageSeamOnFinished`); updated `docs/FUNCTIONS.md`.
-- **Next Steps**: Confirm CI green; continue with remaining open backlog items (immersive mode, per-site data UI, clearing-order test).
+- **Status**: SUCCESS — GitHub worker verified.
+- **CI Run**: `46092737887`, success on `main` at `17f3d85`.
+- **Task**: Vision item 229 — verify `DataClearer.clearAllData()` destructive-operation ordering.
+- **Changes**: Added documented `clearingStepObserver` seam, order regression test, singleton cleanup reset, and function documentation. Added three ranked follow-up suggestions to `.autonomy/vision.md`.
+- **Order asserted**: offline cache → WebView cache → cookies → WebStorage → preferences → desktop mode → AppLock.
+- **Local checks**: Kotlin style guard passed for 73 files; CI self-tests passed (18); diff check passed. Gradle was not run locally by project policy.
+- **Next**: item 228 per-site WebStorage UI or item 231/60 immersive-mode seam-first implementation.
