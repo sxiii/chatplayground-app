@@ -1,9 +1,9 @@
-# Cycle Summary (2026-11-28, run 19)
+# Cycle Summary (2026-11-28, run 20)
 
-- **Status**: VERIFIED GREEN — immersive window instrumentation coverage added and formatting repair validated by GitHub.
-- **Task**: Vision item 241, real activity-window system-bar visibility checks.
-- **Delivered**: `ImmersiveModeWindowAdapterInstrumentedTest` plus `androidx.test:core` androidTest dependency; contract documented in `docs/FUNCTIONS.md`.
-- **Worker verification**: initial run `46105266717` failed only on six ktlint function-signature violations; repair commit `0bd899c` passed run `46105932187` with build and release-tag jobs green.
-- **Local checks**: Kotlin style guard and `git diff --check` passed. Gradle was not run locally by project policy.
-- **Repository state**: clean at `main` on `0bd899c`.
-- **Next**: preference-key constants or per-site WebStorage UI; emulator-specific assertion verification remains tracked as item 243.
+- **Status**: PUSHED — GitHub worker verification pending.
+- **Task**: Vision item 242, centralize SharedPreferences file/key literals.
+- **Delivered**: `PreferenceKeys` production utility and test; migrated preference consumers and documented the function.
+- **Local checks**: Kotlin style guard passed on 79 files, CI self-tests passed (18), and `git diff --check` passed. Gradle was not run locally by policy.
+- **Commit**: `714749d` pushed directly to `main`.
+- **Worker**: run `46109385661` is in progress.
+- **Next**: verify worker result before selecting new work; repair any failure first.

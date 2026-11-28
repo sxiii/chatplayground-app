@@ -1,24 +1,24 @@
 # CI Status
 ## Current Run
 - **GitHub status API**: **All Systems Operational**.
-- **Immersive instrumentation cycle**: initial run `46105266717` for `770c9fb` failed at `lintKotlinAndroidTest` on six `standard:function-signature` violations in the new test; repair commit `0bd899c` passed replacement run `46105932187`.
-- **Replacement worker**: `46105932187` completed **successfully**; `build` and `release-tag` jobs passed.
-- **Current repository state**: `main` is clean at `0bd899c` and matches `origin/main`.
+- **Current worker**: run `46109385661` for commit `714749d` on `main` is **in progress**; final build/test/lint/release result is not known yet.
+- **Previous latest green main run**: `46106826322` for `4c6cde7`.
+- **Unrelated branch failure**: `46107051369` on `fix/browser-1.10-aar-metadata`; not part of this cycle and not changed.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
 |--------|--------|-------|
+| 46109385661 | in progress | push `714749d` — preference-key consolidation |
+| 46106826322 | success | push `4c6cde7` — autonomy documentation |
 | 46105932187 | success | push `0bd899c` — immersive instrumentation formatting repair |
 | 46105266717 | failure | push `770c9fb` — six androidTest function-signature ktlint violations |
-| 46103137179 | success | push `1393633` — documentation CI verification |
-| 46102486311 | success | push `b602781` — autonomy documentation |
-| 46101642239 | success | push `63a7bd2` — immersive mode formatting repair |
 
 ## CI Guard Status (local verification)
-- `scripts/check_kotlin_style.py` on new instrumentation test: PASSED.
+- `scripts/check_kotlin_style.py`: PASSED on 79 Kotlin files.
+- `scripts/test_ci_checks.py`: PASSED (18 tests).
 - `git diff --check`: PASSED.
 - Gradle was not run locally per project policy.
 
 ## Next Actions
-- Continue with preference-key constants or per-site WebStorage UI only after inspecting the clean green baseline.
-- Item 243 remains open for emulator-specific confirmation of synchronous root-window inset visibility.
+- Verify run `46109385661` before starting another development task.
+- If red, inspect diagnostics and repair; if green, choose per-site WebStorage UI or NetworkMonitor lifecycle coverage.

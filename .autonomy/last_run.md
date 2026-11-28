@@ -1,25 +1,26 @@
-# Last Run (2026-11-28, run 19 — immersive instrumentation coverage and repair)
+# Last Run (2026-11-28, run 20 — preference-key consolidation)
 
 ## Baseline
-- GitHub status page: **All Systems Operational**; latest prior run `46103137179` completed successfully.
-- Repository was clean at `main` before this cycle.
+- GitHub status API: **All Systems Operational**.
+- Latest prior `main` run `46106826322` completed successfully at documentation commit `4c6cde7`.
+- Repository was clean at `main` before this cycle; unrelated branch run `46107051369` failed on `fix/browser-1.10-aar-metadata` and was not modified.
 
 ## Task Chosen
-- Vision item 241: add instrumentation coverage for immersive system-bar visibility.
+- Vision item 242: centralize repeated SharedPreferences file/key literals.
 
 ## What Changed
-- Documented the instrumentation contract in `docs/FUNCTIONS.md` before implementation.
-- Added `ImmersiveModeWindowAdapterInstrumentedTest`, which launches a real `MainActivity` window and verifies immersive application hides system bars and non-immersive application restores them.
-- Added `androidx.test:core` to the androidTest configuration for `ActivityScenario`.
-- First push was commit `770c9fb`. Worker run `46105266717` reached compilation and failed only at `lintKotlinAndroidTest` because three helper signatures violated `standard:function-signature`.
-- Reformatted those helper signatures; no production behavior changed.
+- Documented `PreferenceKeys` in `docs/FUNCTIONS.md` before implementation.
+- Added `PreferenceKeys` and a unit test covering all file/key constants.
+- Migrated production preference reads/writes and `DataClearer` clearing list, plus affected tests, without changing persisted names or behavior.
+- Added follow-up suggestions for per-site WebStorage UI, NetworkMonitor lifecycle tests, and a CI coverage guard.
 
 ## Verification
-- `python3 scripts/check_kotlin_style.py app/src/androidTest/java/com/chatplayground/app/utils/ImmersiveModeWindowAdapterInstrumentedTest.kt` — PASSED before and after repair.
-- `git diff --check` — PASSED before and after repair.
-- GitHub diagnostics for `46105266717` identified the exact six formatting messages; no compile or test failure was reported.
+- RED: `PreferenceKeysTest` was written before the production object and referenced the missing symbol; implementation then added the minimal constants object.
+- `python3 scripts/check_kotlin_style.py` — PASSED (79 files).
+- `python3 scripts/test_ci_checks.py` — PASSED (18 tests).
+- `git diff --check` — PASSED.
 - Gradle was not run locally by project policy.
+- Commit `714749d` pushed directly to `main`; worker run `46109385661` is **in progress** at record time.
 
 ## Next Actions
-- Commit and push the formatting repair directly to `main`, then verify the replacement worker run.
-- If green, consider preference-key constants or per-site WebStorage UI.
+- Check run `46109385661` before starting another task. If it fails, inspect diagnostics and repair first; if green, select per-site WebStorage UI or NetworkMonitor lifecycle coverage.
