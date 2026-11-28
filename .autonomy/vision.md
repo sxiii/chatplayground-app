@@ -296,6 +296,14 @@ while keeping the main content in a WebView.
 
 258. **[LOW] Add instrumentation (androidTest) coverage for Site Data menu/dialog**: launch a real `MainActivity` window via `ActivityScenario`, click the "Site Data" menu item, and assert the dialog appears; mirrors `DesktopModeHandlerInstrumentedTest` pattern.
 
+## Next Improvement Suggestions (2026-11-28, current cycle)
+
+259. **[x] [MEDIUM] Resolve `lintKotlinTest` unused-import failure in `MainActivitySiteDataTest.kt`**: DONE 2026-11-28. Removed unused `org.junit.Assert.assertTrue` import at line 9; GitHub worker run `46143102057` **success**. Root cause: unused imports fail `lintKotlinTest` even when all unit tests pass. Prevention: run `./gradlew :app:lintKotlin` on changed files before push, or extend `scripts/check_kotlin_style.py`.
+
+260. **[ ] [MEDIUM] Extend `scripts/check_kotlin_style.py` to flag unused Kotlin imports**: add a basic unused-import heuristic so `lintKotlinTest` failures (like item 259) surface locally before the GitHub worker round-trip instead of costing a ~5-minute worker cycle.
+
+261. **[ ] [LOW] Auto-record latest green run into `.autonomy/ci_status.md` and `last_run.md`**: at the end of each cron cycle, query `gh run list` for the latest green `main` run and update the autonomy status files so records never lag worker state.
+
 ## Last Run (2026-11-28, run 23 — Site Data dialog Robolectric shadow fix)
 
 ### Baseline
