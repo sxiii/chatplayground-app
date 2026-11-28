@@ -24,13 +24,22 @@ class ImmersiveModeWindowAdapterInstrumentedTest {
         }
     }
 
-    private fun assertSystemBarsVisible(window: Window, expected: Boolean) {
+    private fun assertSystemBarsVisible(
+        window: Window,
+        expected: Boolean,
+    ) {
         val insets = WindowCompat.getRootWindowInsets(window.decorView)
         assertTrue("The test activity must expose root window insets", insets != null)
-        assertEqualsVisibility(expected, insets!!.isVisible(WindowInsetsCompat.Type.systemBars()))
+        assertEqualsVisibility(
+            expected,
+            insets!!.isVisible(WindowInsetsCompat.Type.systemBars()),
+        )
     }
 
-    private fun assertEqualsVisibility(expected: Boolean, actual: Boolean) {
+    private fun assertEqualsVisibility(
+        expected: Boolean,
+        actual: Boolean,
+    ) {
         if (expected) {
             assertTrue("System bars should be visible", actual)
         } else {
