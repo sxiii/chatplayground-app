@@ -108,6 +108,13 @@ This document describes the core build, CI/CD, and application runtime functions
 ### Deep Links (`DeepLinkResolver`)
 - **`resolve(url: String?): String?`**: Maps incoming deep link Intents (scheme `chatplayground://` or `https://chatplayground.ai`) to canonical WebView URLs.
 
+### Site Data Management (`WebStorageManager`)
+- **`getOrigins(callback)`**: Fetches a map of origins (e.g., `https://chatplayground.ai`) that have stored data (localStorage/IndexedDB) and their usage.
+- **`deleteOrigin(origin)`**: Clears all WebStorage for a specific origin.
+- **`deleteAllData()`**: Clears WebStorage for all origins (delegated to by `DataClearer`).
+- **`showSiteDataManagementDialog(activity)`**: Displays an interactive dialog listing origins with data, allowing per-site or global clearing.
+- **Testability**: Uses injectable seams (`originFetcher`, `originDeleter`, `allDataDeleter`) so the UI and logic can be verified under Robolectric where the real `WebStorage` is a stub.
+
 ## 4. Code Formatting Enforcement (CI)
 
 ### ktlint (`org.jmailen.kotlinter`)

@@ -287,6 +287,8 @@ while keeping the main content in a WebView.
 250. **[ ] [MEDIUM] Add a CI diagnostic assertion for lint output**: ensure the workflow's lint diagnostics step preserves the first actionable file/line marker when a Kotlin lint task fails.
 251. **[ ] [MEDIUM] WebView certificate-pinning diagnostics**: expose `onReceivedSslError` handling that records whether SSL errors were cancelled or proceeded, with a unit test asserting the default fail-closed behaviour.
 252. **[ ] [LOW] Export `docs/FUNCTIONS.md` function index as machine-readable YAML**: so agents can verify implemented functions against documented ones without parsing Markdown.
+253. **[ ] [LOW] Add automated integration test for `WebViewConfigurator` headers and settings on real WebView instances** — `WebViewConfiguratorInstrumentedTest.kt` asserts settings on a real widget; follow-up to item 211 which covered unit-level verification only.
+254. **[ ] [MEDIUM] Add automated unit tests for `WebViewCookieManager` persistence** — verify cookie state persistence and synchronization across activity recreation (vision item 214).
 
 ## Last Run (2026-11-28, run 19 — immersive instrumentation coverage)
 
