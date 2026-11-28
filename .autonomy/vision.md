@@ -300,9 +300,13 @@ while keeping the main content in a WebView.
 
 259. **[x] [MEDIUM] Resolve `lintKotlinTest` unused-import failure in `MainActivitySiteDataTest.kt`**: DONE 2026-11-28. Removed unused `org.junit.Assert.assertTrue` import at line 9; GitHub worker run `46143102057` **success**. Root cause: unused imports fail `lintKotlinTest` even when all unit tests pass. Prevention: run `./gradlew :app:lintKotlin` on changed files before push, or extend `scripts/check_kotlin_style.py`.
 
-260. **[ ] [MEDIUM] Extend `scripts/check_kotlin_style.py` to flag unused Kotlin imports**: add a basic unused-import heuristic so `lintKotlinTest` failures (like item 259) surface locally before the GitHub worker round-trip instead of costing a ~5-minute worker cycle.
+260. **[x] [MEDIUM] Extend `scripts/check_kotlin_style.py` to flag unused Kotlin imports**: DONE 2026-11-28. Added `_unused_import_violations` heuristic (regex word-boundary; wildcard imports and `as` aliases handled) so `lintKotlinTest` unused-import failures surface locally before the worker round-trip. Verified: new self-test `test_fails_when_file_has_unused_import` passes; whole tree (83 files) clean with no false positives; pushed as `12af61c`.
 
 261. **[ ] [LOW] Auto-record latest green run into `.autonomy/ci_status.md` and `last_run.md`**: at the end of each cron cycle, query `gh run list` for the latest green `main` run and update the autonomy status files so records never lag worker state.
+
+262. **[ ] [LOW] `check_kotlin_style.py --fix` does not auto-remove unused imports**: the `--fix` mode handles final newline / trailing whitespace / tabs only. Extend `fix()` to delete unused-import lines flagged by `_unused_import_violations`, so one command also repairs the common `lintKotlinTest` failure.
+
+263. **[ ] [MEDIUM] Pre-push hook running the style guard on changed files**: add a git `pre-push` hook (`.githooks/pre-push`, activated via `core.hooksPath`) that runs `scripts/check_kotlin_style.py` on the Kotlin files in the staged diff and blocks the push when a violation is found — making item 249's reminder automatic.
 
 ## Last Run (2026-11-28, run 23 — Site Data dialog Robolectric shadow fix)
 
