@@ -1,27 +1,23 @@
-# Last Run (2026-11-28, run 18 — immersive-mode CI repair)
+# Last Run (2026-11-28, run 19 — immersive instrumentation coverage)
 
 ## Baseline
-- GitHub status API: **All Systems Operational**.
-- Worker run `46101242760` failed after the immersive-mode implementation; its failure output was not exposed by `--log-failed`.
-- Local repository contained the immersive-mode implementation and was otherwise clean.
+- GitHub status page: **All Systems Operational**; latest observed run `46103137179` for documentation commit `1393633` completed successfully.
+- Repository was clean at `main` before this cycle; no worker failure required repair.
 
 ## Task Chosen
-- Investigate the failed worker before selecting unrelated work, as required by `AUTONOMY.md`.
+- Vision item 241: add instrumentation coverage for immersive system-bar visibility, after confirming the previous immersive adapter/menu worker run was green.
 
 ## What Changed
-- Inspected the implementation and identified the likely CI-only issue as Kotlin formatting in the newly added adapter/title code.
-- Reformatted `MainActivity.immersiveModeMenuTitle()` and rewrote `ImmersiveModeWindowAdapter.kt` with explicit multiline parameter formatting.
-- Updated `.autonomy/ci_status.md` with the verified worker result and next candidates.
+- Documented the instrumentation contract in `docs/FUNCTIONS.md` before implementation.
+- Added `ImmersiveModeWindowAdapterInstrumentedTest`, which launches a real `MainActivity` window and verifies immersive application hides system bars and non-immersive application restores them.
+- Added the `androidx.test:core` dependency to the androidTest configuration for `ActivityScenario`.
+- Added ranked follow-ups 243–244 for emulator verification and instrumentation resource cleanup.
 
 ## Verification
-- `python3 scripts/check_kotlin_style.py` — PASSED.
-- `python3 scripts/test_ci_checks.py` — PASSED (18 tests).
+- `python3 scripts/check_kotlin_style.py app/src/androidTest/java/com/chatplayground/app/utils/ImmersiveModeWindowAdapterInstrumentedTest.kt` — PASSED.
 - `git diff --check` — PASSED.
-- Commit `63a7bd2` pushed directly to `main`.
-- GitHub run `46101642239` — **success**: Debug APK, Android test APK, unit tests, lint, lintKotlin, JaCoCo, release APK, artifact assertions, and release-tag all passed.
-- Gradle was not run locally by project policy.
+- Gradle was not run locally by project policy; GitHub worker compilation is required.
 
 ## Next Actions
-- Item 238: add real-window instrumentation coverage for immersive system-bar visibility.
-- Consider item 239: consolidate repeated preference-file/key literals.
-- Keep item 228 (per-site WebStorage UI) as another medium-priority candidate.
+- Push directly to `main` and verify the worker's assembleAndroidTest, unit-test, lint, and release results.
+- If the worker fails, inspect diagnostics before selecting another task; if green, consider preference-key constants or per-site WebStorage UI.

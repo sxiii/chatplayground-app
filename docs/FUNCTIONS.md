@@ -103,6 +103,7 @@ This document describes the core build, CI/CD, and application runtime functions
 - **`load(prefs)` / `toggle(prefs)`**: Reads and persists the `immersive_mode` preference so the choice survives activity recreation.
 - **`ImmersiveModeWindowAdapter.apply(window, immersive)`**: Uses `WindowInsetsControllerCompat` to hide/show system bars, with transient bars available through an edge swipe.
 - **Integration**: `MainActivity` restores the setting before the first page load; the menu toggles it immediately and updates between "Enter Immersive Mode" and "Exit Immersive Mode".
+- **Instrumentation coverage**: `ImmersiveModeWindowAdapterInstrumentedTest` applies both states to a real activity window and verifies the insets controller uses transient-by-swipe behavior while hiding and restoring system bars.
 
 ### Deep Links (`DeepLinkResolver`)
 - **`resolve(url: String?): String?`**: Maps incoming deep link Intents (scheme `chatplayground://` or `https://chatplayground.ai`) to canonical WebView URLs.
