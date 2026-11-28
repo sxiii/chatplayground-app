@@ -7,7 +7,10 @@ import androidx.core.view.WindowInsetsControllerCompat
 
 /** Applies immersive-mode state to an Android activity window. */
 object ImmersiveModeWindowAdapter {
-    fun apply(window: Window, immersive: Boolean) {
+    fun apply(
+        window: Window,
+        immersive: Boolean,
+    ) {
         val controller = WindowCompat.getInsetsController(window, window.decorView)
         controller.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE

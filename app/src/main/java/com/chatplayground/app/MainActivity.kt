@@ -473,7 +473,11 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
     }
 
     private fun immersiveModeMenuTitle(): String =
-        if (ImmersiveModeState.isImmersive) "Exit Immersive Mode" else "Enter Immersive Mode"
+        if (ImmersiveModeState.isImmersive) {
+            "Exit Immersive Mode"
+        } else {
+            "Enter Immersive Mode"
+        }
 
     /**
      * Applies saved or persisted desktop mode state.
