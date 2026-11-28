@@ -280,6 +280,35 @@ while keeping the main content in a WebView.
 232. **[ ] [MEDIUM] Per-site WebStorage UI**: List origins and clear a selected origin through a testable seam; acceptance includes a Robolectric test for origin listing and `deleteOrigin`.
 233. **[ ] [LOW] CI coverage guard**: Add a Python guard for new Kotlin production files without applicable tests, with explicit Android-only allowlisting.
 234. **[ ] [LOW] NetworkMonitor lifecycle tests**: Verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks.
+
+## Next Improvement Suggestions (2026-11-28, after immersive-mode CI repair)
+
+235. **[HIGH] Verify the explicit Robolectric runner repair**: confirm both `ImmersiveModeStateTest` persistence tests pass on the GitHub worker.
+236. **[MEDIUM] Wire immersive-mode state to a thin window-insets adapter**: after item 235 is green, apply `WindowInsetsControllerCompat` hide/show behavior from the persisted state and cover menu toggling.
+237. **[LOW] Add a CI diagnostic for Android test-runner misconfiguration**: identify Android-dependent unit tests using `ApplicationProvider` without an explicit supported runner.
+
+## Last Run (2026-11-28, run 16 — immersive-mode CI repair)
+
+### Baseline
+- GitHub status API: **All Systems Operational**.
+- Worker runs `46096086513` and `46096286336` both failed in `Run Unit Tests`; `ImmersiveModeStateTest` failed at line 11 with `IllegalStateException` from `ApplicationProvider`.
+- The working tree was clean before the repair.
+
+### Task Chosen
+- Recover the unfinished immersive-mode seam cycle before unrelated work, per `AUTONOMY.md`.
+
+### What Changed
+- Added `@RunWith(RobolectricTestRunner::class)` to `ImmersiveModeStateTest`; production state logic was unchanged.
+
+### Verification
+- `python3 scripts/check_kotlin_style.py` — PASSED (75 Kotlin files).
+- `python3 scripts/test_ci_checks.py` — PASSED (18 tests).
+- `git diff --check` — PASSED before commit.
+- Gradle/JVM tests were not run locally by project policy; GitHub worker verification is required.
+
+### Next Actions
+- Push this repair to `main` and verify the resulting worker run. If green, wire the Android window-insets adapter and menu behavior; if red, inspect diagnostics first.
+
 ## Next Improvement Suggestions (2026-11-28, after the DataClearer ordering cycle)
 
 232. **[MEDIUM] Per-site WebStorage UI**: add a menu entry that lists origins from `WebStorage.getOrigins` and clears a selected origin through a testable seam; acceptance includes a Robolectric test for list/read and `deleteOrigin` invocation.

@@ -1,7 +1,7 @@
 # CI Status
 ## Current Run
-- **CI status**: Run `46096086513` for HEAD `f9d711b` is **in progress**; previous baseline run `46093294204` passed.
-- Worker diagnostics are not available until the run completes.
+- **CI status**: Repair commit is not pushed yet; failed worker runs `46096086513` (`f9d711b`) and `46096286336` (`efa157a`) were caused by `ImmersiveModeStateTest` missing `RobolectricTestRunner`.
+- GitHub status API: **All Systems Operational**.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
@@ -18,4 +18,6 @@
 - `git diff --check`: PASSED.
 
 ## Next Actions
-- Open work: item 228 (per-site WebStorage UI), item 231/60 (immersive mode seam-first implementation), item 226 (NetworkMonitor rapid subscribe/unsubscribe tests), item 55 (CI dependency caching/retry), and item 234 (coverage guard).
+- Push this repair commit and verify the GitHub worker run.
+- If green, continue with item 236: thin Android window-insets adapter and menu behavior.
+- If red, inspect worker diagnostics before unrelated work.
