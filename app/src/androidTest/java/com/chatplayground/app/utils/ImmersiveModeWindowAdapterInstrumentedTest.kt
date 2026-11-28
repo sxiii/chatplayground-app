@@ -1,7 +1,8 @@
 package com.chatplayground.app.utils
 
+import android.view.View
 import android.view.Window
-import androidx.core.view.WindowCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.test.core.app.ActivityScenario
 import com.chatplayground.app.MainActivity
@@ -28,7 +29,7 @@ class ImmersiveModeWindowAdapterInstrumentedTest {
         window: Window,
         expected: Boolean,
     ) {
-        val insets = WindowCompat.getRootWindowInsets(window.decorView)
+        val insets = ViewCompat.getRootWindowInsets(window.decorView)
         assertTrue("The test activity must expose root window insets", insets != null)
         assertEqualsVisibility(
             expected,
