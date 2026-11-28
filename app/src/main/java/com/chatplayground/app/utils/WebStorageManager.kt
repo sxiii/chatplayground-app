@@ -32,13 +32,14 @@ object WebStorageManager {
                 callback(emptyList())
                 return@originFetcher
             }
-            val origins = map.keys.mapNotNull { key ->
-                when (key) {
-                    is String -> key
-                    is WebStorage.Origin -> key.origin
-                    else -> key?.toString()
+            val origins =
+                map.keys.mapNotNull { key ->
+                    when (key) {
+                        is String -> key
+                        is WebStorage.Origin -> key.origin
+                        else -> key?.toString()
+                    }
                 }
-            }
             callback(origins)
         }
     }
