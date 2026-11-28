@@ -195,4 +195,24 @@ class ClearAllDataTest {
             webStorageCleared,
         )
     }
+
+    @Test
+    fun clearAllDataRoutesWebStorageThroughWebStorageManager() {
+        context = ApplicationProvider.getApplicationContext()
+        val webView = WebView(context)
+
+        var allDataDeleted = false
+        WebStorageManager.allDataDeleter = { allDataDeleted = true }
+
+        try {
+            DataClearer.clearAllData(context, webView)
+        } finally {
+            WebStorageManager.resetForTesting()
+        }
+
+        assertTrue(
+            "clearAllData() must route WebStorage clearing through WebStorageManager.deleteAllData",
+            allDataDeleted,
+        )
+    }
 }

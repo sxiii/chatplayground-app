@@ -27,7 +27,7 @@ object DataClearer {
      * a counter lambda to verify it was invoked.
      */
     @Volatile
-    var webStorageDeleter: () -> Unit = { WebStorage.getInstance().deleteAllData() }
+    var webStorageDeleter: () -> Unit = { WebStorageManager.deleteAllData() }
 
     /** Optional test observer for verifying destructive-operation ordering. */
     @Volatile

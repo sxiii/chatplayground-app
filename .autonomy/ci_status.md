@@ -1,12 +1,13 @@
 # CI Status
 ## Current Run
 - **GitHub status API**: **All Systems Operational**.
-- **Latest green main run**: `46147076634` for push `12af61c` (unused-import heuristic in `check_kotlin_style.py` + `test_ci_checks.py` self-test) — **success**.
+- **Latest green main run**: `46147804107` for push `fcc7496` (unused-import heuristic + self-test) — **success**.
 - **Repaired failure**: `46141101315` (`52b19dc`) — `lintKotlinTest` unused import `org.junit.Assert.assertTrue` at `MainActivitySiteDataTest.kt:9`. Fixed in `2e1d2a8`, verified green by worker.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
 |--------|--------|-------|
+| 46147804107 | success | push `fcc7496` — baseline for cycle 26; current HEAD |
 | 46147076634 | success | push `12af61c` — unused-import heuristic + self-test |
 | 46143102057 | success | push `2e1d2a8` — unused-import fix |
 | 46141101315 | failure | push `52b19dc` — `lintKotlinTest` unused import `assertTrue` |
