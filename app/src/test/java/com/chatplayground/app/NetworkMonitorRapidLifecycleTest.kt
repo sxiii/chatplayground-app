@@ -38,7 +38,7 @@ class NetworkMonitorRapidLifecycleTest {
 
         assertTrue(
             "After rapid observe/stop alternation, no callbacks should remain registered",
-            registeredCallbacks().isEmpty()
+            registeredCallbacks().isEmpty(),
         )
     }
 
@@ -53,7 +53,7 @@ class NetworkMonitorRapidLifecycleTest {
         assertEquals(
             "After rapid observe calls, exactly one callback should remain registered",
             1,
-            registeredCallbacks().size
+            registeredCallbacks().size,
         )
 
         monitor.stopObserving()
