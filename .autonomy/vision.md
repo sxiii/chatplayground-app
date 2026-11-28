@@ -279,12 +279,14 @@ while keeping the main content in a WebView.
 231. **[ ] [MEDIUM] Immersive mode seam-first implementation**: Add a pure-JVM state/persistence layer plus a thin Android window-insets adapter; acceptance includes a failing-then-green test before adapter wiring.
 232. **[ ] [MEDIUM] Per-site WebStorage UI**: List origins and clear a selected origin through a testable seam; acceptance includes a Robolectric test for origin listing and `deleteOrigin`.
 233. **[ ] [LOW] CI coverage guard**: Add a Python guard for new Kotlin production files without applicable tests, with explicit Android-only allowlisting.
-234. **[ ] [LOW] NetworkMonitor lifecycle tests**: Verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks.
+234. **[x] [LOW] NetworkMonitor lifecycle tests**: Verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks — `NetworkMonitorRapidLifecycleTest.kt` added, covering `rapidObserveStopAlternationLeavesZeroCallbacks` and `rapidObserveCallsLeaveExactlyOneCallback`. Committed locally; waiting for GitHub worker verification on push.
 
 ## Next Improvement Suggestions (2026-11-28, after the CI lint repair)
 
 249. **[ ] [LOW] Add a pre-push hook wrapper for the repository's Kotlin style guard**: provide one documented command that checks only changed Kotlin files and fails before a worker round-trip.
 250. **[ ] [MEDIUM] Add a CI diagnostic assertion for lint output**: ensure the workflow's lint diagnostics step preserves the first actionable file/line marker when a Kotlin lint task fails.
+251. **[ ] [MEDIUM] WebView certificate-pinning diagnostics**: expose `onReceivedSslError` handling that records whether SSL errors were cancelled or proceeded, with a unit test asserting the default fail-closed behaviour.
+252. **[ ] [LOW] Export `docs/FUNCTIONS.md` function index as machine-readable YAML**: so agents can verify implemented functions against documented ones without parsing Markdown.
 
 ## Last Run (2026-11-28, run 19 — immersive instrumentation coverage)
 
