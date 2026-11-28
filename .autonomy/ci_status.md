@@ -1,6 +1,6 @@
 # CI Status
 ## Current Run
-- **CI status**: Repair commit is not pushed yet; failed worker runs `46096086513` (`f9d711b`) and `46096286336` (`efa157a`) were caused by `ImmersiveModeStateTest` missing `RobolectricTestRunner`.
+- **CI status**: Run `46098362338` for repair commit `70b097e` completed **successfully**; both `build` and `release-tag` jobs passed.
 - GitHub status API: **All Systems Operational**.
 
 ## Recent CI Runs
@@ -18,6 +18,6 @@
 - `git diff --check`: PASSED.
 
 ## Next Actions
-- Push this repair commit and verify the GitHub worker run.
+- Push this repair commit and verify the resulting GitHub Actions run.
 - If green, continue with item 236: thin Android window-insets adapter and menu behavior.
 - If red, inspect worker diagnostics before unrelated work.

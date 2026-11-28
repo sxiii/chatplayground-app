@@ -47,4 +47,4 @@
 - An attempted local pytest command was unavailable because pytest is not installed; it is unrelated to the Kotlin worker path.
 
 ### Next Actions
-- Push this cycle and verify the GitHub worker. If green, implement the thin Android window-insets adapter and menu wiring next; if red, inspect diagnostics before unrelated work.
+- Worker run `46098362338` is green. Next cycle: wire the Android window-insets adapter and menu behavior for immersive mode.
