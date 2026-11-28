@@ -1,27 +1,27 @@
-# Last Run (2026-11-28, run 17 — immersive-mode adapter and menu)
+# Last Run (2026-11-28, run 18 — immersive-mode CI repair)
 
 ## Baseline
 - GitHub status API: **All Systems Operational**.
-- Latest worker run `46099049526` completed **successfully** on `main` at `62e8dcb`; prior repair run `46098362338` also passed.
-- Working tree was clean before implementation.
+- Worker run `46101242760` failed after the immersive-mode implementation; its failure output was not exposed by `--log-failed`.
+- Local repository contained the immersive-mode implementation and was otherwise clean.
 
 ## Task Chosen
-- Vision item 236/237: finish the immersive-mode cycle by wiring the persisted state to Android window insets and the application menu.
+- Investigate the failed worker before selecting unrelated work, as required by `AUTONOMY.md`.
 
 ## What Changed
-- Documented the adapter and menu contract in `docs/FUNCTIONS.md` before implementation.
-- Added `ImmersiveModeWindowAdapter`, using `WindowInsetsControllerCompat` to hide/show system bars with transient bars available by edge swipe.
-- `MainActivity` restores immersive mode before the first WebView load, adds the menu item, persists toggles, applies the adapter immediately, and updates the title.
-- Added menu/state regression coverage and reset immersive singleton state in `SingletonCleanupRule`.
-- Added ranked follow-up suggestions for real-window instrumentation coverage and preference-key consolidation.
+- Inspected the implementation and identified the likely CI-only issue as Kotlin formatting in the newly added adapter/title code.
+- Reformatted `MainActivity.immersiveModeMenuTitle()` and rewrote `ImmersiveModeWindowAdapter.kt` with explicit multiline parameter formatting.
+- Updated `.autonomy/ci_status.md` with the verified worker result and next candidates.
 
 ## Verification
-- `python3 scripts/check_kotlin_style.py` — PASSED (76 Kotlin files).
+- `python3 scripts/check_kotlin_style.py` — PASSED.
 - `python3 scripts/test_ci_checks.py` — PASSED (18 tests).
 - `git diff --check` — PASSED.
-- Gradle/JVM tests were not run locally by project policy; GitHub worker is required.
-- A local `pytest` attempt was unavailable (`No module named pytest`); unrelated to the Android worker path.
+- Commit `63a7bd2` pushed directly to `main`.
+- GitHub run `46101642239` — **success**: Debug APK, Android test APK, unit tests, lint, lintKotlin, JaCoCo, release APK, artifact assertions, and release-tag all passed.
+- Gradle was not run locally by project policy.
 
 ## Next Actions
-- Push this cycle to `main`; verify the worker build before selecting the next task.
-- If green, consider item 238 instrumentation coverage for real system-bar visibility.
+- Item 238: add real-window instrumentation coverage for immersive system-bar visibility.
+- Consider item 239: consolidate repeated preference-file/key literals.
+- Keep item 228 (per-site WebStorage UI) as another medium-priority candidate.

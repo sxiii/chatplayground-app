@@ -1,8 +1,9 @@
 # CI Status
 ## Current Run
-- **Baseline before cycle**: Run `46099049526` for commit `62e8dcb` completed **successfully**; both `build` and `release-tag` jobs passed.
 - **GitHub status API**: **All Systems Operational**.
-- **Current cycle**: immersive-mode adapter/menu changes are committed locally and awaiting push/worker verification.
+- **Immersive-mode cycle**: Run `46101642239` for commit `63a7bd2` completed **successfully**; `build` and `release-tag` jobs passed.
+- **Current repository state**: `main` is clean and matches `origin/main` at `63a7bd2`.
+- **Unrelated remote activity**: Run `46102245699` is an in-progress dependency pull-request merge on `main`; it is not this cycle's commit.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
@@ -19,5 +20,6 @@
 - `git diff --check`: PASSED.
 
 ## Next Actions
-- Push the immersive-mode adapter/menu cycle and verify its GitHub Actions worker run.
-- If red, inspect worker diagnostics before unrelated work; if green, consider real-window instrumentation coverage.
+- If the unrelated dependency merge run changes the branch, re-check `main` before the next cycle.
+- Next candidate: item 238, real-window instrumentation coverage for immersive system-bar visibility.
+- Secondary candidates: item 239 preference-key constants or item 228 per-site WebStorage UI.

@@ -281,11 +281,11 @@ while keeping the main content in a WebView.
 233. **[ ] [LOW] CI coverage guard**: Add a Python guard for new Kotlin production files without applicable tests, with explicit Android-only allowlisting.
 234. **[ ] [LOW] NetworkMonitor lifecycle tests**: Verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks.
 
-## Next Improvement Suggestions (2026-11-28, after immersive-mode adapter cycle)
+## Next Improvement Suggestions (2026-11-28, after immersive-mode CI repair)
 
-237. **[x] [MEDIUM] Wire immersive-mode state to a thin window-insets adapter and menu behavior**: DONE this cycle. `ImmersiveModeWindowAdapter` applies `WindowInsetsControllerCompat` hide/show behavior with transient bars; `MainActivity` restores persisted state before loading, and the menu toggles/persists state with an explicit title. Added Robolectric menu regression coverage and reset state through `SingletonCleanupRule`.
-238. **[MEDIUM] Add instrumentation coverage for immersive system-bar visibility**: verify the real activity window hides and restores system bars on a device/emulator worker; keep the Robolectric menu/state tests as the fast gate.
-239. **[LOW] Add a shared preference-key constants object**: remove repeated literal preference-file names (`immersive_mode_prefs`, `desktop_mode_prefs`, `theme_prefs`) from activity and utility code, with no behavior change.
+240. **[x] [MEDIUM] Resolve immersive-mode worker failure**: DONE this cycle. The initial run `46101242760` failed; Kotlin formatting was corrected in the adapter/title implementation, and replacement run `46101642239` passed all build, test, lint, coverage, artifact, and release-tag jobs.
+241. **[MEDIUM] Add instrumentation coverage for immersive system-bar visibility**: verify the real activity window hides and restores system bars on a device/emulator worker; retain Robolectric state/menu tests as the fast gate.
+242. **[LOW] Add a shared preference-key constants object**: remove repeated preference-file/key literals (`immersive_mode_prefs`, `desktop_mode_prefs`, `theme_prefs`) without changing behavior.
 
 ## Last Run (2026-11-28, run 17 — immersive-mode adapter and menu)
 
