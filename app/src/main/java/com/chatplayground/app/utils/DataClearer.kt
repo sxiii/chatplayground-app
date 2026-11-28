@@ -5,7 +5,6 @@ import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
 import com.chatplayground.app.security.AppLock
-import com.chatplayground.app.utils.DesktopModeHandler
 
 /**
  * Utility to clear all app data: cookies, WebView cache, WebStorage, and
