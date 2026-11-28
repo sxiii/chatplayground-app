@@ -221,6 +221,21 @@ class KotlinStyleGuardTest(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("unused-import", result.stdout.lower())
 
+    def test_fix_removes_unused_import_line(self) -> None:
+        """--fix must delete an unused-import line so the file is left clean."""
+        with tempfile.TemporaryDirectory() as tmp:
+            bad = write_file(
+                Path(tmp),
+                "Bad.kt",
+                "import org.junit.Assert.assertTrue\n\nclass Foo {\n    val x = 1\n}\n",
+            )
+            result = run_guard(CHECK_KOTLIN_STYLE, Path(tmp), "--fix", str(bad))
+            self.assertEqual(result.returncode, 0, result.stdout)
+            content = bad.read_text(encoding="utf-8")
+            self.assertNotIn("assertTrue", content)
+            self.assertIn("class Foo", content)
+            self.assertTrue(content.endswith("\n"))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

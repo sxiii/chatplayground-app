@@ -197,6 +197,35 @@ def fix(files: list[Path]) -> int:
         if not raw:
             continue
         text = raw.decode("utf-8", errors="replace")
+        lines = text.splitlines()
+
+        # Strip unused import lines flagged by the same heuristic used at check
+        # time, so `--fix` repairs the common lintKotlinTest failure too.
+        violations = _unused_import_violations(text)
+        if violations:
+            used_line_numbers = set()
+            import_lines = []
+            for lineno, raw_line in enumerate(lines, start=1):
+                stripped = raw_line.strip()
+                if stripped.startswith("import "):
+                    import_lines.append((lineno, raw_line))
+                else:
+                    used_line_numbers.add(lineno)
+            import_line_nos = {ln for ln, _ in import_lines}
+            violation_line_nos: set[int] = set()
+            for v in violations:
+                m = re.search(r"line (\d+):", v)
+                if m:
+                    violation_line_nos.add(int(m.group(1)))
+            keep_lines = []
+            for lineno, raw_line in enumerate(lines, start=1):
+                if lineno in violation_line_nos and lineno in import_line_nos:
+                    changed += 1
+                    continue
+                keep_lines.append(raw_line)
+            lines = keep_lines
+            text = "\n".join(lines)
+
         new_text = "\n".join(line.rstrip() for line in text.splitlines())
         if not new_text.endswith("\n"):
             new_text += "\n"

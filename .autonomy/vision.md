@@ -307,6 +307,9 @@ while keeping the main content in a WebView.
 262. **[ ] [LOW] `check_kotlin_style.py --fix` does not auto-remove unused imports**: the `--fix` mode handles final newline / trailing whitespace / tabs only. Extend `fix()` to delete unused-import lines flagged by `_unused_import_violations`, so one command also repairs the common `lintKotlinTest` failure.
 
 263. **[ ] [MEDIUM] Pre-push hook running the style guard on changed files**: add a git `pre-push` hook (`.githooks/pre-push`, activated via `core.hooksPath`) that runs `scripts/check_kotlin_style.py` on the Kotlin files in the staged diff and blocks the push when a violation is found — making item 249's reminder automatic.
+264. **[LOW] Add a `test_ci_checks.py` self-test proving `check_kotlin_style.py --fix` actually removes an unused-import line**: a fix mode that never mutates a file is indistinguishable from a no-op; acceptance is a Kotlin file with an unused import that `--fix` repairs to exit 0 with the import gone.
+265. **[MEDIUM] Extend `fix()` in `check_kotlin_style.py` to delete unused-import lines flagged by `_unused_import_violations`**: closes item 262 locally before pushing, so one command repairs both the formatting and the common `lintKotlinTest` unused-import failure.
+266. **[LOW] Guard `_unused_import_violations` against false positives**: names referenced only inside string literals or comments must not mark an import unused, or `--fix` would delete real imports.
 
 ## Last Run (2026-11-28, run 23 — Site Data dialog Robolectric shadow fix)
 
