@@ -35,7 +35,7 @@ object DataClearer {
 
     /** Restores the production [webStorageDeleter] after a test injected its own. */
     fun resetWebStorageDeleterForTesting() {
-        webStorageDeleter = { WebStorage.getInstance().deleteAllData() }
+        webStorageDeleter = { WebStorageManager.deleteAllData() }
     }
 
     /** Restores the absent production clearing-order observer. */
