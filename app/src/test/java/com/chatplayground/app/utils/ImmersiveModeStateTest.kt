@@ -45,4 +45,15 @@ class ImmersiveModeStateTest {
 
         assertFalse(ImmersiveModeState.isImmersive)
     }
+
+    @Test
+    fun adapterReceivesLoadedStateWhenApplied() {
+        preferences.edit().putBoolean("immersive_mode", true).commit()
+        ImmersiveModeState.load(preferences)
+        val appliedStates = mutableListOf<Boolean>()
+
+        ImmersiveModeState.applyTo { appliedStates += it }
+
+        assertTrue(appliedStates.single())
+    }
 }

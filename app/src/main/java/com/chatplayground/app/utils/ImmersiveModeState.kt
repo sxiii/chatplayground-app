@@ -19,6 +19,10 @@ object ImmersiveModeState {
         return isImmersive
     }
 
+    fun applyTo(applier: (Boolean) -> Unit) {
+        applier(isImmersive)
+    }
+
     fun resetForTesting() {
         isImmersive = false
     }

@@ -4,6 +4,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebViewClient
 import com.chatplayground.app.security.AppLock
 import com.chatplayground.app.utils.DesktopModeHandler
+import com.chatplayground.app.utils.ImmersiveModeState
 import com.chatplayground.app.utils.SingletonCleanupRule
 import com.chatplayground.app.utils.UrlProvider
 import org.junit.Assert.assertEquals
@@ -378,6 +379,18 @@ class MainActivityTest {
             "https://chatplayground.ai",
             shadowOf(activity.getWebView()).lastLoadedUrl,
         )
+    }
+
+    @Test
+    fun immersiveModeMenuTogglesPersistedState() {
+        val activity = Robolectric.buildActivity(MainActivity::class.java).create().get()
+        val menu = org.robolectric.fakes.RoboMenu(activity)
+        activity.onCreateOptionsMenu(menu)
+        val item = menu.findItem(R.id.action_toggle_immersive_mode)
+
+        assertTrue(activity.onOptionsItemSelected(item))
+        assertTrue(ImmersiveModeState.isImmersive)
+        assertTrue(item.title.toString().contains("Exit"))
     }
 
     @Test

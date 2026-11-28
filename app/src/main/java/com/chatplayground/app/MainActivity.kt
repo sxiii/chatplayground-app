@@ -41,6 +41,8 @@ import com.chatplayground.app.utils.DeepLinkResolver
 import com.chatplayground.app.utils.DesktopModeHandler
 import com.chatplayground.app.utils.GestureNavigationHandler
 import com.chatplayground.app.utils.GestureNavigationTarget
+import com.chatplayground.app.utils.ImmersiveModeState
+import com.chatplayground.app.utils.ImmersiveModeWindowAdapter
 import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.NavigationRetryPolicy
 import com.chatplayground.app.utils.ShortcutHelper
@@ -110,6 +112,11 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
         // WebView starts with the correct UA and viewport on cold start.
         applySavedDesktopMode()
         DesktopModeHandler.applyTo(webView)
+
+        // Restore immersive mode before the first page load so system bars match
+        // the persisted user preference after activity recreation.
+        ImmersiveModeState.load(getSharedPreferences("immersive_mode_prefs", Context.MODE_PRIVATE))
+        ImmersiveModeWindowAdapter.apply(window, ImmersiveModeState.isImmersive)
 
         // Expose chrome://inspect to debug builds only; a release build never
         // exposes its renderer or page state to an attached debugger.
@@ -403,6 +410,7 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
         menuInflater.inflate(R.menu.main_menu, menu)
         // Add theme toggle button to the action bar
         addThemeToggle(menu)
+        menu.findItem(R.id.action_toggle_immersive_mode)?.title = immersiveModeMenuTitle()
         return true
     }
 
@@ -433,6 +441,13 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
                 showCookieManagementDialog()
                 true
             }
+            R.id.action_toggle_immersive_mode -> {
+                val preferences = getSharedPreferences("immersive_mode_prefs", Context.MODE_PRIVATE)
+                ImmersiveModeState.toggle(preferences)
+                ImmersiveModeWindowAdapter.apply(window, ImmersiveModeState.isImmersive)
+                item.title = immersiveModeMenuTitle()
+                true
+            }
             R.id.action_toggle_desktop_mode -> {
                 DesktopModeHandler.toggle()
                 DesktopModeHandler.applyTo(webView)
@@ -456,6 +471,9 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun immersiveModeMenuTitle(): String =
+        if (ImmersiveModeState.isImmersive) "Exit Immersive Mode" else "Enter Immersive Mode"
 
     /**
      * Applies saved or persisted desktop mode state.

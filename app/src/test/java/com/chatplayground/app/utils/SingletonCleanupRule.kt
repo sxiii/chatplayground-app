@@ -27,5 +27,6 @@ class SingletonCleanupRule : TestWatcher() {
         SecureStorage.storeFactory = { context -> EncryptedSharedPreferencesStore(context) }
         DataClearer.resetWebStorageDeleterForTesting()
         DataClearer.resetClearingStepObserverForTesting()
+        ImmersiveModeState.resetForTesting()
     }
 }

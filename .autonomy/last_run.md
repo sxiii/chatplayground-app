@@ -1,50 +1,27 @@
-# Last Run (2026-11-28, run 14 — development cycle: DataClearer clearing order)
+# Last Run (2026-11-28, run 17 — immersive-mode adapter and menu)
 
 ## Baseline
-- GitHub Actions baseline was green: run `46089528072` (`b8fa417`) completed successfully on `main`; no pending worker build.
-- Working tree was clean before implementation. Previous run's file-mutation warning was checked: the AppLock/DataClearer changes are present in the checkout and confirmed by the green worker run.
+- GitHub status API: **All Systems Operational**.
+- Latest worker run `46099049526` completed **successfully** on `main` at `62e8dcb`; prior repair run `46098362338` also passed.
+- Working tree was clean before implementation.
 
 ## Task Chosen
-- Vision item **229**: `DataClearer.clearAllData()` had no regression test for the documented destructive-operation order.
+- Vision item 236/237: finish the immersive-mode cycle by wiring the persisted state to Android window insets and the application menu.
 
 ## What Changed
-1. `docs/FUNCTIONS.md` was updated before implementation to document the `clearingStepObserver` test seam and the required order.
-2. `DataClearer` gained a nullable observer seam and reset helper. Production behavior is unchanged when the observer is null.
-3. `ClearAllDataTest.clearAllDataRunsDestructiveStepsInDocumentedOrder` records and asserts: offline cache → WebView cache → cookies → WebStorage → preferences → desktop mode → AppLock.
-4. `SingletonCleanupRule` resets the observer after each test.
+- Documented the adapter and menu contract in `docs/FUNCTIONS.md` before implementation.
+- Added `ImmersiveModeWindowAdapter`, using `WindowInsetsControllerCompat` to hide/show system bars with transient bars available by edge swipe.
+- `MainActivity` restores immersive mode before the first WebView load, adds the menu item, persists toggles, applies the adapter immediately, and updates the title.
+- Added menu/state regression coverage and reset immersive singleton state in `SingletonCleanupRule`.
+- Added ranked follow-up suggestions for real-window instrumentation coverage and preference-key consolidation.
 
 ## Verification
-- `python3 scripts/check_kotlin_style.py` — PASSED (73 Kotlin files).
+- `python3 scripts/check_kotlin_style.py` — PASSED (76 Kotlin files).
 - `python3 scripts/test_ci_checks.py` — PASSED (18 tests).
 - `git diff --check` — PASSED.
-- GitHub worker run `46092737887` — **success** on commit `17f3d85` (build and release-tag jobs).
-- Android/Gradle compilation and unit tests were not run locally per project policy; the GitHub worker is the source of truth.
+- Gradle/JVM tests were not run locally by project policy; GitHub worker is required.
+- A local `pytest` attempt was unavailable (`No module named pytest`); unrelated to the Android worker path.
 
-### Next Actions
-- Continue with item 228 (per-site WebStorage UI) or item 231/60 (immersive-mode seam-first implementation).
-
-## Last Run (2026-11-28, run 15 — development cycle: immersive-mode seam)
-
-### Baseline
-- GitHub Actions was green at HEAD `8ba9fed`; runs `46093294204` and `46092737887` completed successfully.
-- GitHub status API reported `none / All Systems Operational`.
-- Working tree was clean before this cycle.
-
-### Task Chosen
-- Vision item 231/60: establish a testable immersive-mode state and persistence seam before Android window-insets wiring.
-
-### What Changed
-- Documented `ImmersiveModeState` in `docs/FUNCTIONS.md` before implementation.
-- Added `ImmersiveModeState` with persisted load/toggle behavior and a test reset seam.
-- Added Robolectric tests for enabling and disabling immersive mode across state reload.
-- Added ranked follow-up suggestions to `.autonomy/vision.md`.
-
-### Verification
-- `python3 scripts/check_kotlin_style.py` — PASSED (75 Kotlin files).
-- `python3 scripts/test_ci_checks.py` — PASSED (18 tests).
-- `git diff --check` — PASSED.
-- Gradle/JVM tests were not run locally per policy; GitHub worker is required.
-- An attempted local pytest command was unavailable because pytest is not installed; it is unrelated to the Kotlin worker path.
-
-### Next Actions
-- Worker run `46098362338` is green. Next cycle: wire the Android window-insets adapter and menu behavior for immersive mode.
+## Next Actions
+- Push this cycle to `main`; verify the worker build before selecting the next task.
+- If green, consider item 238 instrumentation coverage for real system-bar visibility.

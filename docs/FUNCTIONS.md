@@ -71,6 +71,11 @@ This document describes the core build, CI/CD, and application runtime functions
 ### WebView Settings (`WebViewConfigurator`)
 - **`configure(webView: WebView)`**: Applies app-wide policy: JavaScript enabled, DOM storage enabled, Mixed Content `NEVER_ALLOW`, local file/content access disabled, and custom User-Agent (`ChatPlayground/1.0`).
 
+### Immersive Mode (`ImmersiveModeState`, `ImmersiveModeWindowAdapter`)
+- **`ImmersiveModeState.load/toggle`**: Loads and persists the user's immersive-mode choice in `immersive_mode_prefs`.
+- **`ImmersiveModeWindowAdapter.apply`**: Applies the persisted choice to the activity window by hiding or showing system bars through `WindowInsetsControllerCompat`; transient bars remain available with an edge swipe.
+- **Menu integration**: `action_toggle_immersive_mode` toggles the persisted state, applies it immediately, and updates the menu title. The adapter is injectable behind a small window-controller interface so state and menu behavior remain testable without a device.
+
 ### Desktop Mode (`DesktopModeHandler`)
 - **`applyDesktopMode(enabled: Boolean)`**: DERIVES User-Agent and viewport settings (`useWideViewPort`, `loadWithOverviewMode`) for a desktop-like browsing experience.
 - **Integration**: Toggled via menu; persisted in `desktop_mode_prefs`; applied in `onCreate` before any load.
@@ -93,10 +98,11 @@ This document describes the core build, CI/CD, and application runtime functions
 ### App Lock (`AppLock`)
 - **Startup Gate**: If `enabled`, gates the initial `webView.loadUrl` behind a successful biometric `unlock()`. Unlocked state persists for the process life.
 
-### Immersive Mode (`ImmersiveModeState`)
-- **`isImmersive`**: Pure-JVM state indicating whether fullscreen immersive mode is enabled.
-- **`load(prefs)` / `save(prefs)`**: Reads and persists the `immersive_mode` preference so the choice survives activity recreation.
-- **`toggle()`**: Flips the state and returns the new value. The Android window-insets adapter is kept separate so the decision and persistence rules remain testable under Robolectric.
+### Immersive Mode (`ImmersiveModeState`, `ImmersiveModeWindowAdapter`)
+- **`isImmersive`**: State indicating whether fullscreen immersive mode is enabled.
+- **`load(prefs)` / `toggle(prefs)`**: Reads and persists the `immersive_mode` preference so the choice survives activity recreation.
+- **`ImmersiveModeWindowAdapter.apply(window, immersive)`**: Uses `WindowInsetsControllerCompat` to hide/show system bars, with transient bars available through an edge swipe.
+- **Integration**: `MainActivity` restores the setting before the first page load; the menu toggles it immediately and updates between "Enter Immersive Mode" and "Exit Immersive Mode".
 
 ### Deep Links (`DeepLinkResolver`)
 - **`resolve(url: String?): String?`**: Maps incoming deep link Intents (scheme `chatplayground://` or `https://chatplayground.ai`) to canonical WebView URLs.
