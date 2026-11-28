@@ -1,6 +1,7 @@
 package com.chatplayground.app
 
 import android.os.Looper
+import androidx.appcompat.app.AlertDialog
 import com.chatplayground.app.utils.SingletonCleanupRule
 import com.chatplayground.app.utils.WebStorageManager
 import org.junit.Assert.assertEquals
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import androidx.appcompat.app.AlertDialog
 import org.robolectric.shadows.ShadowAlertDialog
 
 @RunWith(RobolectricTestRunner::class)
@@ -41,7 +43,7 @@ class MainActivitySiteDataTest {
 
         val dialog = ShadowAlertDialog.getLatestDialog()
         assertNotNull("Site Data dialog should be shown", dialog)
-        val alert = ShadowAlertDialog.getLatestAlertDialog()
+        val alert = dialog as AlertDialog
         assertNotNull("Site Data dialog should be an alert dialog", alert)
         val listView = alert.listView
         assertNotNull("Site Data dialog should list origins", listView)
@@ -67,8 +69,9 @@ class MainActivitySiteDataTest {
         WebStorageManager.showSiteDataManagementDialog(activity)
         shadowOf(Looper.getMainLooper()).idle()
 
-        val alert = ShadowAlertDialog.getLatestAlertDialog()
-        assertNotNull(alert)
+        val dialog = ShadowAlertDialog.getLatestDialog()
+        assertNotNull(dialog)
+        val alert = dialog as AlertDialog
         // Robolectric may not attach list children; index-based click still fires the listener.
         alert.listView.performItemClick(null, 0, 0L)
 
@@ -87,8 +90,7 @@ class MainActivitySiteDataTest {
 
         val dialog = ShadowAlertDialog.getLatestDialog()
         assertNotNull(dialog)
-        val alert = ShadowAlertDialog.getLatestAlertDialog()
-        assertNotNull(alert)
+        val alert = dialog as AlertDialog
         assertTrue(
             "Empty Site Data dialog should explain there is no stored data",
             shadowOf(alert).message.contains("No site data"),
