@@ -1,6 +1,7 @@
 package com.chatplayground.app.utils
 
 import android.app.Activity
+import android.os.Looper
 import android.webkit.ValueCallback
 import android.webkit.WebStorage
 import android.widget.Toast
@@ -61,34 +62,44 @@ object WebStorageManager {
      */
     fun showSiteDataManagementDialog(activity: Activity) {
         getOrigins { origins ->
-            activity.runOnUiThread {
-                if (origins.isEmpty()) {
-                    AlertDialog.Builder(activity)
-                        .setTitle("Site Data")
-                        .setMessage("No site data currently stored.")
-                        .setNegativeButton("Close") { dialog, _ -> dialog.dismiss() }
-                        .show()
-                    return@runOnUiThread
-                }
-
-                val items = origins.toTypedArray()
-                AlertDialog.Builder(activity)
-                    .setTitle("Site Data")
-                    .setItems(items) { dialog, which ->
-                        val origin = items[which]
-                        deleteOrigin(origin)
-                        Toast.makeText(activity, "Cleared $origin", Toast.LENGTH_SHORT).show()
-                        dialog.dismiss()
-                    }
-                    .setNeutralButton("Clear All") { dialog, _ ->
-                        deleteAllData()
-                        Toast.makeText(activity, "All site data cleared", Toast.LENGTH_SHORT).show()
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton("Close") { dialog, _ -> dialog.dismiss() }
-                    .show()
+            val present = Runnable { presentSiteDataDialog(activity, origins) }
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                present.run()
+            } else {
+                activity.runOnUiThread(present)
             }
         }
+    }
+
+    private fun presentSiteDataDialog(
+        activity: Activity,
+        origins: List<String>,
+    ) {
+        if (origins.isEmpty()) {
+            AlertDialog.Builder(activity)
+                .setTitle("Site Data")
+                .setMessage("No site data currently stored.")
+                .setNegativeButton("Close") { dialog, _ -> dialog.dismiss() }
+                .show()
+            return
+        }
+
+        val items = origins.toTypedArray()
+        AlertDialog.Builder(activity)
+            .setTitle("Site Data")
+            .setItems(items) { dialog, which ->
+                val origin = items[which]
+                deleteOrigin(origin)
+                Toast.makeText(activity, "Cleared $origin", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            .setNeutralButton("Clear All") { dialog, _ ->
+                deleteAllData()
+                Toast.makeText(activity, "All site data cleared", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Close") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
     fun resetForTesting() {

@@ -1,5 +1,6 @@
 package com.chatplayground.app
 
+import android.os.Looper
 import com.chatplayground.app.utils.SingletonCleanupRule
 import com.chatplayground.app.utils.WebStorageManager
 import org.junit.Assert.assertEquals
@@ -36,10 +37,13 @@ class MainActivitySiteDataTest {
         assertNotNull("Site Data menu item should exist", item)
 
         activity.onOptionsItemSelected(item)
+        shadowOf(Looper.getMainLooper()).idle()
 
-        val dialog = ShadowAlertDialog.getLatestAlertDialog()
+        val dialog = ShadowAlertDialog.getLatestDialog()
         assertNotNull("Site Data dialog should be shown", dialog)
-        val listView = dialog.listView
+        val alert = ShadowAlertDialog.getLatestAlertDialog()
+        assertNotNull("Site Data dialog should be an alert dialog", alert)
+        val listView = alert.listView
         assertNotNull("Site Data dialog should list origins", listView)
         assertEquals(2, listView.count)
     }
@@ -61,11 +65,12 @@ class MainActivitySiteDataTest {
 
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().resume().get()
         WebStorageManager.showSiteDataManagementDialog(activity)
+        shadowOf(Looper.getMainLooper()).idle()
 
-        val dialog = ShadowAlertDialog.getLatestAlertDialog()
-        assertNotNull(dialog)
+        val alert = ShadowAlertDialog.getLatestAlertDialog()
+        assertNotNull(alert)
         // Robolectric may not attach list children; index-based click still fires the listener.
-        dialog.listView.performItemClick(null, 0, 0L)
+        alert.listView.performItemClick(null, 0, 0L)
 
         assertEquals("https://chatplayground.ai", deletedOrigin)
     }
@@ -78,12 +83,15 @@ class MainActivitySiteDataTest {
 
         val activity = Robolectric.buildActivity(MainActivity::class.java).create().resume().get()
         WebStorageManager.showSiteDataManagementDialog(activity)
+        shadowOf(Looper.getMainLooper()).idle()
 
-        val dialog = ShadowAlertDialog.getLatestAlertDialog()
+        val dialog = ShadowAlertDialog.getLatestDialog()
         assertNotNull(dialog)
+        val alert = ShadowAlertDialog.getLatestAlertDialog()
+        assertNotNull(alert)
         assertTrue(
             "Empty Site Data dialog should explain there is no stored data",
-            shadowOf(dialog).message.contains("No site data"),
+            shadowOf(alert).message.contains("No site data"),
         )
     }
 }
