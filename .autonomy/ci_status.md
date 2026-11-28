@@ -20,5 +20,6 @@
 - Gradle was not run locally per project policy.
 
 ## Next Actions
-- Verify run `46109385661` before starting another development task.
-- If red, inspect diagnostics and repair; if green, choose per-site WebStorage UI or NetworkMonitor lifecycle coverage.
+- Repair `DataClearer.kt`'s ktlint multiline-expression violation before starting unrelated work.
+- Push the repair and verify the resulting worker run; do not run Gradle locally.
+- If green, choose per-site WebStorage UI or NetworkMonitor lifecycle coverage.

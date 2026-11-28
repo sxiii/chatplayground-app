@@ -13,11 +13,12 @@ import com.chatplayground.app.security.AppLock
  */
 object DataClearer {
     /** All SharedPreferences files the app uses, cleared by [clearAllData]. */
-    private val PREF_FILES = listOf(
-        PreferenceKeys.Files.APP_DATA,
-        PreferenceKeys.Files.DESKTOP_MODE,
-        PreferenceKeys.Files.THEME,
-    )
+    private val PREF_FILES =
+        listOf(
+            PreferenceKeys.Files.APP_DATA,
+            PreferenceKeys.Files.DESKTOP_MODE,
+            PreferenceKeys.Files.THEME,
+        )
 
     /**
      * Seam for the [WebStorage] clearing call so [clearAllData] can be

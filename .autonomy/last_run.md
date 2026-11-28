@@ -23,4 +23,7 @@
 - Commit `714749d` pushed directly to `main`; worker run `46109385661` is **in progress** at record time.
 
 ## Next Actions
-- Check run `46109385661` before starting another task. If it fails, inspect diagnostics and repair first; if green, select per-site WebStorage UI or NetworkMonitor lifecycle coverage.
+- Runs `46109385661` and `46109532291` failed in `lintKotlin` on `DataClearer.kt:16` (`standard:multiline-expression-wrapping`).
+- Repaired the assignment formatting, added follow-ups 249–250 to `vision.md`, and pushed the repair directly to `main`.
+- Local checks passed: style guard on the changed file, 18 CI self-tests, and `git diff --check`; Gradle remains GitHub-only.
+- Verify the new worker run before selecting per-site WebStorage UI or NetworkMonitor lifecycle coverage.

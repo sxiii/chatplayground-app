@@ -281,12 +281,10 @@ while keeping the main content in a WebView.
 233. **[ ] [LOW] CI coverage guard**: Add a Python guard for new Kotlin production files without applicable tests, with explicit Android-only allowlisting.
 234. **[ ] [LOW] NetworkMonitor lifecycle tests**: Verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks.
 
-## Next Improvement Suggestions (2026-11-28, after preference-key consolidation)
+## Next Improvement Suggestions (2026-11-28, after the CI lint repair)
 
-245. **[x] [LOW] Centralize SharedPreferences file/key literals**: Added `PreferenceKeys` and migrated production reads/writes plus relevant tests and `DataClearer` to the shared constants; documented in `docs/FUNCTIONS.md`.
-246. **[ ] [MEDIUM] Per-site WebStorage UI**: list origins and clear a selected origin through a testable seam.
-247. **[ ] [LOW] NetworkMonitor lifecycle tests**: verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks.
-248. **[ ] [LOW] CI coverage guard**: flag new Kotlin production files lacking an applicable test, with explicit Android-only allowlisting.
+249. **[ ] [LOW] Add a pre-push hook wrapper for the repository's Kotlin style guard**: provide one documented command that checks only changed Kotlin files and fails before a worker round-trip.
+250. **[ ] [MEDIUM] Add a CI diagnostic assertion for lint output**: ensure the workflow's lint diagnostics step preserves the first actionable file/line marker when a Kotlin lint task fails.
 
 ## Last Run (2026-11-28, run 19 — immersive instrumentation coverage)
 
