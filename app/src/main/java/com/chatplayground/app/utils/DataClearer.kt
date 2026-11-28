@@ -58,5 +58,8 @@ object DataClearer {
 
         // Reset in-memory desktop-mode state so it matches the cleared storage
         DesktopModeHandler.applyDesktopMode(false)
+
+        // Reset AppLock so "Clear All Data" does not leave the app locked
+        AppLock.enabled = false
     }
 }

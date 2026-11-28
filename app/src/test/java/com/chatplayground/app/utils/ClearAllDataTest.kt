@@ -4,6 +4,7 @@ import android.content.Context
 import android.webkit.CookieManager
 import android.webkit.WebView
 import androidx.test.core.app.ApplicationProvider
+import com.chatplayground.app.security.AppLock
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -128,6 +129,28 @@ class ClearAllDataTest {
         assertFalse("Cookies should be cleared", CookieManager.getInstance().hasCookies())
         assertEquals("desktop_mode_prefs should be cleared", false, desktopModePrefs.getBoolean("desktop_mode", false))
         assertEquals("theme_prefs should be cleared", 0, themePrefs.getInt("theme_mode", 0))
+    }
+
+    @Test
+    fun clearAllDataResetsAppLockState() {
+        context = ApplicationProvider.getApplicationContext()
+        val webView = WebView(context)
+
+        // Arrange: engage the app lock so content is gated on next start.
+        AppLock.enabled = true
+        AppLock.authenticator = { true }
+        AppLock.unlock()
+        assertFalse(AppLock.isLocked())
+        AppLock.enabled = true
+        AppLock.resetForTesting()
+        assertTrue(AppLock.isLocked())
+
+        // Act: Clear all data
+        DataClearer.clearAllData(context, webView)
+
+        // Assert: AppLock state is reset so the app is not left locked.
+        assertFalse("Clear All Data must reset AppLock.enabled", AppLock.enabled)
+        assertTrue("Clear All Data must leave AppLock unlocked", !AppLock.isLocked())
     }
 
     @Test
