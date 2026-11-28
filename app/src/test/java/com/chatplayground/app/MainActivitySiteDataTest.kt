@@ -10,6 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowAlertDialog
 
 @RunWith(RobolectricTestRunner::class)
@@ -82,7 +83,7 @@ class MainActivitySiteDataTest {
         assertNotNull(dialog)
         assertTrue(
             "Empty Site Data dialog should explain there is no stored data",
-            dialog.message?.toString()?.contains("No site data") == true,
+            shadowOf(dialog).message.contains("No site data"),
         )
     }
 }
