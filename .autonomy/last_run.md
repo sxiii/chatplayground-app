@@ -17,6 +17,10 @@
 - `git diff --check` — PASSED.
 - Gradle not run locally per project policy; GitHub worker is the compile/test authority. Import ordering checked: `WebStorage` import still used in DataClearer.kt (line 38, test seam reset); test file has no unused imports (same-package `WebStorageManager` reference needs no import).
 
-## Next Actions
-- Commit and push to `main`; verify the worker build turns green with `gh run list`.
-- If red, inspect `gh run view --log-failed` before unrelated work (AGENTS/AUTONOMY failure policy).
+## Status
+- **Worker build**: **GREEN** — run `46156470310` (push `e596587`) **success**; cycle 26 complete.
+
+## What Changed
+- `app/src/main/java/com/chatplayground/app/utils/DataClearer.kt`: `webStorageDeleter` default now calls `WebStorageManager.deleteAllData()`; `resetWebStorageDeleterForTesting()` restored to match the new default after the first run exposed the seam mismatch.
+- `app/src/test/java/com/chatplayground/app/utils/ClearAllDataTest.kt`: added `clearAllDataRoutesWebStorageThroughWebStorageManager` asserting the routing via the injectable `WebStorageManager.allDataDeleter` seam.
+- `.autonomy/vision.md`: item 255 marked DONE with evidence; `.autonomy/ci_status.md` synced to latest green run `46156470310`.
