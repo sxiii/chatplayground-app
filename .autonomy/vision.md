@@ -272,7 +272,14 @@ while keeping the main content in a WebView.
 228. **[MEDIUM] Dedicated per-site data management UI for WebStorage**: item 59 only wired the *global* `WebStorage.deleteAllData()` into "Clear All Data". A user today cannot inspect or clear localStorage for a single site (e.g. after a broken SPA token is cached in IndexedDB/localStorage). Acceptance: a "Site Data" entry in the menu lists origins with stored data (via `WebStorage.getOrigins`) and offers per-origin clear; covered by a Robolectric test asserting the origin list is read and `deleteOrigin` is invoked for the selected origin. Note: `ShadowWebStorage` is a stub, so the seam must be extended the same way `webStorageDeleter` was.
 229. **[x] [LOW] `DataClearer` clearing order is untested**: DONE 2026-11-28. Added the nullable `clearingStepObserver` test seam and `clearAllDataRunsDestructiveStepsInDocumentedOrder`, asserting offline cache → WebView cache → cookies → WebStorage → preferences → desktop mode → AppLock. The observer is reset by `SingletonCleanupRule` and documented in `docs/FUNCTIONS.md`.
 230. **[x] [LOW] `AppLock` is not reset by "Clear All Data"**: `DataClearer.clearAllData()` now resets `AppLock.enabled = false` so wiping all app data does not leave the app locked on next start. Covered by `ClearAllDataTest.clearAllDataResetsAppLockState`. CI run `46088833666` green on commit `ec55d9d`.
-231. **[MEDIUM] Immersive mode toggle (item 60) needs a testable seam before implementation**: `WindowInsetsControllerCompat.hide(...)` is a no-op under Robolectric's shadow Window, so the `ImmersiveModeHandler` should expose a pure-JVM decision function (`isImmersive`, persisted flag) and a thin `apply(activity)` adapter, mirroring the `SecureStorage`/`DataClearer` seam pattern so RED is observable in CI rather than compile-only.
+
+
+## Next Improvement Suggestions (2026-11-28, after the DataClearer ordering cycle)
+
+231. **[ ] [MEDIUM] Immersive mode seam-first implementation**: Add a pure-JVM state/persistence layer plus a thin Android window-insets adapter; acceptance includes a failing-then-green test before adapter wiring.
+232. **[ ] [MEDIUM] Per-site WebStorage UI**: List origins and clear a selected origin through a testable seam; acceptance includes a Robolectric test for origin listing and `deleteOrigin`.
+233. **[ ] [LOW] CI coverage guard**: Add a Python guard for new Kotlin production files without applicable tests, with explicit Android-only allowlisting.
+234. **[ ] [LOW] NetworkMonitor lifecycle tests**: Verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks.
 ## Next Improvement Suggestions (2026-11-28, after the DataClearer ordering cycle)
 
 232. **[MEDIUM] Per-site WebStorage UI**: add a menu entry that lists origins from `WebStorage.getOrigins` and clears a selected origin through a testable seam; acceptance includes a Robolectric test for list/read and `deleteOrigin` invocation.

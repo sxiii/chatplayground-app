@@ -93,6 +93,11 @@ This document describes the core build, CI/CD, and application runtime functions
 ### App Lock (`AppLock`)
 - **Startup Gate**: If `enabled`, gates the initial `webView.loadUrl` behind a successful biometric `unlock()`. Unlocked state persists for the process life.
 
+### Immersive Mode (`ImmersiveModeState`)
+- **`isImmersive`**: Pure-JVM state indicating whether fullscreen immersive mode is enabled.
+- **`load(prefs)` / `save(prefs)`**: Reads and persists the `immersive_mode` preference so the choice survives activity recreation.
+- **`toggle()`**: Flips the state and returns the new value. The Android window-insets adapter is kept separate so the decision and persistence rules remain testable under Robolectric.
+
 ### Deep Links (`DeepLinkResolver`)
 - **`resolve(url: String?): String?`**: Maps incoming deep link Intents (scheme `chatplayground://` or `https://chatplayground.ai`) to canonical WebView URLs.
 
