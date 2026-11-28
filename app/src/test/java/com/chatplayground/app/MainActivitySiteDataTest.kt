@@ -1,7 +1,7 @@
 package com.chatplayground.app
 
-import android.app.AlertDialog
 import android.os.Looper
+import androidx.appcompat.app.AlertDialog
 import com.chatplayground.app.utils.SingletonCleanupRule
 import com.chatplayground.app.utils.WebStorageManager
 import org.junit.Assert.assertEquals
