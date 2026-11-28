@@ -214,6 +214,13 @@ class KotlinStyleGuardTest(unittest.TestCase):
             result = self._check(tmp, "class Foo {\n    val x = 1\n}\n")
         self.assertEqual(result.returncode, 0, result.stdout)
 
+    def test_fails_when_file_has_unused_import(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            content = "import org.junit.Assert.assertTrue\n\nclass Foo {\n    val x = 1\n}\n"
+            result = self._check(tmp, content)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("unused-import", result.stdout.lower())
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -13,6 +13,7 @@ Exit code 1 when a violation is found, 0 when clean.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -56,6 +57,11 @@ def check(path: Path) -> list[str]:
     problems.extend(
         f"standard:multiline-expression-wrapping — line {ln}: {l}"
         for ln, l in _multiline_expression_wrapping_violations(lines)
+    )
+
+    problems.extend(
+        f"{path}: {v}"
+        for v in _unused_import_violations(text)
     )
 
     for lineno, line in enumerate(lines, start=1):
@@ -117,6 +123,49 @@ def _multiline_expression_wrapping_violations(lines: list[str]) -> list[tuple[in
             expr_start = 0
             expr_start_line = ""
             expr_has_assign_before = False
+    return violations
+
+
+def _unused_import_violations(text: str) -> list[str]:
+    """Flag top-level imports whose last identifier never appears elsewhere.
+
+    A plain-JVM heuristic: collect every `import a.b.C;`-style line, take the
+    imported name (the segment after the final dot, or after ` as ` for
+    aliases), skip wildcard imports (`*`), and report any name that does not
+    occur as a word-boundary match anywhere else in the file. Fast, no AST, no
+    Java — catches the common unused-import case that breaks `lintKotlinTest`
+    on GitHub workers without a Gradle round-trip.
+    """
+    violations: list[str] = []
+    lines = text.splitlines()
+    import_names: list[tuple[int, str]] = []
+    for lineno, raw in enumerate(lines, start=1):
+        stripped = raw.strip()
+        if not stripped.startswith("import "):
+            continue
+        body = stripped[len("import "):].rstrip(";").strip()
+        if body.endswith(".*"):
+            continue  # wildcard — cannot statically determine usage
+        # Handle `import a.b.C as Alias` -> alias is the bound name
+        if " as " in body:
+            body = body.split(" as ", 1)[1].strip()
+        name = body.split(".")[-1].strip()
+        import_names.append((lineno, name))
+
+    if not import_names:
+        return violations
+
+    # Build a single search haystack from everything *except* import lines,
+    # so an import line itself never satisfies its own usage.
+    haystack_lines = [
+        raw for lineno, raw in enumerate(lines, start=1)
+        if not raw.strip().startswith("import ")
+    ]
+    haystack = "\n".join(haystack_lines)
+
+    for lineno, name in import_names:
+        if not re.search(rf"\b{re.escape(name)}\b", haystack):
+            violations.append(f"standard:unused-import — line {lineno}: unused import '{name}'")
     return violations
 
 
