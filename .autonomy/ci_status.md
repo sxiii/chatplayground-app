@@ -1,7 +1,7 @@
 # CI Status
 ## Current Run
-- **CI status**: Green at HEAD `17f3d85` (commit `test(data): verify clear-all ordering`). Run `46092737887` completed **success** on `main`; build and release-tag jobs passed.
-- No pending worker errors.
+- **CI status**: Run `46096086513` for HEAD `f9d711b` is **in progress**; previous baseline run `46093294204` passed.
+- Worker diagnostics are not available until the run completes.
 
 ## Recent CI Runs
 | Run ID | Status | Notes |
