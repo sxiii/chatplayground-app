@@ -77,4 +77,21 @@ class SingletonCleanupRuleTest {
             DataClearer.webStorageDeleter !== injectedDeleter,
         )
     }
+
+    @Test
+    fun ruleResetsWebStorageManagerSeamsOnFinished() {
+        val injectedFetcher: (android.webkit.ValueCallback<Map<*, *>?>) -> Unit = { }
+        WebStorageManager.originFetcher = injectedFetcher
+
+        val rule = SingletonCleanupRule()
+        val description = Description.createTestDescription(javaClass, "dummyWebStorageManager")
+        val statement = rule.apply(NoOpStatement(), description)
+
+        statement.evaluate()
+
+        assertTrue(
+            "WebStorageManager.originFetcher must be reset to the production fetcher",
+            WebStorageManager.originFetcher !== injectedFetcher,
+        )
+    }
 }

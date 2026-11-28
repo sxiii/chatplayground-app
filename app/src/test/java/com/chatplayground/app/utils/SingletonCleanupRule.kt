@@ -28,5 +28,6 @@ class SingletonCleanupRule : TestWatcher() {
         DataClearer.resetWebStorageDeleterForTesting()
         DataClearer.resetClearingStepObserverForTesting()
         ImmersiveModeState.resetForTesting()
+        WebStorageManager.resetForTesting()
     }
 }

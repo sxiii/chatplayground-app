@@ -1,7 +1,10 @@
 package com.chatplayground.app.utils
 
+import android.app.Activity
 import android.webkit.ValueCallback
 import android.webkit.WebStorage
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 
 /**
  * Manages WebStorage (localStorage, IndexedDB, etc.) origins and deletion.
@@ -50,6 +53,42 @@ object WebStorageManager {
 
     fun deleteAllData() {
         allDataDeleter()
+    }
+
+    /**
+     * Shows a dialog listing WebStorage origins. Selecting an origin clears that
+     * origin; "Clear All" clears every origin. Empty storage shows a message only.
+     */
+    fun showSiteDataManagementDialog(activity: Activity) {
+        getOrigins { origins ->
+            activity.runOnUiThread {
+                if (origins.isEmpty()) {
+                    AlertDialog.Builder(activity)
+                        .setTitle("Site Data")
+                        .setMessage("No site data currently stored.")
+                        .setNegativeButton("Close") { dialog, _ -> dialog.dismiss() }
+                        .show()
+                    return@runOnUiThread
+                }
+
+                val items = origins.toTypedArray()
+                AlertDialog.Builder(activity)
+                    .setTitle("Site Data")
+                    .setItems(items) { dialog, which ->
+                        val origin = items[which]
+                        deleteOrigin(origin)
+                        Toast.makeText(activity, "Cleared $origin", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+                    .setNeutralButton("Clear All") { dialog, _ ->
+                        deleteAllData()
+                        Toast.makeText(activity, "All site data cleared", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Close") { dialog, _ -> dialog.dismiss() }
+                    .show()
+            }
+        }
     }
 
     fun resetForTesting() {

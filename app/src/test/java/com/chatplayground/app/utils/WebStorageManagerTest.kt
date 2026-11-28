@@ -13,10 +13,11 @@ class WebStorageManagerTest {
     fun getOriginsParsesOriginsCorrectly() {
         var retrievedOrigins: List<String>? = null
         WebStorageManager.originFetcher = { callback ->
-            val mockMap = mapOf(
-                "https://chatplayground.ai" to "data1",
-                "https://google.com" to "data2",
-            )
+            val mockMap =
+                mapOf(
+                    "https://chatplayground.ai" to "data1",
+                    "https://google.com" to "data2",
+                )
             callback.onReceiveValue(mockMap)
         }
 

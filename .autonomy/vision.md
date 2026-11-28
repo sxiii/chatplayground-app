@@ -269,7 +269,7 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (2026-11-28, after the WebStorage-clearing cycle)
 
-228. **[MEDIUM] Dedicated per-site data management UI for WebStorage**: item 59 only wired the *global* `WebStorage.deleteAllData()` into "Clear All Data". A user today cannot inspect or clear localStorage for a single site (e.g. after a broken SPA token is cached in IndexedDB/localStorage). Acceptance: a "Site Data" entry in the menu lists origins with stored data (via `WebStorage.getOrigins`) and offers per-origin clear; covered by a Robolectric test asserting the origin list is read and `deleteOrigin` is invoked for the selected origin. Note: `ShadowWebStorage` is a stub, so the seam must be extended the same way `webStorageDeleter` was.
+228. **[x] [MEDIUM] Dedicated per-site data management UI for WebStorage**: DONE 2026-11-28 (same delivery as item 232). "Site Data" menu entry lists origins via injectable `originFetcher` and clears via `originDeleter`; Robolectric coverage in `MainActivitySiteDataTest`.
 229. **[x] [LOW] `DataClearer` clearing order is untested**: DONE 2026-11-28. Added the nullable `clearingStepObserver` test seam and `clearAllDataRunsDestructiveStepsInDocumentedOrder`, asserting offline cache → WebView cache → cookies → WebStorage → preferences → desktop mode → AppLock. The observer is reset by `SingletonCleanupRule` and documented in `docs/FUNCTIONS.md`.
 230. **[x] [LOW] `AppLock` is not reset by "Clear All Data"**: `DataClearer.clearAllData()` now resets `AppLock.enabled = false` so wiping all app data does not leave the app locked on next start. Covered by `ClearAllDataTest.clearAllDataResetsAppLockState`. CI run `46088833666` green on commit `ec55d9d`.
 
@@ -277,7 +277,7 @@ while keeping the main content in a WebView.
 ## Next Improvement Suggestions (2026-11-28, after the DataClearer ordering cycle)
 
 231. **[ ] [MEDIUM] Immersive mode seam-first implementation**: Add a pure-JVM state/persistence layer plus a thin Android window-insets adapter; acceptance includes a failing-then-green test before adapter wiring.
-232. **[ ] [MEDIUM] Per-site WebStorage UI**: List origins and clear a selected origin through a testable seam; acceptance includes a Robolectric test for origin listing and `deleteOrigin`.
+232. **[x] [MEDIUM] Per-site WebStorage UI**: DONE 2026-11-28. Menu "Site Data" lists origins via `WebStorageManager.getOrigins` and clears a selected origin through `originDeleter`; covered by `MainActivitySiteDataTest` (list/read, deleteOrigin click, empty state). Seams reset by `SingletonCleanupRule`.
 233. **[ ] [LOW] CI coverage guard**: Add a Python guard for new Kotlin production files without applicable tests, with explicit Android-only allowlisting.
 234. **[x] [LOW] NetworkMonitor lifecycle tests**: Verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks — `NetworkMonitorRapidLifecycleTest.kt` added, covering `rapidObserveStopAlternationLeavesZeroCallbacks` and `rapidObserveCallsLeaveExactlyOneCallback`. Committed locally; waiting for GitHub worker verification on push.
 
@@ -289,6 +289,31 @@ while keeping the main content in a WebView.
 252. **[ ] [LOW] Export `docs/FUNCTIONS.md` function index as machine-readable YAML**: so agents can verify implemented functions against documented ones without parsing Markdown.
 253. **[ ] [LOW] Add automated integration test for `WebViewConfigurator` headers and settings on real WebView instances** — `WebViewConfiguratorInstrumentedTest.kt` asserts settings on a real widget; follow-up to item 211 which covered unit-level verification only.
 254. **[ ] [MEDIUM] Add automated unit tests for `WebViewCookieManager` persistence** — verify cookie state persistence and synchronization across activity recreation (vision item 214).
+255. **[ ] [LOW] Route `DataClearer.webStorageDeleter` through `WebStorageManager.deleteAllData`** so global clear and per-site clear share one production path; acceptance: `ClearAllDataTest.clearAllDataClearsWebStorage` still passes after the seam redirects.
+256. **[ ] [MEDIUM] Site Data dialog refresh after delete**: after clearing one origin, re-fetch origins and update or re-show the dialog so the cleared origin disappears without reopening the menu; Robolectric test asserts the list shrinks.
+
+## Last Run (2026-11-28, run 22 — per-site WebStorage UI)
+
+### Baseline
+- GitHub status: **All Systems Operational**.
+- Prior green: `46118175756`. Push `853e281` failed at `lintKotlin` (`WebStorageManager.kt` multiline-expression-wrapping); repair `079b564` also failed on the same rule in `WebStorageManagerTest.kt:16`.
+
+### Task Chosen
+- Vision items 228/232 (per-site WebStorage UI), after recovering unfinished `WebStorageManager` work and repairing ktlint.
+
+### What Changed
+- Fixed ktlint `multiline-expression-wrapping` in manager + unit test.
+- Implemented `WebStorageManager.showSiteDataManagementDialog`, menu item `action_manage_site_data`, MainActivity wiring, `SingletonCleanupRule` reset, and `MainActivitySiteDataTest`.
+- Documented contract already present in `docs/FUNCTIONS.md`.
+
+### Verification
+- `python3 scripts/check_kotlin_style.py` on changed Kotlin files — PASSED.
+- `git diff --check` — PASSED.
+- Gradle not run locally; GitHub worker is the compile/test authority.
+
+### Next Actions
+- Push to `main` and verify the worker (lintKotlin + unit tests + release).
+- If green, consider item 255 (unify DataClearer WebStorage path) or 256 (dialog refresh).
 
 ## Last Run (2026-11-28, run 19 — immersive instrumentation coverage)
 
@@ -364,7 +389,7 @@ while keeping the main content in a WebView.
 
 ## Next Improvement Suggestions (2026-11-28, after the DataClearer ordering cycle)
 
-232. **[MEDIUM] Per-site WebStorage UI**: add a menu entry that lists origins from `WebStorage.getOrigins` and clears a selected origin through a testable seam; acceptance includes a Robolectric test for list/read and `deleteOrigin` invocation.
+232. **[x] [MEDIUM] Per-site WebStorage UI**: DONE 2026-11-28 — see run 22 Last Run.
 233. **[MEDIUM] Immersive mode seam-first implementation**: add a pure-JVM state/persistence decision layer plus a thin `WindowInsetsControllerCompat` adapter; acceptance includes a failing-then-green test before adapter wiring.
 234. **[LOW] CI coverage guard**: add a Python guard that flags new Kotlin production files lacking an applicable unit test, with explicit allowlisting for Android-only adapters.
 

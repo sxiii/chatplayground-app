@@ -48,6 +48,7 @@ import com.chatplayground.app.utils.NavigationRetryPolicy
 import com.chatplayground.app.utils.PreferenceKeys
 import com.chatplayground.app.utils.ShortcutHelper
 import com.chatplayground.app.utils.UrlProvider
+import com.chatplayground.app.utils.WebStorageManager
 import com.chatplayground.app.utils.WebViewConfigurator
 import com.chatplayground.app.utils.WebViewDebugging
 
@@ -440,6 +441,10 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
             }
             R.id.action_manage_cookies -> {
                 showCookieManagementDialog()
+                true
+            }
+            R.id.action_manage_site_data -> {
+                WebStorageManager.showSiteDataManagementDialog(this)
                 true
             }
             R.id.action_toggle_immersive_mode -> {
