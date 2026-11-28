@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 
 /** Pure state and persistence rules for the immersive-mode setting. */
 object ImmersiveModeState {
-    private const val KEY_IMMERSIVE_MODE = "immersive_mode"
+    private const val KEY_IMMERSIVE_MODE = PreferenceKeys.Keys.IMMERSIVE_MODE
 
     var isImmersive: Boolean = false
         private set

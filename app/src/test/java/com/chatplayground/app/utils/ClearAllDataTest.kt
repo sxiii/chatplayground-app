@@ -36,7 +36,7 @@ class ClearAllDataTest {
         CookieManager.getInstance().setCookie(testUrl, "session=abc123")
         assertTrue("Cookies should exist", CookieManager.getInstance().hasCookies())
 
-        val prefs = context.getSharedPreferences("app_data", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.Files.APP_DATA, Context.MODE_PRIVATE)
         prefs.edit().putString("test_key", "test_value").apply()
 
         // Act: Clear all data
@@ -57,7 +57,7 @@ class ClearAllDataTest {
 
         // Ensure no data exists
         CookieManager.getInstance().removeAllCookies(null)
-        val prefs = context.getSharedPreferences("app_data", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.Files.APP_DATA, Context.MODE_PRIVATE)
         prefs.edit().clear().apply()
 
         // Should not throw
@@ -73,14 +73,14 @@ class ClearAllDataTest {
         val webView = WebView(context)
 
         // Arrange: populate all three SharedPreferences files
-        val appDataPrefs = context.getSharedPreferences("app_data", Context.MODE_PRIVATE)
+        val appDataPrefs = context.getSharedPreferences(PreferenceKeys.Files.APP_DATA, Context.MODE_PRIVATE)
         appDataPrefs.edit().putString("app_key", "app_value").apply()
 
-        val desktopModePrefs = context.getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
-        desktopModePrefs.edit().putBoolean("desktop_mode", true).apply()
+        val desktopModePrefs = context.getSharedPreferences(PreferenceKeys.Files.DESKTOP_MODE, Context.MODE_PRIVATE)
+        desktopModePrefs.edit().putBoolean(PreferenceKeys.Keys.DESKTOP_MODE, true).apply()
 
-        val themePrefs = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
-        themePrefs.edit().putInt("theme_mode", 1).apply()
+        val themePrefs = context.getSharedPreferences(PreferenceKeys.Files.THEME, Context.MODE_PRIVATE)
+        themePrefs.edit().putInt(PreferenceKeys.Keys.THEME_MODE, 1).apply()
 
         // Act: Clear all data
         DataClearer.clearAllData(context, webView)
@@ -116,11 +116,11 @@ class ClearAllDataTest {
         CookieManager.getInstance().setCookie("https://chatplayground.ai", "session=abc")
         assertTrue("Cookie should exist", CookieManager.getInstance().hasCookies())
 
-        val desktopModePrefs = context.getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
-        desktopModePrefs.edit().putBoolean("desktop_mode", true).apply()
+        val desktopModePrefs = context.getSharedPreferences(PreferenceKeys.Files.DESKTOP_MODE, Context.MODE_PRIVATE)
+        desktopModePrefs.edit().putBoolean(PreferenceKeys.Keys.DESKTOP_MODE, true).apply()
 
-        val themePrefs = context.getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
-        themePrefs.edit().putInt("theme_mode", 1).apply()
+        val themePrefs = context.getSharedPreferences(PreferenceKeys.Files.THEME, Context.MODE_PRIVATE)
+        themePrefs.edit().putInt(PreferenceKeys.Keys.THEME_MODE, 1).apply()
 
         // Act: Clear all data
         DataClearer.clearAllData(context, webView)

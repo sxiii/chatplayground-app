@@ -137,5 +137,13 @@ This document describes the core build, CI/CD, and application runtime functions
 - **Swipe Gestures**: Detects horizontal flings for history navigation (Right = Back, Left = Forward).
 - **Content Awareness**: `canContentScrollHorizontally()` keeps swipe events for code blocks and carousels inside the WebView instead of navigating history.
 
-## 8. Test Utility: Singleton Cleanup (`SingletonCleanupRule`)
+## 8. Preference Keys (`PreferenceKeys`)
+
+`PreferenceKeys` is the single source of truth for the SharedPreferences file
+and key names used by theme, desktop-mode, immersive-mode, and general app data
+settings. Production code uses these constants instead of repeating string
+literals, preventing a read/write mismatch when a setting is persisted or
+cleared. This is a constants-only utility and has no runtime side effects.
+
+## 9. Test Utility: Singleton Cleanup (`SingletonCleanupRule`)
 - **TestWatcher**: Shared JUnit rule that resets `AppLock`, `DesktopModeHandler`, and `SecureStorage` seams after every test to prevent cross-test state contamination.

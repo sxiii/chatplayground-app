@@ -5,6 +5,7 @@ import android.webkit.WebViewClient
 import com.chatplayground.app.security.AppLock
 import com.chatplayground.app.utils.DesktopModeHandler
 import com.chatplayground.app.utils.ImmersiveModeState
+import com.chatplayground.app.utils.PreferenceKeys
 import com.chatplayground.app.utils.SingletonCleanupRule
 import com.chatplayground.app.utils.UrlProvider
 import org.junit.Assert.assertEquals
@@ -422,8 +423,12 @@ class MainActivityTest {
 
     @Test
     fun onCreateRestoresPersistedDesktopMode() {
-        val prefs = RuntimeEnvironment.application.getSharedPreferences("desktop_mode_prefs", android.content.Context.MODE_PRIVATE)
-        prefs.edit().putBoolean("desktop_mode", true).apply()
+        val prefs =
+            RuntimeEnvironment.application.getSharedPreferences(
+                PreferenceKeys.Files.DESKTOP_MODE,
+                android.content.Context.MODE_PRIVATE,
+            )
+        prefs.edit().putBoolean(PreferenceKeys.Keys.DESKTOP_MODE, true).apply()
 
         // Simulate toggle already applied on a previous run
         DesktopModeHandler.applyDesktopMode(true)

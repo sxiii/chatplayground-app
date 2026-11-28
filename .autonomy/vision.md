@@ -281,13 +281,12 @@ while keeping the main content in a WebView.
 233. **[ ] [LOW] CI coverage guard**: Add a Python guard for new Kotlin production files without applicable tests, with explicit Android-only allowlisting.
 234. **[ ] [LOW] NetworkMonitor lifecycle tests**: Verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks.
 
-## Next Improvement Suggestions (2026-11-28, after immersive-mode CI repair)
+## Next Improvement Suggestions (2026-11-28, after preference-key consolidation)
 
-240. **[x] [MEDIUM] Resolve immersive-mode worker failure**: DONE this cycle. The initial run `46101242760` failed; Kotlin formatting was corrected in the adapter/title implementation, and replacement run `46101642239` passed all build, test, lint, coverage, artifact, and release-tag jobs.
-241. **[MEDIUM] Add instrumentation coverage for immersive system-bar visibility**: verify the real activity window hides and restores system bars on a device/emulator worker; retain Robolectric state/menu tests as the fast gate.
-242. **[LOW] Add a shared preference-key constants object**: remove repeated preference-file/key literals (`immersive_mode_prefs`, `desktop_mode_prefs`, `theme_prefs`) without changing behavior.
-243. **[LOW] Verify instrumentation assertions on a real emulator**: run the immersive window test on a device/emulator worker and confirm root-window inset visibility updates synchronously after adapter calls.
-244. **[LOW] Add lifecycle cleanup for instrumentation WebViews**: ensure real-WebView instrumentation tests destroy their widgets/scenarios promptly so renderer resources do not accumulate across the suite.
+245. **[x] [LOW] Centralize SharedPreferences file/key literals**: Added `PreferenceKeys` and migrated production reads/writes plus relevant tests and `DataClearer` to the shared constants; documented in `docs/FUNCTIONS.md`.
+246. **[ ] [MEDIUM] Per-site WebStorage UI**: list origins and clear a selected origin through a testable seam.
+247. **[ ] [LOW] NetworkMonitor lifecycle tests**: verify rapid repeated `observe()`/`stopObserving()` calls do not leak callbacks.
+248. **[ ] [LOW] CI coverage guard**: flag new Kotlin production files lacking an applicable test, with explicit Android-only allowlisting.
 
 ## Last Run (2026-11-28, run 19 — immersive instrumentation coverage)
 

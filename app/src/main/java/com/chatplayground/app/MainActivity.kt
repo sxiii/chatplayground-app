@@ -45,6 +45,7 @@ import com.chatplayground.app.utils.ImmersiveModeState
 import com.chatplayground.app.utils.ImmersiveModeWindowAdapter
 import com.chatplayground.app.utils.LinkRouter
 import com.chatplayground.app.utils.NavigationRetryPolicy
+import com.chatplayground.app.utils.PreferenceKeys
 import com.chatplayground.app.utils.ShortcutHelper
 import com.chatplayground.app.utils.UrlProvider
 import com.chatplayground.app.utils.WebViewConfigurator
@@ -115,7 +116,7 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
 
         // Restore immersive mode before the first page load so system bars match
         // the persisted user preference after activity recreation.
-        ImmersiveModeState.load(getSharedPreferences("immersive_mode_prefs", Context.MODE_PRIVATE))
+        ImmersiveModeState.load(getSharedPreferences(PreferenceKeys.Files.IMMERSIVE_MODE, Context.MODE_PRIVATE))
         ImmersiveModeWindowAdapter.apply(window, ImmersiveModeState.isImmersive)
 
         // Expose chrome://inspect to debug builds only; a release build never
@@ -442,7 +443,7 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
                 true
             }
             R.id.action_toggle_immersive_mode -> {
-                val preferences = getSharedPreferences("immersive_mode_prefs", Context.MODE_PRIVATE)
+                val preferences = getSharedPreferences(PreferenceKeys.Files.IMMERSIVE_MODE, Context.MODE_PRIVATE)
                 ImmersiveModeState.toggle(preferences)
                 ImmersiveModeWindowAdapter.apply(window, ImmersiveModeState.isImmersive)
                 item.title = immersiveModeMenuTitle()
@@ -456,8 +457,8 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
                 Toast.makeText(this, "Switched to $modeLabel mode", Toast.LENGTH_SHORT).show()
                 // Persist the user's desktop/mobile choice so it survives
                 // app restarts (restored in onCreate before the first loadUrl).
-                val prefs = getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
-                prefs.edit().putBoolean("desktop_mode", DesktopModeHandler.isDesktop).apply()
+                val prefs = getSharedPreferences(PreferenceKeys.Files.DESKTOP_MODE, Context.MODE_PRIVATE)
+                prefs.edit().putBoolean(PreferenceKeys.Keys.DESKTOP_MODE, DesktopModeHandler.isDesktop).apply()
                 true
             }
             R.id.action_about -> {
@@ -483,16 +484,16 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
      * Applies saved or persisted desktop mode state.
      */
     private fun applySavedDesktopMode() {
-        val prefs = getSharedPreferences("desktop_mode_prefs", Context.MODE_PRIVATE)
-        val isDesktop = prefs.getBoolean("desktop_mode", false)
+        val prefs = getSharedPreferences(PreferenceKeys.Files.DESKTOP_MODE, Context.MODE_PRIVATE)
+        val isDesktop = prefs.getBoolean(PreferenceKeys.Keys.DESKTOP_MODE, false)
         DesktopModeHandler.applyDesktopMode(isDesktop)
     }
 
     private fun applySavedTheme() {
-        val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(PreferenceKeys.Files.THEME, Context.MODE_PRIVATE)
         val mode =
-            if (prefs.contains("theme_mode")) {
-                prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            if (prefs.contains(PreferenceKeys.Keys.THEME_MODE)) {
+                prefs.getInt(PreferenceKeys.Keys.THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             } else if (prefs.contains("dark_mode")) {
                 if (prefs.getBoolean("dark_mode", false)) {
                     AppCompatDelegate.MODE_NIGHT_YES
@@ -507,7 +508,7 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
 
     private fun showThemeSelectionDialog() {
         val items = arrayOf("System Default", "Light", "Dark")
-        val prefs = getSharedPreferences("theme_prefs", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(PreferenceKeys.Files.THEME, Context.MODE_PRIVATE)
         val currentMode = AppCompatDelegate.getDefaultNightMode()
         val checkedItem =
             when (currentMode) {
@@ -525,7 +526,7 @@ class MainActivity : AppCompatActivity(), GestureNavigationTarget {
                         2 -> AppCompatDelegate.MODE_NIGHT_YES
                         else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                     }
-                prefs.edit().putInt("theme_mode", newMode).apply()
+                prefs.edit().putInt(PreferenceKeys.Keys.THEME_MODE, newMode).apply()
                 AppCompatDelegate.setDefaultNightMode(newMode)
                 dialog.dismiss()
                 recreate()
