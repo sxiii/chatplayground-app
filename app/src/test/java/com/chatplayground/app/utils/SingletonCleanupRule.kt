@@ -26,5 +26,6 @@ class SingletonCleanupRule : TestWatcher() {
         SecureStorage.authenticator = BiometricAuthenticator { false }
         SecureStorage.storeFactory = { context -> EncryptedSharedPreferencesStore(context) }
         DataClearer.resetWebStorageDeleterForTesting()
+        DataClearer.resetClearingStepObserverForTesting()
     }
 }

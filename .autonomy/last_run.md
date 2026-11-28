@@ -1,20 +1,24 @@
-# Last Run (2026-11-28, run 13 — development cycle: item 230 AppLock vs Clear All Data)
+# Last Run (2026-11-28, run 14 — development cycle: DataClearer clearing order)
 
 ## Baseline
-- CI status before cycle: run `46083635014` **success** at HEAD `a44c355` (item 59 complete); working tree clean. No pending worker builds.
+- GitHub Actions baseline was green: run `46089528072` (`b8fa417`) completed successfully on `main`; no pending worker build.
+- Working tree was clean before implementation. Previous run's file-mutation warning was checked: the AppLock/DataClearer changes are present in the checkout and confirmed by the green worker run.
 
-## What Changed (this cycle)
-1. **`DataClearer.kt`** — `clearAllData()` now resets `AppLock.enabled = false` so wiping all app data does not leave the app locked on next start (resolves vision item 230). Added `import com.chatplayground.app.security.AppLock`.
-2. **`ClearAllDataTest.kt`** — added `clearAllDataResetsAppLockState` asserting `AppLock.enabled` is false and `AppLock.isLocked()` is false after `clearAllData()`.
-3. **`.autonomy/vision.md`** — item 230 marked decided/implemented (AppLock reset is part of Clear All Data). Added no new open items this cycle.
-4. **`.autonomy/ci_status.md`** — synced to latest green run `46088833666`.
+## Task Chosen
+- Vision item **229**: `DataClearer.clearAllData()` had no regression test for the documented destructive-operation order.
 
-## Verification
-- `scripts/check_kotlin_style.py` — PASSED (73 files, exit 0).
-- CI worker: run `46088833666` completed **success** on `main` at HEAD `ec55d9d`.
-- Two earlier pushes failed and were fixed: missing `AppLock` import (compile) then unused `DesktopModeHandler` import (lint). Both resolved on the third push.
-- Working tree clean; nothing uncommitted.
+## What Changed
+1. `docs/FUNCTIONS.md` was updated before implementation to document the `clearingStepObserver` test seam and the required order.
+2. `DataClearer` gained a nullable observer seam and reset helper. Production behavior is unchanged when the observer is null.
+3. `ClearAllDataTest.clearAllDataRunsDestructiveStepsInDocumentedOrder` records and asserts: offline cache → WebView cache → cookies → WebStorage → preferences → desktop mode → AppLock.
+4. `SingletonCleanupRule` resets the observer after each test.
+
+## Verification Before Push
+- `python3 scripts/check_kotlin_style.py` — PASS (73 Kotlin files).
+- `python3 scripts/test_ci_checks.py` — PASS (18 tests).
+- `git diff --check` — PASS.
+- Android/Gradle compilation and unit tests were not run locally per project policy; GitHub Actions is the source of truth.
 
 ## Next Actions
-- No pending CI work; all guards green at HEAD.
-- Open work: item 60 (immersive mode toggle — see item 231 for seam-first approach), item 61 (per-shortcut icons), item 226 (NetworkMonitor rapid subscribe/unsubscribe tests), item 228 (per-site data UI), item 229 (clearing-order test), item 55 (CI dependency caching/retry).
+- Push this bounded change to `main`, then verify its GitHub worker run. If red, inspect `gh run view --log-failed` before unrelated work.
+- Continue with item 228 (per-site WebStorage UI) or item 231/60 (immersive mode seam-first implementation).

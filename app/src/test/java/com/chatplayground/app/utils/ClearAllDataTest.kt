@@ -132,6 +132,25 @@ class ClearAllDataTest {
     }
 
     @Test
+    fun clearAllDataRunsDestructiveStepsInDocumentedOrder() {
+        context = ApplicationProvider.getApplicationContext()
+        val webView = WebView(context)
+        val steps = mutableListOf<String>()
+        DataClearer.clearingStepObserver = { step -> steps += step }
+
+        try {
+            DataClearer.clearAllData(context, webView)
+        } finally {
+            DataClearer.resetClearingStepObserverForTesting()
+        }
+
+        assertEquals(
+            listOf("offline_cache", "webview_cache", "cookies", "web_storage", "preferences", "desktop_mode", "app_lock"),
+            steps,
+        )
+    }
+
+    @Test
     fun clearAllDataResetsAppLockState() {
         context = ApplicationProvider.getApplicationContext()
         val webView = WebView(context)
