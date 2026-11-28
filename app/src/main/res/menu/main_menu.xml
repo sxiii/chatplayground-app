@@ -30,10 +30,6 @@
         android:title="Manage Cookies"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_manage_cookies"
-        android:title="Manage Cookies"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_manage_site_data"
         android:title="Site Data"
         app:showAsAction="never" />
