@@ -1,21 +1,20 @@
-# Last Run (2026-11-28, run 12 — development cycle: WebStorage clearing)
+# Last Run (2026-11-28, run 13 — development cycle: item 230 AppLock vs Clear All Data)
 
 ## Baseline
-- CI status before cycle: run `46073299055` **success** at HEAD `542710f` (merge PR #9); working tree had one uncommitted `.autonomy/vision.md` from the previous run — recovered.
+- CI status before cycle: run `46083635014` **success** at HEAD `a44c355` (item 59 complete); working tree clean. No pending worker builds.
 
 ## What Changed (this cycle)
-1. **`DataClearer.kt`** — `clearAllData()` now clears `WebStorage` (localStorage/sessionStorage) via `WebStorage.getInstance().deleteAllData()`. Injectable `webStorageDeleter` seam enables unit-testing under Robolectric.
-2. **`ClearAllDataTest.kt`** — added `clearAllDataClearsWebStorage` asserting the seam is invoked exactly once.
-3. **`SingletonCleanupRule.kt`** — `finished()` resets `DataClearer.webStorageDeleter` after every test.
-4. **`SingletonCleanupRuleTest.kt`** — added `ruleResetsDataClearerWebStorageSeamOnFinished`.
-5. **`docs/FUNCTIONS.md`** — documented the extended Unified Data Clearing behaviour before implementation.
-6. **`.autonomy/vision.md`** — item 59 marked done; items 228–231 added; run 12 recorded.
+1. **`DataClearer.kt`** — `clearAllData()` now resets `AppLock.enabled = false` so wiping all app data does not leave the app locked on next start (resolves vision item 230). Added `import com.chatplayground.app.security.AppLock`.
+2. **`ClearAllDataTest.kt`** — added `clearAllDataResetsAppLockState` asserting `AppLock.enabled` is false and `AppLock.isLocked()` is false after `clearAllData()`.
+3. **`.autonomy/vision.md`** — item 230 marked decided/implemented (AppLock reset is part of Clear All Data). Added no new open items this cycle.
+4. **`.autonomy/ci_status.md`** — synced to latest green run `46088833666`.
 
 ## Verification
 - `scripts/check_kotlin_style.py` — PASSED (73 files, exit 0).
-- `scripts/test_ci_checks.py` — PASSED (18 tests).
-- CI worker result pending at record time (push is the verification vehicle).
+- CI worker: run `46088833666` completed **success** on `main` at HEAD `ec55d9d`.
+- Two earlier pushes failed and were fixed: missing `AppLock` import (compile) then unused `DesktopModeHandler` import (lint). Both resolved on the third push.
+- Working tree clean; nothing uncommitted.
 
 ## Next Actions
-- Confirm the push's `Build Android App` run is green.
-- Open work: item 60 (immersive mode toggle), item 61 (per-shortcut icons), item 228 (per-site data UI), item 229 (clearing-order test), item 230 (AppLock vs Clear All Data).
+- No pending CI work; all guards green at HEAD.
+- Open work: item 60 (immersive mode toggle — see item 231 for seam-first approach), item 61 (per-shortcut icons), item 226 (NetworkMonitor rapid subscribe/unsubscribe tests), item 228 (per-site data UI), item 229 (clearing-order test), item 55 (CI dependency caching/retry).
