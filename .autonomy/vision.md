@@ -292,6 +292,31 @@ while keeping the main content in a WebView.
 255. **[ ] [LOW] Route `DataClearer.webStorageDeleter` through `WebStorageManager.deleteAllData`** so global clear and per-site clear share one production path; acceptance: `ClearAllDataTest.clearAllDataClearsWebStorage` still passes after the seam redirects.
 256. **[ ] [MEDIUM] Site Data dialog refresh after delete**: after clearing one origin, re-fetch origins and update or re-show the dialog so the cleared origin disappears without reopening the menu; Robolectric test asserts the list shrinks.
 
+257. **[LOW] Document Robolectric 4.18.1 `ShadowAlertDialog.getLatestAlertDialog()` shadow quirk**: `getLatestAlertDialog()` returns null even though `getLatestDialog()` returns a live `AlertDialog`; tests should cast `dialog as AlertDialog`. Record in `docs/FUNCTIONS.md` testing section so future dialog tests don't regress.
+
+258. **[LOW] Add instrumentation (androidTest) coverage for Site Data menu/dialog**: launch a real `MainActivity` window via `ActivityScenario`, click the "Site Data" menu item, and assert the dialog appears; mirrors `DesktopModeHandlerInstrumentedTest` pattern.
+
+## Last Run (2026-11-28, run 23 — Site Data dialog Robolectric shadow fix)
+
+### Baseline
+- GitHub status: **All Systems Operational**.
+- Worker run `46130433539` (push `433c635`'s parent `ab2d3cb`) **failure** on `Run Unit Tests`: `MainActivitySiteDataTest` three cases failed at `assertNotNull(alert)` where `alert = ShadowAlertDialog.getLatestAlertDialog()` returns null (Robolectric 4.18.1 shadow quirk; `getLatestDialog()` returns the live dialog fine). Runs `46129687688` / `46129196604` also failed on this class.
+
+### Task Chosen
+- Recover unfinished per-site WebStorage UI work: fix the Robolectric shadow access pattern in `MainActivitySiteDataTest.kt` so all three cases pass on GitHub workers.
+
+### What Changed
+- `MainActivitySiteDataTest.kt`: replaced `ShadowAlertDialog.getLatestAlertDialog()` with `ShadowAlertDialog.getLatestDialog()` cast to `androidx.appcompat.app.AlertDialog` in all three test cases (origin listing, delete-origin click, empty-state message). Import ordering corrected for ktlint.
+- Local style guard `scripts/check_kotlin_style.py` PASSED on the changed file.
+- Committed as `433c635` and pushed to `main`.
+
+### Verification
+- `gh run list` — run `46130433539` is **failure** (parent `ab2d3cb`, awaiting fix); push `433c635` submitted to worker, result pending.
+- Style guard PASSED; `git diff --check` PASSED.
+
+### Next Actions
+- Confirm push `433c635`'s `Build Android App` run turns green with `gh run list`; if red, inspect `--log-failed` before unrelated work.
+
 ## Last Run (2026-11-28, run 22 — per-site WebStorage UI)
 
 ### Baseline
