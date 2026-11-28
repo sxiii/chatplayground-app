@@ -1,7 +1,7 @@
 package com.chatplayground.app
 
+import android.app.AlertDialog
 import android.os.Looper
-import androidx.appcompat.app.AlertDialog
 import com.chatplayground.app.utils.SingletonCleanupRule
 import com.chatplayground.app.utils.WebStorageManager
 import org.junit.Assert.assertEquals
@@ -13,7 +13,6 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import androidx.appcompat.app.AlertDialog
 import org.robolectric.shadows.ShadowAlertDialog
 
 @RunWith(RobolectricTestRunner::class)
